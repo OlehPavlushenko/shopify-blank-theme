@@ -1,0 +1,253 @@
+.clearfix::after {
+    clear: both;
+    content: '';
+    display: table;
+}
+
+.page-width {
+    width: 100%;
+    max-width: 144rem;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+@media screen and (min-width: 991px) {
+    .page-width {
+      padding: 0 2.5rem;
+    }
+}
+
+.shopify-section {
+    margin-bottom: 3rem;
+}
+
+/* base */
+
+.no-js:not(html) {
+    display: none !important;
+}
+  
+html.no-js .no-js:not(html) {
+    display: block !important;
+}
+  
+.no-js-inline {
+    display: none !important;
+}
+  
+html.no-js .no-js-inline {
+    display: inline-block !important;
+}
+
+html.no-js .no-js-hidden {
+    display: none !important;
+}
+
+.hide-text {
+    overflow: hidden;
+    padding: 0; /* 1 */
+    text-indent: 101%;
+    white-space: nowrap;
+}
+
+.visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: .1rem;
+    margin: -.1rem;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: .1rem;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media screen and (max-width: 749px) {
+    .small-hide {
+        display: none !important;
+    }
+}
+
+@media screen and (min-width: 750px) and (max-width: 989px) {
+    .medium-hide {
+        display: none !important;
+    }
+}
+
+@media screen and (min-width: 990px) {
+    .large-up-hide {
+        display: none !important;
+    }
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.lowercase {
+    text-transform: lowercase;
+}
+
+.light {
+    opacity: 0.7;
+}
+
+.visibility-hidden {
+    visibility: hidden;
+}
+
+.focus-none {
+    box-shadow: none !important;
+    outline: 0 !important;
+}
+
+/* component-grid */
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    margin-left: -0.5rem;
+    padding: 0;
+    list-style: none;
+}
+
+@media screen and (min-width: 750px) {
+    .grid {
+        margin-left: -1rem;
+    }
+}
+
+.grid__item {
+    padding-left: 0.5rem;
+    padding-bottom: 0.5rem;
+    width: calc(25% - 0.5rem * 3 / 4);
+    max-width: 50%;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.grid--1-col .grid__item {
+    max-width: 100%;
+    width: 100%;
+}
+
+.grid--3-col .grid__item {
+    width: calc(33.33% - 0.5rem * 2 / 3);
+}
+
+@media screen and (min-width: 750px) {
+    .grid--3-col .grid__item {
+        width: calc(33.33% - 1rem * 2 / 3);
+    }
+}
+
+.grid--2-col .grid__item {
+    width: calc(50% - 0.5rem / 2);
+}
+
+@media screen and (min-width: 750px) {
+    .grid--2-col .grid__item {
+        width: calc(50% - 1rem / 2);
+    }
+
+    .grid--4-col-tablet .grid__item {
+        width: calc(25% - 1rem * 3 / 4);
+    }
+
+    .grid--3-col-tablet .grid__item {
+        width: calc(33.33% - 1rem * 2 / 3);
+    }
+
+    .grid--2-col-tablet .grid__item {
+        width: calc(50% - 1rem / 2);
+    }
+}
+
+@media screen and (min-width: 990px) {
+    .grid--4-col-desktop .grid__item {
+        width: calc(25% - 1rem * 3 / 4);
+    }
+
+    .grid--3-col-desktop .grid__item {
+        width: calc(33.33% - 1rem * 2 / 3);
+    }
+
+    .grid--2-col-desktop .grid__item {
+        width: calc(50% - 1rem / 2);
+    }
+}
+
+/* component-media */
+
+.media {
+    display: block;
+    background-color: rgba(var(--color-body-text), 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.media--transparent {
+    background-color: transparent;
+}
+
+.media > *:not(.zoom, .deferred-media__poster-button),
+.media model-viewer {
+    display: block;
+    max-width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.media > img {
+    object-fit: cover;
+    object-position: center center;
+    transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.media--square {
+    padding-bottom: 100%;
+}
+
+.media--portrait {
+    padding-bottom: 125%;
+}
+
+.media--landscape {
+    padding-bottom: 66.6%;
+}
+
+.media--cropped {
+    padding-bottom: 56%;
+}
+
+.media--16-9 {
+    padding-bottom: 56.25%;
+}
+
+.media--circle {
+    padding-bottom: 100%;
+    border-radius: 50%;
+}
+
+deferred-media {
+    display: block;
+}

@@ -1,0 +1,208 @@
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: calc(var(--font-body-scale) * 62.5%);
+    height: 100%;
+}
+
+body {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-columns: 100%;
+    min-height: 100%;
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 0.06rem;
+    line-height: calc(1 + 0.2 / var(--font-body-scale));
+    font-family: var(--font-body-family);
+    font-style: var(--font-body-style);
+    font-weight: var(--font-body-weight);
+    color: var(--color-body-text);
+    background-color: var(--color-body-background);
+}
+
+@media screen and (min-width: 750px) {
+    body {
+        font-size: 1.6rem;
+    }
+}
+
+a {
+    color: var(--color-link-text);
+    text-decoration: underline;
+    text-underline-offset: .2rem;
+    text-decoration-thickness: .1rem;
+}
+
+a:hover {
+    color: var(--color-link-hover-text);
+    text-decoration: none;
+}
+
+a:disabled {
+    opacity: .5;
+}
+
+/* Negate the fallback side-effect for browsers that support :focus-visible */
+
+*:focus:not(:focus-visible) {
+    outline: 0;
+    box-shadow: none;
+}
+
+/*
+Focus ring - default (with offset)
+*/
+
+*:focus-visible,
+.custom-select__input:focus-visible {
+    outline: 0.2rem solid var(--color-focus);
+    outline-offset: 0.3rem;
+}
+
+/* Fallback - for browsers that don't support :focus-visible, a fallback is set for :focus */
+
+*:focus,
+.custom-select__input:focus {
+    outline: 0.2rem solid var(--color-focus);
+    outline-offset: 0.3rem;
+}
+
+/*
+Focus ring - inset
+*/
+
+.focus-inset:focus-visible {
+    outline: 0.2rem solid var(--color-focus);
+    outline-offset: -0.2rem;
+}
+
+/* Fallback */
+.focus-inset:focus {
+    outline: 0.2rem solid var(--color-focus);
+    outline-offset: -0.2rem;
+}
+
+.focus-inset:focus:not(:focus-visible) {
+    outline: 0;
+    border: 0;
+    box-shadow: none;
+}
+
+/* table */
+
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: .2rem;
+    border-color: var(--color-input-border);
+}
+
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+td {
+    display: table-cell;
+    vertical-align: inherit;
+    border: .1rem solid var(--color-input-border);
+    padding: .2rem;
+}
+
+th {
+    display: table-cell;
+    vertical-align: inherit;
+    font-weight: bold;
+    text-align: center;
+    border: .1rem solid var(--color-input-border);
+    padding: .2rem;
+}
+
+thead {
+    display: table-header-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+/* Color font helpers */
+
+.color-primary {
+    color: var(--color-primary);
+}
+
+.color-secondary {
+    color: var(--color-secondary);
+}
+
+.color-success {
+    color: var(--color-success);
+}
+
+.color-info {
+    color: var(--color-info);
+}
+
+.color-warning {
+    color: var(--color-warning);
+}
+
+.color-danger {
+    color: var(--color-danger);
+}
+
+.color-light {
+    color: var(--color-light);
+}
+
+.color-dark {
+    color: var(--color-dark);
+}
+
+.color-black {
+    color: var(--color-black);
+}
+
+.color-white {
+    color: var(--color-white);
+}
+
+.color-input-border {
+    color: var(--color-input-border);
+}
+
+.color-input-background {
+    color: var(--color-input-background);
+}
+
+.color-focus {
+    color: var(--color-focus);
+}
+
+.color-error {
+    color: var(--color-error);
+}
+
+/* component-badge */
+
+.badge {
+    background-color: var(--color-reverse);
+    border: .1rem solid var(--color-black);
+    border-radius: .3rem;
+    color: var(--color-ink);
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    padding: 0.6rem 1.3rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: var(--america-mono-font);
+}
