@@ -1,0 +1,83 @@
+button,
+.button {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: var(--color-primary-button-background);
+    color: var(--color-primary-button-text);
+    border-radius: var(--button-border-radius);
+    border: .1rem solid var(--color-primary-button-background);
+    text-decoration: none;
+    transition-duration: 0.4s;
+    transition-property: background-color, border-color;
+    cursor: pointer;
+}
+
+/* TODO: create variables with background and color */
+button:hover,
+.button:hover {
+    color: var(--color-primary-button-text);
+    border-color: var(--color-primary-button-background-hover);
+    background-color: var(--color-primary-button-background-hover);
+}
+
+button:disabled,
+button.disabled,
+button[aria-disabled="true"],
+.button:disabled,
+.button.disabled,
+.button[aria-disabled="true"] {
+    background-color: var(--color-primary-button-background-disabled);
+    border-color: var(--color-primary-button-background-disabled);
+    cursor: default;
+}
+
+.button--secondary {
+    background-color: var(--color-secondary-button-background);
+    color: var(--color-secondary-button-text);
+    border: .1rem solid var(--color-secondary-button-text);
+}
+
+.button--secondary:hover {
+    color: var(--color-secondary-button-text);
+    background-color: var(--color-secondary-button-background-hover);
+    border-color: var(--color-secondary-button-text);
+}
+
+.button--secondary:disabled,
+.button--secondary.disabled,
+.button--secondary[aria-disabled="true"] {
+    background-color: var(--color-secondary-button-background-disabled);
+    border-color: var(--color-secondary-button-background-disabled);
+    cursor: default;
+}
+
+.button--link {
+    color: var(--color-link-text);
+    padding: 0;
+    background: none;
+    border: none;
+    text-decoration: underline;
+    text-underline-offset: .2rem;
+    text-decoration-thickness: .1rem;
+    border-radius: 0;
+}
+
+.button--link:hover {
+    text-decoration: none;
+    background: none;
+    color: var(--color-link-hover-text);
+}
+
+.button--link:disabled,
+.button--link.disabled,
+.button--link[aria-disabled="true"] {
+    background: none;
+    color: var(--color-link-text);
+    text-decoration: underline;
+    cursor: default;
+    opacity: .7;
+}
