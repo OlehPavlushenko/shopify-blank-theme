@@ -175,8 +175,8 @@
 <script type="application/ld+json">
   {
   "@context": "http://schema.org",
-      "@type": "Organization",
-      "name": {{ shop.name | json }},
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
   {% if section.settings.logo %}
     {% assign image_size = section.settings.logo.width | append: 'x' %}
     "logo": {{ section.settings.logo | img_url: image_size | prepend: "https:" | json }},
@@ -197,14 +197,14 @@
   <script type="application/ld+json">
     {
     "@context": "http://schema.org",
-            "@type": "WebSite",
-            "name": {{ shop.name | json }},
+    "@type": "WebSite",
+    "name": {{ shop.name | json }},
     "potentialAction": {
-              "@type": "SearchAction",
-              "target": {{ potential_action_target | json }},
-    "query-input": "required name=search_term_string"
-            },
-            "url": {{ shop.url | append: page.url | json }}
+      "@type": "SearchAction",
+      "target": {{ potential_action_target | json }},
+      "query-input": "required name=search_term_string"
+    },
+    "url": {{ shop.url | append: page.url | json }}
     }
   </script>
 {% endif %}
@@ -256,6 +256,372 @@
         "default": true,
         "label": "Enable sticky header",
         "info": "Header shows on the screen as customers scroll up."
+      }
+    ],
+    "blocks": [
+    // LINKLIST ////////////////////////////////////////////////////////////////////////////////
+      {
+        "name": "Simple linklist",
+        "type": "simple_linklist",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Menu item heading"
+          },
+          {
+            "type": "link_list",
+            "id": "menu_item_links",
+            "label": "Choose menu column"
+          },
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background color"
+          },
+          {
+            "type": "select",
+            "id": "position",
+            "options": [
+              { "value": "left", "label": "left"},
+              { "value": "right", "label": "right"}
+            ],
+            "label": "Position reltive to item"
+          },
+          {
+            "type": "range",
+            "id": "menu_item_width",
+            "min": 150,
+            "max": 300,
+            "step": 50,
+            "unit": "px",
+            "label": "Dropdown Width",
+            "default": 150
+          }
+        ]
+      },
+      // 3 LINKLISTS /////////////////////////////////////////////////////////////////////////////
+      {
+        "name": "3 Linklists",
+        "type": "mega_menu_three",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Menu item heading"
+          },
+          {
+            "type": "url",
+            "id": "title_link",
+            "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+          },
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background color"
+          },
+          {
+            "type": "text",
+            "id": "column_menu_title_1",
+            "label": "First menu column heading"
+          },
+          {
+            "type": "link_list",
+            "id": "column_menu_1",
+            "label": "First menu column"
+          },
+          {
+            "type": "url",
+            "id": "column_link_1",
+            "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+          },
+          {
+            "type": "text",
+            "id": "column_menu_title_2",
+            "label": "Second menu column heading"
+          },
+          {
+            "type": "link_list",
+            "id": "column_menu_2",
+            "label": "Second menu column"
+          },
+          {
+            "type": "url",
+            "id": "column_link_2",
+            "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+          },
+          {
+            "type": "text",
+            "id": "column_menu_title_3",
+            "label": "Third menu column heading"
+          },
+          {
+            "type": "link_list",
+            "id": "column_menu_3",
+            "label": "Third menu column"
+          },
+          {
+            "type": "url",
+            "id": "column_link_3",
+            "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          }
+        ]
+      },
+      // 4 LINKLISTS /////////////////////////////////////////////////////////////////////////////
+      {
+        "name": "4 Linklists",
+        "type": "mega_menu_four",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Menu item heading"
+          },
+          {
+            "type": "url",
+            "id": "menu_item_link",
+            "label": "Link"
+          },
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background color"
+          },
+          {
+            "type": "select",
+            "id": "img_size",
+            "label": "Image size",
+            "options": [
+              {
+                "value": "extrasmall",
+                "label": "Extra-small"
+              },
+              {
+                "value": "small",
+                "label": "Small"
+              },
+              {
+                "value": "medium",
+                "label": "Medium"
+              },
+              {
+                "value": "large",
+                "label": "Large"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "column-width",
+            "options": [
+              { "value": "one-whole", "label": "one-whole"},
+              { "value": "two-third", "label": "two-third"},
+              { "value": "one-half", "label": "one-half"},
+              { "value": "one-third", "label": "one-third"},
+              { "value": "one-quarter", "label": "one-quarter"}
+            ],
+            "label": "Width Box"
+          },
+          {
+            "type": "select",
+            "id": "position",
+            "options": [
+              { "value": "left", "label": "left"},
+              { "value": "right", "label": "right"},
+              { "value": "center", "label": "center"}
+            ],
+            "label": "Position reltive to item"
+          },
+          {
+            "type": "header",
+            "content": "Information In Left column"
+          }, 
+          {
+            "type": "image_picker",
+            "id": "column_menu_image_1",
+            "label": "Image 1"
+          },
+          {
+            "type": "text",
+            "id": "column_menu_title_1",
+            "label": "First menu column heading"
+          },
+          {
+            "type": "link_list",
+            "id": "column_menu_1",
+            "label": "First menu column"
+          },
+          {
+            "type": "url",
+            "id": "column_link_1",
+            "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+          },
+          {
+            "type": "image_picker",
+            "id": "column_menu_image_2",
+            "label": "Image 2"
+          },
+          {
+            "type": "text",
+            "id": "column_menu_title_2",
+            "label": "Second menu column heading"
+          },
+          {
+            "type": "link_list",
+            "id": "column_menu_2",
+            "label": "Second menu column"
+          },
+          {
+            "type": "url",
+            "id": "column_link_2",
+            "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+          },
+          {
+            "type": "image_picker",
+            "id": "column_menu_image_3",
+            "label": "Image 3"
+          },
+          {
+            "type": "text",
+            "id": "column_menu_title_3",
+            "label": "Third menu column heading"
+          },
+          {
+            "type": "link_list",
+            "id": "column_menu_3",
+            "label": "Third menu column"
+          },
+          {
+            "type": "url",
+            "id": "column_link_3",
+            "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+          },
+          {
+            "type": "image_picker",
+            "id": "column_menu_image_4",
+            "label": "Image 4"
+          },
+          {
+            "type": "text",
+            "id": "column_menu_title_4",
+            "label": "Fourth menu column heading"
+          },
+          {
+            "type": "link_list",
+            "id": "column_menu_4",
+            "label": "Fourth menu column"
+          },
+          {
+            "type": "url",
+            "id": "column_link_4",
+            "label": "Title Link(ex. Link list is Collection Woman = Link Woman)"
+          },
+          {
+            "type": "header",
+            "content": "Information In Right column"
+          },
+        {
+            "type": "text",
+            "id": "prod_title",
+            "label": "Heading",
+            "default": "Popular Product"
+          },
+          {
+            "type": "collection",
+            "id": "products",
+            "label": "Choose collection"
+          },
+          {
+            "type": "range",
+            "id": "prod_limit",
+            "label": "Product Post",
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "default": 3
+          },
+          {
+            "type": "header",
+            "content": "Information In Bottom column"
+          },
+          {
+            "type": "header",
+            "content": "Banner 1"
+          },
+          {
+            "type": "image_picker",
+            "id": "column_ban_image_1",
+            "label": "Banner first image"
+          },
+          {
+            "type": "url",
+            "id": "column_ban_link_1",
+            "label": "Banner first link"
+          },
+          {
+            "type": "text",
+            "id": "column_ban_text_1",
+            "label": "Banner first text"
+          },
+          {
+            "type": "header",
+            "content": "Banner 2"
+          },
+          {
+            "type": "image_picker",
+            "id": "column_ban_image_2",
+            "label": "Banner second image"
+          },
+          {
+            "type": "url",
+            "id": "column_ban_link_2",
+            "label": "Banner second link"
+          },
+          {
+            "type": "text",
+            "id": "column_ban_text_2",
+            "label": "Banner second text"
+          }
+        ]
+      },
+      // Suggested term /////////////////////////////////////////////////////////////////////////////
+      {
+        "name": "Suggested term",
+        "type": "suggested_term",
+        "settings": [
+          {
+            "type": "text",
+            "id": "suggested_term",
+            "label": "Search suggested term"
+          }
+        ]
+      },
+      // Suggested link
+      {
+        "name": "Suggested link",
+        "type": "suggested_link",
+        "settings": [
+          {
+            "type": "text",
+            "id": "suggested_text",
+            "label": "Text"
+          },
+          {
+            "type": "url",
+            "id": "suggested_link",
+            "label": "Link"
+          },
+          {
+            "type": "image_picker",
+            "id": "suggested_link_image",
+            "label": "Image"
+          }
+        ]
       }
     ]
   }
