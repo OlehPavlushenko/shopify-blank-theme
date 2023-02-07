@@ -5,7 +5,7 @@
 }
 
 label {
-    color: var(--color-body-text);
+    color: var(--color-label);
     cursor: pointer;
     font-size: 1.6rem;
     letter-spacing: -0.005em;
@@ -15,7 +15,7 @@ label {
 }
 
 label:hover {
-    color: var(--color-dark);
+    color: var(--color-input);
 }
 
 input,
@@ -24,7 +24,7 @@ select,
 textarea {
     background-color: var(--color-input-background);
     border: .1rem solid var(--color-input-border);
-    color: var(--color-dark);
+    color: var(--color-input);
     font-size: 1.5rem;
     font-weight: 400;
     letter-spacing: -0.01em;
@@ -99,7 +99,7 @@ select {
 
 option {
     border: .1rem solid var(--color-input-background);
-    color: var(--color-dark);
+    color: var(--color-input);
     cursor: pointer;
     font-size: 1.4rem;
     letter-spacing: -0.01em;
@@ -110,7 +110,7 @@ option {
 
 option:hover {
     background-color: var(--color-light);
-    color: var(--color-dark);
+    color: var(--color-input);
 }
 
 [type="radio"],
@@ -144,29 +144,29 @@ option:hover {
 
 [type="radio"]:hover,
 [type="checkbox"]:hover {
-    border-color: var(--color-dark);
+    border-color: var(--color-input);
     box-shadow: none;
 }
 
 [type="radio"]:hover + label,
 [type="checkbox"]:hover + label {
-    color: var(--color-dark);
+    color: var(--color-input);
 }
 
 [type="radio"]:checked,
 [type="checkbox"]:checked {
-    border-color: var(--color-dark);
+    border-color: var(--color-input);
 }
 
 [type="radio"]:checked + label,
 [type="checkbox"]:checked + label {
-    color: var(--color-dark);
+    color: var(--color-input);
 }
 
 [type="radio"]:checked::before,
 [type="checkbox"]:checked::before {
-    background-color: var(--color-dark);
-    border-color: var(--color-dark);
+    background-color: var(--color-input);
+    border-color: var(--color-input);
     content: '';
     height: 1.2rem;
     left: .2rem;
@@ -253,7 +253,7 @@ option:hover {
 
 .custom-select__dropdown-option {
     border: .1rem solid var(--color-input-border);
-    color: var(--color-dark);
+    color: var(--color-input);
     cursor: pointer;
     font-size: 1.4rem;
     letter-spacing: -0.01em;
@@ -264,7 +264,7 @@ option:hover {
 
 .custom-select__dropdown-option:hover {
     background-color: var(--color-light);
-    color: var(--color-dark);
+    color: var(--color-input);
 }
 
 .custom-select__dropdown-option + .custom-select__dropdown-option {
@@ -277,7 +277,7 @@ option:hover {
 
 .custom-select__dropdown-option--current,
 .custom-select__dropdown[aria-selected="true"] {
-    color: var(--color-dark);
+    color: var(--color-input);
 }
 
 .custom-select__dropdown-option label {

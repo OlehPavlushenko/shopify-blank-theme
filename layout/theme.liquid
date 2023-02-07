@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
 
     {% if settings.favicon != blank %}
-      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: '32x32' }}">
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
     {% endif -%}
 
     {% unless settings.type_header_font.system? and settings.type_body_font.system? %}
@@ -58,35 +58,37 @@
         --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
         --font-heading-scale: {{ settings.heading_scale | times: 1.0 | divided_by: settings.body_scale }};
 
-        --color-body-background: {{- settings.colors_body_background -}};
-        --color-body-text: {{- settings.colors_body_text -}};
-        --color-link-text: {{- settings.colors_body_link -}};
-        --color-link-hover-text: {{- settings.colors_body_link_hover -}};
+        --color-body-background: {{ settings.colors_body_background }};
+        --color-body-text: {{ settings.colors_body_text }};
+        --color-link-text: {{ settings.colors_body_link }};
+        --color-link-hover-text: {{ settings.colors_body_link_hover }};
 
-        --color-primary-button-background: {{- settings.button_background -}};
-        --color-primary-button-background-hover: {{- settings.button_background_hover -}};
-        --color-primary-button-background-disabled: {{- settings.button_background_disabled -}};
-        --color-primary-button-text: {{- settings.button_text -}};
-        --color-secondary-button-background: {{- settings.secondary_button_background -}};
-        --color-secondary-button-background-hover: {{- settings.secondary_button_background_hover -}};
-        --color-secondary-button-background-disabled: {{- settings.secondary_button_background_disabled -}};
-        --color-secondary-button-text: {{- settings.secondary_button_text -}};
-        --button-border-radius: {{- settings.button_border_radius -}}px;
+        --color-primary-button-background: {{ settings.button_background }};
+        --color-primary-button-background-hover: {{ settings.button_background_hover }};
+        --color-primary-button-background-disabled: {{ settings.button_background_disabled }};
+        --color-primary-button-text: {{ settings.button_text }};
+        --color-secondary-button-background: {{ settings.secondary_button_background }};
+        --color-secondary-button-background-hover: {{ settings.secondary_button_background_hover }};
+        --color-secondary-button-background-disabled: {{ settings.secondary_button_background_disabled }};
+        --color-secondary-button-text: {{ settings.secondary_button_text }};
+        --button-border-radius: {{ settings.button_border_radius }}px;
 
-        --color-primary: {{- settings.colors_primary -}};
-        --color-secondary: {{- settings.colors_secondary -}};
-        --color-success: {{- settings.colors_success -}};
-        --color-info: {{- settings.colors_info -}};
-        --color-warning: {{- settings.colors_warning -}};
-        --color-danger: {{- settings.colors_danger -}};
-        --color-light: {{- settings.colors_light -}};
-        --color-dark: {{- settings.colors_dark -}};
-        --color-white: {{- settings.colors_white -}};
-        --color-black: {{- settings.colors_black -}};
-        --color-input-border: {{- settings.color_input_border -}};
-        --color-input-background: {{- settings.color_input_background -}};
-        --color-focus: {{- settings.colors_focus -}};
-        --color-error: {{- settings.colors_error -}};
+        --color-primary: {{ settings.colors_primary }};
+        --color-secondary: {{ settings.colors_secondary }};
+        --color-success: {{ settings.colors_success }};
+        --color-info: {{ settings.colors_info }};
+        --color-warning: {{ settings.colors_warning }};
+        --color-danger: {{ settings.colors_danger }};
+        --color-light: {{ settings.colors_light }};
+        --color-dark: {{ settings.colors_dark }};
+        --color-white: {{ settings.colors_white }};
+        --color-black: {{ settings.colors_black }};
+        --color-label: {{ settings.color_input_border }};
+        --color-input: {{ settings.color_input }};
+        --color-input-border: {{ settings.color_input_border }};
+        --color-input-background: {{ settings.color_input_background }};
+        --color-focus: {{ settings.colors_focus }};
+        --color-error: {{ settings.colors_error }};
       }
     {% endstyle %}
 
@@ -103,7 +105,7 @@
     <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
   </head>
 
-  <body class="template-{{- template -}}">
+  <body class="template-{{ template }}">
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
       {{ content_for_layout }}
