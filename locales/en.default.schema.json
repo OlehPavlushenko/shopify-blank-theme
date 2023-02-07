@@ -39,6 +39,12 @@
         "colors_black": {
           "label": "Black"
         },
+        "color_label": {
+          "label": "Label Color"
+        },
+        "color_input": {
+          "label": "Input Color"
+        },
         "color_input_border": {
           "label": "Input Border"
         },
