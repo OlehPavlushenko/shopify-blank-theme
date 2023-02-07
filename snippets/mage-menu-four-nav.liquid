@@ -41,14 +41,14 @@
                 {% endif %}
                 
                 {% if column_image != blank %}
-                <picture class="mega-menu__media mega-menu__media-size--{{ img_size }}">
+                <picture class="mega-menu__media media media__size--{{ img_size }}">
                     {% if column_url.size > 0 %}
                     <a href="{{ column_url }}">
                     {% endif %}
                     <img srcset="{{ column_image | img_url: '580x' }} 1x, {{ column_image | img_url: '1160x' }} 2x"
                     src="{{ column_image | img_url: '580x' }}"
                     loading="lazy"
-                    class="mega-menu__image"
+                    class="mega-menu__image media__image"
                     width="{{ column_image.width }}"
                     height="{{ column_image.height }}"
                     alt="{{ column_image.alt }}"
@@ -115,14 +115,14 @@
         -%}
 
         {% if column_image != blank %}
-          <picture class="mega-menu__column-media mega-menu__column-media-size--{{ img_size }}">
+          <picture class="mega-menu__column-media mega-menu__column-media--small">
             {% if column_link.size > 0 %}
               <a href="{{ column_url }}">
             {% endif %}
               <img srcset="{{ column_image | img_url: '580x' }} 1x, {{ column_image | img_url: '1160x' }} 2x"
                 src="{{ column_image | img_url: '580x' }}"
                 loading="lazy"
-                class="mega-menu__column-media--image"
+                class="mega-menu__column-media--image media__image"
                 width="{{ column_image.width }}"
                 height="{{ column_image.height }}"
                 alt="{{ column_image.alt }}"

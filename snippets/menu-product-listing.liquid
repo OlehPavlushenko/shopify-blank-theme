@@ -1,6 +1,6 @@
 {%- if card_product and card_product != empty -%}
     <div class="mega-menu-product-post__madia-wrapper">
-        <picture class="mega-menu-product-post__media mega-menu-product-post__size--{{ image_size }}">
+        <picture class="mega-menu-product-post__media  media media__size--{{ image_size }}">
             <img
                 srcset="{%- if card_product.featured_media.width >= 165 -%}{{ card_product.featured_media | image_url: width: 165 }} 165w,{%- endif -%}
                     {%- if card_product.featured_media.width >= 330 -%}{{ card_product.featured_media | image_url: width: 330 }} 330w,{%- endif -%}
@@ -16,7 +16,7 @@
                 height="{{ card_product.featured_media.height }}"
                 width="{{ card_product.featured_media.width }}"
                 loading="lazy"
-                class="mega-menu-product-post__image"
+                class="mega-menu-product-post__image media__image"
             >
         </picture>
     </div>
