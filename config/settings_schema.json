@@ -4,8 +4,8 @@
     "theme_name": "Blank Shopify Theme",
     "theme_version": "1.0.0",
     "theme_author": "Pavlushenko Oleh",
-    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
-    "theme_support_url": "https://support.shopify.com/"
+    "theme_support_email": "pavlushenko.oleh@gmail.com",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes"
   },
   {
     "name": "t:settings_schema.colors.name",
@@ -76,8 +76,20 @@
       },
       {
         "type": "color",
+        "id": "color_label",
+        "default": "#696e6e",
+        "label": "t:settings_schema.colors.settings.color_label.label"
+      },
+      {
+        "type": "color",
+        "id": "color_input",
+        "default": "#34495e",
+        "label": "t:settings_schema.colors.settings.color_input.label"
+      },
+      {
+        "type": "color",
         "id": "color_input_border",
-        "default": "#bdbdbd",
+        "default": "#34495e",
         "label": "t:settings_schema.colors.settings.color_input_border.label"
       },
       {
