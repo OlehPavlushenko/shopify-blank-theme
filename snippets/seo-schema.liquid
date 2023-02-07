@@ -11,7 +11,7 @@
       {% if product.featured_image %}
       {% assign image_size = product.featured_image.width | append: 'x' %}
       "image": [
-        "https:{{ product.featured_image.src | image_url: image_size }}"
+        "https:{{ product.featured_image.src | img_url: image_size }}"
       ],
       {% endif %}
       "description": "{{ product.description | strip_html | escape }}",
@@ -48,7 +48,7 @@
               "@type" : "Offer",
               {% if variant.image %}
               {% assign variant_image_size = variant.image.width | append: 'x' %}
-              "image": "http:{{ variant.image.src | image_url: variant_image_size }}",
+              "image": "http:{{ variant.image.src | img_url: variant_image_size }}",
               {% endif %}
               {% if variant.title != blank %}
               "name" : "{{ variant.title }}",
@@ -93,7 +93,7 @@
     {% if article.image %}
     {% assign image_size = article.image.width | append: 'x' %}
     "image": [
-      "https:{{ article | image_url: image_size }}"
+      "https:{{ article | img_url: image_size }}"
     ],
     {% endif %}
     "datePublished": "{{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' }}",
@@ -109,7 +109,7 @@
       "logo": {
       "@type": "ImageObject",
       "height": "{{ settings.share_image.height }}",
-      "url": "https:{{ settings.share_image | image_url: image_size }}",
+      "url": "https:{{ settings.share_image | img_url: image_size }}",
       "width": "{{ settings.share_image.width }}"
       },
     {% endif %}
