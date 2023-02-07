@@ -1,0 +1,85 @@
+{%- liquid
+    assign menu_item_title = block.settings.title | handleize
+    assign current_link_title = link.title | handleize
+    assign column_menu = linklists[block.settings.menu_item_links].links
+-%}
+
+{% if menu_item_title == current_link_title %}
+    {%- capture simple_list_dropdown -%}
+        {% if column_menu.size > 0 %}
+        <div class="simple-menu__list-column">
+            <ul class="simple-menu__list">
+            {% for simple_menu_link in column_menu %}
+                
+                {%- liquid
+                if simple_menu_link.title contains ';'
+                    assign badge = simple_menu_link.title | split: ',' | split: ';'
+                    assign title = badge[0] | split: '["'
+                    assign badge_name = badge[1]
+                    assign badge_color = badge[2] | split: '"]'
+                else
+                    assign title = simple_menu_link.title
+                    assign badge_name = ''
+                    assign badge_color = ''
+                endif
+                -%}
+            
+                <li class="simple-menu__list-item">
+                    <a class="simple-menu__list-item-link" href="{{ simple_menu_link.url }}">
+                    {{ title }}
+                    {% if badge_name %}
+                    <span style="background:{{ badge_color }};" class="simple-menu__list-badge">{{ badge_name }}</span>
+                    {% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    {%- endcapture -%}
+
+    {% if simple_list_dropdown != blank %}
+        {%- liquid
+            assign simple_list_background_color = block.settings.background_color
+            assign position = block.settings.position
+            assign width = block.settings.menu_item_width
+        -%}
+
+        {%- capture simple_list_styles -%}
+        --simple-list-background-color: {{ simple_list_background_color }};
+        --simple-list-width: {{ width }}px;
+        {%- endcapture -%}
+
+        {%- assign simple_list_styles = simple_list_styles | strip_newlines -%}
+
+        <li class="header__menu-item header__menu-item--mobile header__menu-item--{{ block.type }} js-mega-menu-wrapper has-sub-menu">
+            <div class="header__menu-item-details" open>
+                <div class="header__menu-item-summary focus-inset">
+                    <a class="header__menu-item-link header__menu-item-link--mobile" href="{{ link.url }}">
+                        {{ link.title | escape }}
+                        {% render 'icon-caret' %}
+                    </a>
+                    <button class="mega-menu__next-button js-mega-parent-next-button" aria-expanded="true">
+                        {% render 'icon-arrow' %}
+                    </button>
+                </div>
+                <div style="{{ simple_list_styles }}" class="simple-menu simple-menu--{{ position }} js-mega-menu" tabindex="-1">
+                    <div class="mega-menu__back">
+                    <button class="mega-menu__back-button js-menu-back" aria-expanded="true">
+                        {% render 'icon-caret' %}
+                        {{ link.title | escape }}
+                    </button>
+                    <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'sections.header.menu' | t }}">
+                        {% render 'icon-close' %}
+                    </a>
+                    </div>
+                    <div class="simple-menu__wrapper">
+                    <div class="simple-menu__list-row">
+                        {{ simple_list_dropdown }}
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </li>  
+    {% endif %}
+{% endif %}
