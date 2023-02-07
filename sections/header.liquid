@@ -76,26 +76,28 @@
           <div class="header__menu__navigation-container">
             {% if menu.links.size > 0 %}
               <ul class="header__menu-list header__menu-list--mobile">
+              
                 {% for link in menu.links %}
-                  {% capture mega_menu_snippet %}
-                    {% for block in blocks %}
-                      {% case block.type %}
-                        {% when 'simple_linklist' %}
+                 {% liquid
+                  capture mega_menu_snippet 
+                    for block in blocks 
+                      case block.type 
+                        when 'simple_linklist'
 
-                        {% render 'mega-menu-simle-nav', block: block, link: link %}
+                        render 'mega-menu-simle-nav', block: block, link: link
 
-                        {% when 'mega_menu_three' %}
+                        when 'mega_menu_three'
 
-                        {% render 'mega-menu-three-nav', block: block, link: link %}
+                        render 'mega-menu-three-nav', block: block, link: link
 
-                        {% when 'mega_menu_four' %}
+                        when 'mega_menu_four'
 
-                        {% render 'mage-menu-four-nav', block: block, link: link %}
+                        render 'mage-menu-four-nav', block: block, link: link
 
-                      {% endcase %}
-                    {% endfor %}
-                  {% endcapture %}
-
+                      endcase
+                    endfor
+                  endcapture
+                  %}
                   {% if mega_menu_snippet != blank %}
                     {{ mega_menu_snippet }}
                   {% else %}
@@ -106,6 +108,7 @@
                     </li>
                   {% endif %}
                 {% endfor %}
+              
               </ul>
             {% endif %}
           </div>

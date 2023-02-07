@@ -39,7 +39,7 @@
                         {% render 'icon-caret' %}
                         {{ column_title | escape }}
                         </button>
-                        <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'sections.header.menu' | t }}">
+                        <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'accessibility.menu_close' | t }}">
                         {% render 'icon-close' %}
                         </a>
                     </div>
@@ -104,7 +104,7 @@
                     {% render 'icon-caret' %}
                     {{ link.title | escape }}
                 </button>
-                <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'sections.header.menu' | t }}">
+                <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'accessibility.menu_close' | t }}">
                     {% render 'icon-close' %}
                 </a>
                 </div>
@@ -120,14 +120,7 @@
                         {% if title_link.size > 0 %}
                         <a href="{{ title_link }}">
                         {% endif %}
-                        <img srcset="{{ image | img_url: '580x' }} 1x, {{ image | img_url: '1160x' }} 2x"
-                        src="{{ image | img_url: '580x' }}"
-                        loading="lazy"
-                        class="mega-menu__image"
-                        width="{{ image.width }}"
-                        height="{{ image.height }}"
-                        alt="{{ image.alt }}"
-                        >
+                            {% render 'image', image_box: image, image_box_class: 'mega-menu__image' %}
                         {% if title_link.size > 0 %}
                         </a>
                         {% endif %}

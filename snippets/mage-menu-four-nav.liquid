@@ -45,14 +45,7 @@
                     {% if column_url.size > 0 %}
                     <a href="{{ column_url }}">
                     {% endif %}
-                    <img srcset="{{ column_image | img_url: '580x' }} 1x, {{ column_image | img_url: '1160x' }} 2x"
-                    src="{{ column_image | img_url: '580x' }}"
-                    loading="lazy"
-                    class="mega-menu__image media__image"
-                    width="{{ column_image.width }}"
-                    height="{{ column_image.height }}"
-                    alt="{{ column_image.alt }}"
-                    >
+                      {% render 'image', image_box: column_image, image_box_class: 'mega-menu__image' %}
                     {% if column_url.size > 0 %}
                     </a>
                     {% endif %}
@@ -64,7 +57,7 @@
                     {% render 'icon-caret' %}
                     {{ column_title | escape }}
                     </button>
-                    <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'sections.header.menu' | t }}">
+                    <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'accessibility.menu_close' | t }}">
                     {% render 'icon-close' %}
                     </a>
                 </div>
@@ -119,14 +112,7 @@
             {% if column_link.size > 0 %}
               <a href="{{ column_url }}">
             {% endif %}
-              <img srcset="{{ column_image | img_url: '580x' }} 1x, {{ column_image | img_url: '1160x' }} 2x"
-                src="{{ column_image | img_url: '580x' }}"
-                loading="lazy"
-                class="mega-menu__column-media--image media__image"
-                width="{{ column_image.width }}"
-                height="{{ column_image.height }}"
-                alt="{{ column_image.alt }}"
-              >
+                {% render 'image', image_box: column_image, image_box_class: 'mega-menu__column-media--image' %}
               {% if column_title.size > 0 %}
                 <span class="mega-menu__column-media--text">{{ column_title }}</span>
               {% endif %}
@@ -182,7 +168,7 @@
                             {% render 'icon-caret' %}
                             {{ link.title | escape }}
                         </button>
-                        <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'sections.header.menu' | t }}">
+                        <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'accessibility.menu_close' | t }}">
                             {% render 'icon-close' %}
                         </a>
                     </div>
