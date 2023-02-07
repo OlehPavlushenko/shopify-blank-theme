@@ -13,5 +13,35 @@
         "instagram": "Instagram"
       }
     }
+  },
+  "accessibility": {
+    "skip_to_text": "Skip to content",
+    "refresh_page": "Choosing a selection results in a full page refresh.",
+    "vendor": "Vendor:",
+    "unit_price_separator": "per",
+    "link_messages": {
+      "new_window": "Opens in a new window.",
+      "external": "Opens external website."
+    }
+  },
+  "sections": {
+    "footer": {
+      "view_all": "View all",
+      "scroll_up": "Scroll up",
+      "divider": "Divider",
+      "price": {
+        "regular_price": "Regular price",
+        "sale_price": "Sale price",
+        "unit_price": "Unit price"
+      }
+    },
+    "newsletter": {
+      "placeholder": "Enter your email",
+      "label": "Your email",
+      "button": "Subscribe",
+      "success": "Thanks for subscribing"
+      
+    }
   }
+
 }
