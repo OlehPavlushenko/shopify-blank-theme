@@ -1,0 +1,36 @@
+
+@media screen and (max-width: 990px) {
+    .overflow-hidden {
+        overflow: hidden;
+    }
+
+    .header__logo-wrapper {
+        text-align: left;
+        margin-left: 3rem;
+    }
+    
+    .header__menu--right,
+    .header__icon-open {
+        display: block;
+        height: 2rem;
+    }
+
+    .header__menu--right {
+
+    }
+
+    .icon-close , .icon-hamburger {
+        width: 2rem;
+        height: 2rem;
+        margin: auto;
+    }
+  
+    .header__icon-open a {
+        display: inline-block;
+    }
+
+    .header__menu--mobile,
+    .header__menu-item-text {
+        display: none;
+    }
+}
