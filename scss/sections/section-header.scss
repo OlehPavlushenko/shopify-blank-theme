@@ -1,8 +1,13 @@
+.sticky-header-false {
+    position: relative!important;
+}
+
 .header-wrapper {
     z-index: 10;
     width: 100%;
     display: block;
     background-color: var(--header-background-color);
+    top: 0;
 }
 
 .header-wrapper.show {

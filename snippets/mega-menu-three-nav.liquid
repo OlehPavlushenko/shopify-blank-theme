@@ -1,14 +1,14 @@
-{%- liquid
+{% liquid
     assign menu_item_title = block.settings.title | handleize
     assign current_link_title = link.title | handleize
     assign title_link = block.settings.title_link
-  -%}
-  
-  {% if menu_item_title == current_link_title %}
-    {%- capture mega_menu_dropdown -%}
-      {%- for i in (i..2) -%}
+%}
 
-        {%- liquid
+{% if menu_item_title == current_link_title %}
+    {% capture mega_menu_dropdown %}
+      {% for i in (i..2) %}
+
+        {% liquid
           assign current_column_title = 'column_menu_title_' | append: forloop.index
           assign current_column_menu = 'column_menu_' | append: forloop.index
           assign current_column_url = 'column_link_' | append: forloop.index
@@ -16,37 +16,37 @@
           assign column_title = block.settings[current_column_title]
           assign column_menu = block.settings[current_column_menu]
           assign column_url = block.settings[current_column_url]
-        -%}
+        %}
 
         {% if column_menu.links.size > 0 %}
-            <div class="mega-menu__list-column js-mega-submenu-wrapper">
-                <div class="mega-menu__item-submenu--links" open>
+            <div class='mega-menu__list-column js-mega-submenu-wrapper'>
+                <div class='mega-menu__item-submenu--links' open>
                     {% if column_title != blank %}
-                        <div class="h4 utility mega-menu__list-column-title focus-inset">
+                        <div class='h4 utility mega-menu__list-column-title focus-inset'>
                             {% if column_url.size > 0 %}
-                                <a class="js-mega-menu-title" href="{{ column_url }}">{{ column_title }}</a>
+                                <a class='js-mega-menu-title' href='{{ column_url }}'>{{ column_title }}</a>
                             {% else %}
                                 {{ column_title | escape }}
                             {% endif %}
-                            <button class="mega-menu__next-button js-mega-submenu-next-button" aria-expanded="true">
+                            <button class='mega-menu__next-button js-mega-submenu-next-button' aria-expanded='true'>
                                 {% render 'icon-arrow' %}
                             </button>
                         </div>
                     {% endif %}
-                    <div class="mega-menu__submenu js-mega-submenu" tabindex="-1">
-                    <div class="mega-menu__back">
-                        <button class="mega-menu__back-button js-submenu-back" aria-expanded="true">
+                    <div class='mega-menu__submenu js-mega-submenu' tabindex='-1'>
+                    <div class='mega-menu__back'>
+                        <button class='mega-menu__back-button js-submenu-back' aria-expanded='true'>
                         {% render 'icon-caret' %}
                         {{ column_title | escape }}
                         </button>
-                        <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'accessibility.menu_close' | t }}">
+                        <a class='mega-menu__back-close js-menu-toggle' href='#MobileMenuClose' aria-label='{{ 'accessibility.menu_close' | t }}'>
                         {% render 'icon-close' %}
                         </a>
                     </div>
-                    <ul class="mega-menu__list" tabindex="-1">
+                    <ul class='mega-menu__list' tabindex='-1'>
                         {% for mega_menu_link in column_menu.links %}
                         
-                        {%- liquid
+                        {% liquid
                             if mega_menu_link.title contains ';'
                             assign badge = mega_menu_link.title | split: ',' | split: ';'
                             assign title = badge[0] | split: '["'
@@ -57,13 +57,13 @@
                             assign badge_name = ''
                             assign badge_color = ''
                             endif
-                        -%}
+                        %}
                         
-                        <li class="mega-menu__list-item">
-                            <a class="mega-menu__list-item-link" href="{{ mega_menu_link.url }}">
+                        <li class='mega-menu__list-item'>
+                            <a class='mega-menu__list-item-link' href='{{ mega_menu_link.url }}'>
                             {{- title -}}
                             {% if badge_name %}
-                            <span style="background:{{ badge_color }};" class="mega-menu__list-badge">{{ badge_name }}</span>
+                            <span style='background:{{ badge_color }};' class='mega-menu__list-badge'>{{ badge_name }}</span>
                             {% endif %}
                             </a>
                         </li>
@@ -73,63 +73,67 @@
                 </div>
             </div>
         {% endif %}
-      {%- endfor -%}
-    {%- endcapture -%}
+      {% endfor %}
+    {% endcapture %}
 
     {% if mega_menu_dropdown != blank %}
-      {%- liquid
-        assign mega_menu_background_color = block.settings.background_color
-        assign image = block.settings.image
-      -%}
-      {%- capture mega_menu_styles -%}
+        {% liquid
+            assign mega_menu_background_color = block.settings.background_color
+            assign image = block.settings.image
+        %}
+        {% capture mega_menu_styles %}
         --mega-menu-background-color: {{ mega_menu_background_color }};
-      {%- endcapture -%}
+      {% endcapture %}
 
-      {%- assign mega_menu_styles = mega_menu_styles | strip_newlines -%}
-      <li class="header__menu-item header__menu-item--mobile header__menu-item--{{ block.type }} js-mega-menu-wrapper has-sub-menu">
-        <div class="header__menu-item-details" open>
-            <div class="header__menu-item-summary focus-inset">
-                <a class="header__menu-item-link header__menu-item-link--mobile" href="{{ link.url }}">
-                {{ link.title }}
-                {% render 'icon-caret' %}
-                </a>
-                <button class="mega-menu__next-button js-mega-parent-next-button" aria-expanded="true">
-                {% render 'icon-arrow' %}
-                </button>
-            </div>
-            <div style="{{ mega_menu_styles }}" class="mega-menu js-mega-menu" tabindex="-1">
-            <div class="mega-menu__wrapper page-width">
-                <div class="mega-menu__back">
-                <button class="mega-menu__back-button js-menu-back" aria-expanded="true">
-                    {% render 'icon-caret' %}
-                    {{ link.title | escape }}
-                </button>
-                <a class="mega-menu__back-close js-menu-toggle" href="#MobileMenuClose" aria-label="{{ 'accessibility.menu_close' | t }}">
-                    {% render 'icon-close' %}
-                </a>
+        {% assign mega_menu_styles = mega_menu_styles | strip_newlines %}
+        <li class='header__menu-item header__menu-item--mobile header__menu-item--{{ block.type }} js-mega-menu-wrapper has-sub-menu'>
+            <div class='header__menu-item-details' open>
+                <div class='header__menu-item-summary focus-inset'>
+                    <a class='header__menu-item-link header__menu-item-link--mobile' href='{{ link.url }}'>
+                        {{ link.title }}
+                        {% render 'icon-caret' %}
+                    </a>
+                    <button class='mega-menu__next-button js-mega-parent-next-button' aria-expanded='true'>
+                        {% render 'icon-arrow' %}
+                    </button>
                 </div>
-                <div class="mega-menu__row">
-                <div class="mega-menu__column-menu">
-                    <div class="mega-menu__list-row js-mega-submenu-row">
-                    {{ mega_menu_dropdown }}
+                <div style='{{ mega_menu_styles }}' class='mega-menu js-mega-menu' tabindex='-1'>
+                    <div class='mega-menu__wrapper page-width'>
+                        <div class='mega-menu__back'>
+                            <button class='mega-menu__back-button js-menu-back' aria-expanded='true'>
+                                {% render 'icon-caret' %}
+                                {{ link.title | escape }}
+                            </button>
+                            <a
+                                class='mega-menu__back-close js-menu-toggle'
+                                href='#MobileMenuClose'
+                                aria-label='{{ 'accessibility.menu_close' | t }}'
+                            >
+                                {% render 'icon-close' %}
+                            </a>
+                        </div>
+                        <div class='mega-menu__row'>
+                            <div class='mega-menu__column-menu'>
+                                <div class='mega-menu__list-row js-mega-submenu-row'>
+                                    {{ mega_menu_dropdown }}
+                                </div>
+                            </div>
+
+                            <div class='mega-menu__column-image'>
+                                {% if image != blank %}
+                                    {% if title_link.size > 0 %}
+                                        <a href='{{ title_link }}'>
+                                            {% render 'image', image_box: image, image_box_class: 'mega-menu__image' %}
+                                        </a>
+                                    {% else %}
+                                        {% render 'image', image_box: image, image_box_class: 'mega-menu__image' %}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="mega-menu__column-image">
-                    {% if image != blank %}
-                        {% if title_link.size > 0 %}
-                        <a href="{{ title_link }}">
-                        {% endif %}
-                            {% render 'image', image_box: image, image_box_class: 'mega-menu__image' %}
-                        {% if title_link.size > 0 %}
-                        </a>
-                        {% endif %}
-                    {% endif %}
-                </div>
-                </div>
             </div>
-            </div>
-        </div>
-      </li>
+        </li>
     {% endif %}
-  {% endif %}
+{% endif %}

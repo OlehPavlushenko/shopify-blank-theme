@@ -1,17 +1,20 @@
-{%- if card_product and card_product != empty -%}
-    <div class="mega-menu-product-post__madia-wrapper">
-        <picture class="mega-menu-product-post__media  media media__size--{{ image_size }}">
-            {% render 'image', image_box: card_product.featured_media, image_box_class: 'mega-menu-product-post__image' %}
+{% if card_product and card_product != empty %}
+    <div class='mega-menu-product-post__madia-wrapper'>
+        <picture class='mega-menu-product-post__media  media media__size--{{ image_size }}'>
+            {% render 'image',
+                image_box: card_product.featured_media,
+                image_box_class: 'mega-menu-product-post__image'
+            %}
         </picture>
     </div>
-    <div class="mega-menu-product-post__content">
-        <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
-        <span class="mega-menu-product-post__vendor">{{ card_product.vendor }}</span>
-        <h4 class="mega-menu-product-post__title">
-            <a href="{{ card_product.url }}">
+    <div class='mega-menu-product-post__content'>
+        <span class='visually-hidden'>{{ 'accessibility.vendor' | t }}</span>
+        <span class='mega-menu-product-post__vendor'>{{ card_product.vendor }}</span>
+        <h4 class='mega-menu-product-post__title'>
+            <a href='{{ card_product.url }}'>
                 {{ card_product.title | truncate: 30 | escape }}
             </a>
         </h4>
         {% render 'mega-menu-price', product: card_product, price_class: '' %}
     </div>
-{%- endif -%}
+{% endif %}

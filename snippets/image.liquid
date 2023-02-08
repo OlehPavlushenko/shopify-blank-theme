@@ -1,17 +1,19 @@
 <img
-    srcset="{%- if image_box.width >= 165 -%}{{ image_box | image_url: width: 165 }} 165w,{%- endif -%}
-        {%- if image_box.width >= 330 -%}{{ image_box | image_url: width: 330 }} 330w,{%- endif -%}
-        {%- if image_box.width >= 535 -%}{{ image_box | image_url: width: 535 }} 535w,{%- endif -%}
-        {%- if image_box.width >= 750 -%}{{ image_box | image_url: width: 750 }} 750w,{%- endif -%}
-        {%- if image_box.width >= 1000 -%}{{ image_box | image_url: width: 1000 }} 1000w,{%- endif -%}
-        {%- if image_box.width >= 1500 -%}{{ image_box | image_url: width: 1500 }} 1500w,{%- endif -%}
-        {%- if image_box.width >= 3000 -%}{{ image_box | image_url: width: 3000 }} 3000w,{%- endif -%}
-        {{ image_box | image_url }} {{ image_box.width }}w"
-    src="{{ image_box | image_url: width: 533 }}"
-    sizes="(min-width: 1440px) {{ '1440px' | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
-    alt="{{ image_box.src.alt | escape }}"
-    height="{{ image_box.height }}"
-    width="{{ image_box.width }}"
-    loading="lazy"
-    class="{{ image_box_class | default: 'image__box' }} media__image"
+    srcset='
+        {% if image_box.width >= 165 %}{{ image_box | image_url: width: 165 }} 165w,{% endif %}
+        {% if image_box.width >= 330 %}{{ image_box | image_url: width: 330 }} 330w,{% endif %}
+        {% if image_box.width >= 535 %}{{ image_box | image_url: width: 535 }} 535w,{% endif %}
+        {% if image_box.width >= 750 %}{{ image_box | image_url: width: 750 }} 750w,{% endif %}
+        {% if image_box.width >= 1000 %}{{ image_box | image_url: width: 1000 }} 1000w,{% endif %}
+        {% if image_box.width >= 1500 %}{{ image_box | image_url: width: 1500 }} 1500w,{% endif %}
+        {% if image_box.width >= 3000 %}{{ image_box | image_url: width: 3000 }} 3000w,{% endif %}
+        {{ image_box | image_url }} {{ image_box.width }}w
+    '
+    src='{{ image_box | image_url: width: 533 }}'
+    sizes='(min-width: 1440px) {{ '1440px' | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)'
+    alt='{{ image_box.src.alt | escape }}'
+    height='{{ image_box.height }}'
+    width='{{ image_box.width }}'
+    loading='lazy'
+    class='{{ image_box_class | default: 'image__box' }} media__image'
 >
