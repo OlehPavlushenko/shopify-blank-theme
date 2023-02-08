@@ -1,0 +1,284 @@
+{% comment %}
+    /sections/ajax-cart.liquid
+
+    Add a wrapper with a [data-ajax-cart-section] attribute
+    so that Liquid Ajax Cart knows that the section should be rerendered
+    after user's cart state is changed.
+{% endcomment %}
+
+{{ 'section-ajax-cart.css' | asset_url | stylesheet_tag }}
+
+<div class='cart-overlay' data-ajax-cart-toggle-class-button='js-ajax-cart-open | remove'>
+    <span class='visually-hidden'>CartDrawerClose</span>
+</div>
+<form action='{{ routes.cart_url }}' method='post' data-ajax-cart-section class='cart-drawer'>
+    <div>
+        <h2>Cart</h2>
+        <a
+            class='cart-drawer__icon-close'
+            href='#CartDrawerClose'
+            aria-label='CartDrawerClose'
+            data-ajax-cart-toggle-class-button='js-ajax-cart-open | remove'
+        >
+            {% render 'icon-close' %}
+        </a>
+    </div>
+    <div data-ajax-cart-section-scroll>
+        {% for item in cart.items %}
+            <div class='ajax-cart__line-item'>
+                <div class='ajax-cart-item__media'>
+                    {% if item.image %}
+                        {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
+                        <a href='{{ item.url }}' class='ajax-cart-item__link' aria-hidden='true' tabindex='-1'> </a>
+                        <div class='ajax-cart-item__image-container'>
+                            <img
+                                src='{{ item.image | image_url: width: 300 }}'
+                                class='ajax-cart-item__image'
+                                alt='{{ item.image.alt | escape }}'
+                                loading='lazy'
+                                width='150'
+                                height='{{ 150 | divided_by: item.image.aspect_ratio | ceil }}'
+                            >
+                        </div>
+                    {% endif %}
+                </div>
+                <div class='ajax-cart-item__details'>
+                    <p class='ajax-cart-caption'>{{ item.product.vendor }}</p>
+                    <a href='{{ item.url }}' class='ajax-cart-item__name h4 break'>{{ item.product.title | escape }}</a>
+                    {%- if item.original_price != item.final_price -%}
+                        <div class='ajax-cart-item__discounted-prices'>
+                            <span class='visually-hidden'>
+                                {{ 'products.product.price.regular_price' | t }}
+                            </span>
+                            <s class='ajax-cart-item__old-price product-option'>
+                                {{- item.original_price | money -}}
+                            </s>
+                            <span class='visually-hidden'>
+                                {{ 'products.product.price.sale_price' | t }}
+                            </span>
+                            <strong class='ajax-cart-item__final-price product-option'>
+                                {{ item.final_price | money }}
+                            </strong>
+                        </div>
+                    {%- else -%}
+                        <div class='product-option'>
+                            {{ item.original_price | money }}
+                        </div>
+                    {%- endif -%}
+                    {%- if item.product.has_only_default_variant == false
+                        or item.properties.size != 0
+                        or item.selling_plan_allocation != null
+                    -%}
+                        <dl>
+                            {%- if item.product.has_only_default_variant == false -%}
+                                {%- for option in item.options_with_values -%}
+                                    <div class='ajax-cart-product-option'>
+                                        <dt>{{ option.name }}:</dt>
+                                        <dd>{{ option.value }}</dd>
+                                    </div>
+                                {%- endfor -%}
+                            {%- endif -%}
+
+                            {%- for property in item.properties -%}
+                                {%- assign property_first_char = property.first | slice: 0 -%}
+                                {%- if property.last != blank and property_first_char != '_' -%}
+                                    <div class='ajax-cart-product-option'>
+                                        <dt>{{ property.first }}:</dt>
+                                        <dd>
+                                            {%- if property.last contains '/uploads/' -%}
+                                                <a href='{{ property.last }}' class='link' target='_blank'>
+                                                    {{ property.last | split: '/' | last }}
+                                                </a>
+                                            {%- else -%}
+                                                {{ property.last }}
+                                            {%- endif -%}
+                                        </dd>
+                                    </div>
+                                {%- endif -%}
+                            {%- endfor -%}
+                        </dl>
+
+                        <p class='ajax-cart-product-option'>{{ item.selling_plan_allocation.selling_plan.name }}</p>
+                    {%- endif -%}
+
+                    <ul
+                        class='ajax-cart-discounts list-unstyled'
+                        role='list'
+                        aria-label='{{ 'customer.order.discount' | t }}'
+                    >
+                        {%- for discount in item.discounts -%}
+                            <li class='discounts__discount'>
+                                {%- render 'icon-discount' -%}
+                                {{ discount.title }}
+                            </li>
+                        {%- endfor -%}
+                    </ul>
+                    <div class='ajax-cart-item__quantity'>
+                        <div class='ajax-cart-item__quantity-wrapper'>
+                            <label class='visually-hidden' for='Quantity-{{ item.index | plus: 1 }}'>
+                                {{ 'products.product.quantity.label' | t }}
+                            </label>
+                            <a
+                                href='{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}'
+                                class='ajax-cart__quantity-button'
+                                data-ajax-cart-request-button
+                            >
+                                {% render 'icon-minus' %}
+                            </a>
+                            <input
+                                class='ajax-cart-drawer__input cart-drawer__input--qty'
+                                type='number'
+                                value='{{ item.quantity }}'
+                                min='0'
+                                name='updates[]'
+                                data-ajax-cart-quantity-input='{{ forloop.index }}'
+                            >
+                            <a
+                                href='{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}'
+                                class='ajax-cart__quantity-button'
+                                data-ajax-cart-request-button
+                            >
+                                {% render 'icon-plus' %}
+                            </a>
+
+                            <div data-ajax-cart-messages='{{ item.key }}'></div>
+                        </div>
+                    </div>
+                    <div class='ajax-cart-total'>
+                        Total:
+                        {% if item.original_line_price != item.final_line_price %}
+                            <del>{{ item.original_line_price | money }}</del>
+                            {{ item.final_line_price | money }}
+                        {% else %}
+                            {{ item.original_line_price | money }}
+                        {% endif %}
+                    </div>
+                    <div class='ajax-cart-remove'>
+                        <a
+                            href='{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0'
+                            class='ajax-cart__remove-button'
+                            data-ajax-cart-request-button
+                        >
+                            <small>Remove</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div>
+        <div
+            class='ajax-cart__footer-toggler'
+            onclick="javascript:document.body.classList.toggle('cart-drawer-show-footer')"
+        >
+            Cart note
+        </div>
+        <div class='ajax-cart__footer-content'>
+            <label for='cart_note'>Cart note</label>
+            <textarea id='cart_note' name='note' data-ajax-cart-property-input>{{ cart.note }}</textarea>
+
+            <div>Cart attributes</div>
+            <div class='ajax-cart__property visually-hidden'>
+                <small>
+                    <span class='ajax-cart__property-label'> Package text: </span>
+                    <input
+                        type='text'
+                        name='attributes[Package text]'
+                        value='{{ cart.attributes['Package text'] }}'
+                        data-ajax-cart-property-input
+                        class='cart-drawer__input cart-drawer__input--property'
+                    >
+                </small>
+            </div>
+
+            <div class='ajax-cart__property'>
+                <small>
+                    <span class='ajax-cart__property-label'> Delivery day: </span>
+                    <select name='attributes[Delivery day]' data-ajax-cart-property-input>
+                        {% assign suggested_days = 'Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday'
+                            | split: '|'
+                        %}
+                        <option
+                            value=''
+                            {% unless suggested_days contains cart.attributes['Delivery day'] %}
+                                selected
+                            {% endunless %}
+                        >
+                            Any day
+                        </option>
+                        {% for day in suggested_days %}
+                            <option
+                                value='{{ day }}'
+                                {% if day == cart.attributes['Delivery day'] %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ day }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </small>
+            </div>
+
+            <div class='ajax-cart__property'>
+                <small>
+                    <span class='ajax-cart__property-label'> Delivery time: </span>
+                    {% assign suggested_time = 'Any time|Day time|Evening' | split: '|' %}
+                    {% for time in suggested_time %}
+                        <label>
+                            <input
+                                name='attributes[Delivery time]'
+                                type='radio'
+                                value='{{ time }}'
+                                data-ajax-cart-property-input
+                                {% if cart.attributes['Delivery time'] == time %}
+                                    checked
+                                {% endif %}
+                            >
+                            {{ time }}
+                        </label>
+                    {% endfor %}
+                </small>
+            </div>
+
+            <div class='ajax-cart__property'>
+                <small>
+                    <span class='ajax-cart__property-label'></span>
+                    <label>
+                        <input
+                            type='hidden'
+                            value=''
+                            name='attributes[Leave at the door]'
+                            data-ajax-cart-property-input
+                        >
+                        <input
+                            type='checkbox'
+                            name='attributes[Leave at the door]'
+                            value='Yes'
+                            data-ajax-cart-property-input
+                            {% if cart.attributes['Leave at the door'] == 'Yes' %}
+                                checked
+                            {% endif %}
+                        >
+                        Leave at the door
+                    </label>
+                </small>
+            </div>
+        </div>
+        <button type='submit' name='checkout' class='cart-drawer__checkout-btn'>
+            Checkout — {{ cart.total_price | money_with_currency }}
+        </button>
+    </div>
+</form>
+
+<script type='application/json' data-ajax-cart-initial-state>
+    {{ cart | json }}
+</script>
+<script type='module'>
+    import { subscribeToCartAjaxRequests, cartRequestAdd, cartRequestChange } from '{{ 'ajax-cart.js' | asset_url }}';
+</script>
+{% schema %}
+{
+    "name": "Cart Drawer"
+}
+{% endschema %}
