@@ -4,8 +4,6 @@ var t={d:(e,r)=>{for(var o in r)t.o(r,o)&&!t.o(e,o)&&Object.defineProperty(e,o,{
 if ( 'liquidAjaxCart' in window ) {
     liquidAjaxCart.subscribeToCartAjaxRequests(( requestState, subscribeToResult ) => {
         if ( requestState.requestType === 'add' ) {
-        //const checkbox = document.getElementById( 'addToCartPopupCheckbox' );
-        //if ( checkbox && checkbox.checked ) {
             subscribeToResult( requestState => {
             if ( requestState.responseData?.ok ) {
                 let productName = requestState.responseData.body.title;
@@ -15,7 +13,51 @@ if ( 'liquidAjaxCart' in window ) {
                 alert(`${ productName ? '«' + productName + '» is' : 'Products are' } successfully added`);
             }
             });
-        //}
         }
-    });
+    })
+
+    liquidAjaxCart.cartRequestUpdate()
+
+    liquidAjaxCart.subscribeToCartStateUpdate( ( state, isCartUpdated ) => {
+        const shippingTotal = document.querySelector('.js-cart-drawer-shipping').getAttribute('data-total')
+        if ( state.status.cartStateSet && !state.status.requestInProgress ) { 
+            let currentTotal = state.cart.total_price;
+            calculateProgress(currentTotal, shippingTotal)
+        }
+    })
+}
+
+function calculateProgress(currentVal, targetVal) {
+    let progressBar = document.querySelectorAll('.cart-drawer-shippingThreshold__progress')
+    let progressNum = document.querySelectorAll('.cart-drawer-shipping__num')
+    let progressOuter = document.querySelectorAll('.cart-drawer-shipping__numOuter')
+    let successMsg = document.querySelectorAll('.cart-drawer-shipping__success')
+    // calculate how far progress is from the total as a percentage
+    let result = Math.round(100 * currentVal / targetVal)
+    progressBar.forEach(function(el){
+      el.setAttribute('style', "width: ".concat(result, "%"))
+    })
+     // Update the progess text. If threshold is met, show success message
+    let newProgressNum = (targetVal - currentVal) / 100     
+    if(newProgressNum <= 0){
+      successMsg.forEach(function(el){
+        el.style.display = 'block'
+      });
+      progressOuter.forEach(function(el){
+        el.style.display = 'none'
+      });
+      progressNum.forEach(function(el){
+        el.textContent = Shopify.formatMoney(newProgressNum * 100)
+      });
+    } else {
+      successMsg.forEach(function(el){
+        el.style.display = 'none'
+      });
+      progressOuter.forEach(function(el){
+        el.style.display = 'block'
+      });
+      progressNum.forEach(function(el){
+        el.textContent = Shopify.formatMoney(newProgressNum * 100)
+      });
+    }
 }

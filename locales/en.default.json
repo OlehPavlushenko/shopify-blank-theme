@@ -147,6 +147,32 @@
         "unit_price": "Unit price"
       }
     },
+    "cart": {
+      "cart": "Cart",
+      "close": "Close",
+      "quantity": "Quantity",
+      "total": "Total:",
+      "remove": "Remove",
+      "comments": "Additional Comments",
+      "note": "Cart note:",
+      "attributes": "Cart attributes:",
+      "package": "Package text:",
+      "any_day": "Any day",
+      "delivery_day": "Delivery day:",
+      "delivery_time": "Delivery time:",
+      "leave": "Leave at the door",
+      "checkout": "Checkout",
+      "shipping": {
+        "success": "You're eligible for Free Shipping!",
+        "outer_first": "You're",
+        "outer_second": "away from free shipping!"
+      },
+      "price": {
+        "regular_price": "Regular price",
+        "sale_price": "Sale price",
+        "unit_price": "Unit price"
+      }
+    },
     "search": {
       "search": "Search",
       "placeholder": "Type here",
