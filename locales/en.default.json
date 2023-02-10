@@ -150,6 +150,7 @@
     "cart": {
       "cart": "Cart",
       "close": "Close",
+      "empty": "Your cart is currently empty!",
       "quantity": "Quantity",
       "total": "Total:",
       "remove": "Remove",

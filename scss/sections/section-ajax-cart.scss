@@ -68,6 +68,17 @@ body.js-ajax-cart-open {
 	}
 }
 
+.js-ajax-cart-empty .cart-drawer-shipping__wrapper,
+.js-ajax-cart-empty .cart-drawer__foter,
+.js-ajax-cart-empty .cart-drawer__items {
+	display: none;
+}
+
+.cart-drawer__empty {
+	margin: auto!important;
+	flex: inherit!important;
+}
+
 .cart-drawer__head {
 	color: var(--cart-drawer-title-color);
 }

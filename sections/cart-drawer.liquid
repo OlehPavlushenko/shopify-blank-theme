@@ -59,7 +59,10 @@
             {% render 'icon-close' %}
         </a>
     </div>
-    <div data-ajax-cart-section-scroll>
+    {% if cart.item_count == 0 %}
+        <div class='cart-drawer__empty'>{{ 'sections.cart.empty' | t }}</div>
+    {% endif %}
+    <div class='cart-drawer__items' data-ajax-cart-section-scroll>
         {% for item in cart.items %}
             <div class='ajax-cart__line-item'>
                 <div class='ajax-cart-item__media'>
@@ -211,7 +214,8 @@
             </div>
         {% endfor %}
     </div>
-    <div>
+
+    <div class='cart-drawer__foter'>
         <div
             class='cart-drawer__footer-toggler h3'
             onclick="javascript:document.body.classList.toggle('cart-drawer-show-footer')"
@@ -309,7 +313,9 @@
         </button>
     </div>
 </form>
+
 {% assign amount_format = '{{amount}}' %}
+
 <script type='text/javascript'>
     Shopify.money_format = '${{amount_format}}'
 </script>
