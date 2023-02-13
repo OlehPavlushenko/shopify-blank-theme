@@ -9,15 +9,14 @@ if ( 'liquidAjaxCart' in window ) {
         if ( requestState.requestType === 'add' ) {
           subscribeToResult( requestState => {
             if ( requestState.responseData?.ok ) {
-              let key = requestState.responseData.body.id;
-              let id = String(requestState.responseData.body.product_id);
+              let key = requestState.responseData.body.id
+              let id = String(requestState.responseData.body.product_id)
 
               if ( requestState.responseData.body.items?.length === 1 ) {
-                productName = requestState.responseData.body.items[0].title;
+                productName = requestState.responseData.body.items[0].title
               }
               recomendProducts[key] = id
-              setCookie('cart_recomend', recomendProducts);
-              console.log(recomendProducts)              
+              setCookie('cart_recommend', recomendProducts)
             }
           });
           
@@ -35,7 +34,7 @@ if ( 'liquidAjaxCart' in window ) {
                     delete recomendProducts[key]
                   }
                 }
-                deleteCookie('cart_recomend')
+                deleteCookie('cart_recommend')
               } else {
                 items.forEach(element => {
                   cartItems.push(element.id)
@@ -44,13 +43,12 @@ if ( 'liquidAjaxCart' in window ) {
                 for (const key in recomendProducts) {
                   if (Object.hasOwnProperty.call(recomendProducts, key)) {
                     if (!cartItems.includes(+key)) {
-                     delete recomendProducts[key];
+                     delete recomendProducts[key]
                     }
                   }
                 }
               }
-              setCookie('cart_recomend', recomendProducts);
-              console.log(recomendProducts)
+              setCookie('cart_recommend', recomendProducts)
             }
           });
         }
@@ -60,28 +58,78 @@ if ( 'liquidAjaxCart' in window ) {
     liquidAjaxCart.cartRequestUpdate()
 
     if (document.querySelector('.js-cart-drawer-shipping').isConnected) {
-      liquidAjaxCart.subscribeToCartStateUpdate( ( state ) => {
+      liquidAjaxCart.subscribeToCartStateUpdate( async ( state ) => {
         const shippingTotal = document.querySelector('.js-cart-drawer-shipping').getAttribute('data-total')
         if ( state.status.cartStateSet && !state.status.requestInProgress ) { 
           let currentTotal = state.cart.total_price;
           calculateProgress(currentTotal, shippingTotal)
           
-          let getCookieValue = getCookie('cart_recomend')
+          let getCookieValue = getCookie('cart_recommend')
           
           if (typeof getCookieValue === 'undefined') return
             if (Object.keys(getCookieValue).length !== 0 && getCookieValue.constructor === Object) {
-              
+              let cartIds = []
               for (const key in getCookieValue) {
                 if (Object.hasOwnProperty.call(getCookieValue, key)) {
-                  const element = getCookieValue[key];
-                  console.log(element)
+                  const id = getCookieValue[key];
+                  cartIds.push(id)
                 }
               }
+
+              let handles =  getRecommendProducts(cartIds)
+              
+              handles.then((result) => {
+                let strhandles = result.join('=')
+                console.log(strhandles)
+                sentRecommendIds(strhandles)
+              })
+             
             }
         }
       })
     }
 }
+
+async function getRecommendProducts(ids) {
+  let productsItems = []
+  
+  const promise = new Promise(function(resolve) {
+    ids.forEach(id => {
+      fetch(window.Shopify.routes.root + "recommendations/products.json?product_id="+id+"&limit=4&intent=complementary")
+      .then(response => response.json())
+      .then(({ products }) => {
+        if (products.length > 0) {
+          for (const key in products) {
+            if (Object.hasOwnProperty.call(products, key)) {
+              let element = products[key]
+              let handle = String(element.handle)
+              if (productsItems.length === 0) {
+                productsItems.push(handle)
+              } else {
+                if (!productsItems.includes(handle)) {
+                  productsItems.push(handle)
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+    setTimeout(() => resolve(productsItems), 1000)
+  })
+  let result = await promise
+  return result
+}
+
+function sentRecommendIds(ids) {
+  console.log(ids)
+  fetch(window.Shopify.routes.root + "collections/all?sections=cart-recommend&id="+ids)
+  .then(response => response.text())
+  .then((text) => {
+    console.log(text)
+  });
+}
+
 
 function setCookie(name, json) {
 

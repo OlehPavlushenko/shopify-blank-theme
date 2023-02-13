@@ -1,6 +1,6 @@
 {%- assign product = all_products[section.settings.featured_product] -%}
 {%- assign variant = product.selected_or_first_available_variant -%}
-
+{{ section.settings.featured_product }}
 {%- if product == empty -%}
     {%- assign section_onboarding = true -%}
     {%- assign vendor = 'home_page.onboarding.product_vendor' | t -%}
