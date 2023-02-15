@@ -213,10 +213,9 @@
                 </div>
             </div>
         {% endfor %}
-    </div>
-    <div id='cart-recommend' data-ajax-cart-static-element>
-        <h3>You may also like</h3>
-        <ul class='cart-recommend__list js-cart-recommend'></ul>
+        <div id='cart-recommend' data-ajax-cart-static-element data-size='{{ size }}'>
+            <span class='visually-hidden'>{{ 'sections.cart.recommend' | t }}</span>
+        </div>
     </div>
     <div class='cart-drawer__foter'>
         <div
@@ -325,9 +324,11 @@
 <script type='application/json' data-ajax-cart-initial-state>
     {{ cart | json }}
 </script>
+
 <script type='module'>
     import { subscribeToCartAjaxRequests, cartRequestAdd, cartRequestChange, cartRequestUpdate, subscribeToCartStateUpdate } from '{{ 'ajax-cart.js' | asset_url }}';
 </script>
+<script src='{{ 'cart-drawer.js' | asset_url }}' defer='defer'></script>
 
 {% schema %}
 {

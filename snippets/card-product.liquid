@@ -1,8 +1,17 @@
-<a
-    href='{{ card_product.url }}'
-    id='StandardCardNoMediaLink-{{ section_id }}-{{ card_product.id }}'
-    class='full-unstyled-link'
-    aria-labelledby='StandardCardNoMediaLink-{{ section_id }}-{{ card_product.id }} NoMediaStandardBadge-{{ section_id }}-{{ card_product.id }}'
->
-    <h3>{{ card_product.title | escape }}</h3>
-</a>
+{% if card_product and card_product != empty %}
+    <div class='card-product__madia-wrapper'>
+        <picture class='card-product__media media'>
+            {% render 'image', image_box: card_product.featured_media, image_box_class: 'card-product__image' %}
+        </picture>
+    </div>
+    <div class='card-product__content'>
+        <span class='visually-hidden'>{{ 'accessibility.vendor' | t }}</span>
+        <span class='card-product__vendor'>{{ card_product.vendor }}</span>
+        <h4 class='card-product__title'>
+            <a href='{{ card_product.url }}'>
+                {{ card_product.title | truncate: 30 | escape }}
+            </a>
+        </h4>
+        {% render 'price', product: card_product, price_class: 'card-product__price' %}
+    </div>
+{% endif %}

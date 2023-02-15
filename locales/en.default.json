@@ -149,6 +149,7 @@
     },
     "cart": {
       "cart": "Cart",
+      "recommend": "You may also like",
       "close": "Close",
       "empty": "Your cart is currently empty!",
       "quantity": "Quantity",
