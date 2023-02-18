@@ -29,6 +29,8 @@
 {% assign styles = styles | strip_newlines %}
 
 {{ 'section-ajax-cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-modal.css' | asset_url | stylesheet_tag }}
+{{ 'component-cart-notification.css' | asset_url | stylesheet_tag }}
 
 <div class='cart-overlay' data-ajax-cart-toggle-class-button='js-ajax-cart-open | remove'>
     <span class='visually-hidden'>{{ 'sections.cart.close' | t }}</span>

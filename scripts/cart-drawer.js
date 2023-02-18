@@ -1,56 +1,60 @@
+//{ subscribeToCartAjaxRequests, cartRequestAdd, cartRequestChange, cartRequestUpdate, subscribeToCartStateUpdate }
 if ( 'liquidAjaxCart' in window ) {
-    var recommendProducts = {}
-    
+    var recommendProducts = {},
+    recommendResults = false
+
+    liquidAjaxCart.configureCart('updateOnWindowFocus', false)    
     liquidAjaxCart.subscribeToCartAjaxRequests(( requestState, subscribeToResult ) => {
       
-        if ( requestState.requestType === 'add' ) {
-          subscribeToResult( requestState => {
-            if ( requestState.responseData?.ok ) {
-              let product_key = requestState.responseData.body.id
-              let product_id = String(requestState.responseData.body.product_id)
+      if ( requestState.requestType === 'add' ) {
+        buildNotification()
 
-              if ( requestState.responseData.body.items?.length === 1 ) {
-                productName = requestState.responseData.body.items[0].title
-              }
+        subscribeToResult( requestState => {
+          if ( requestState.responseData?.ok ) {
+            let product_key = requestState.responseData.body.id
+            let product_id = String(requestState.responseData.body.product_id)
 
-              recommendProducts[product_key] = product_id
-              setCookie('cart_recommend', recommendProducts)
-            }
-          });
-          
-        }
+            recommendProducts[product_key] = product_id
+
+            setCookie('cart_recommend', recommendProducts)
+
+            getNotification(requestState)
+            
+          }
+        });
         
-        if ( requestState.requestType === 'change' ) {
-          subscribeToResult( requestState => {
-            if ( requestState.responseData?.ok ) {
-              let items = requestState.responseData.body.items
-              let cartItems = []
+      }
+      
+      if ( requestState.requestType === 'change' ) {
+        subscribeToResult( requestState => {
+          if ( requestState.responseData?.ok ) {
+            let items = requestState.responseData.body.items
+            let cartItems = []
 
-              if (items.length === 0) {
-                for (const key in recommendProducts) {
-                  if (Object.hasOwnProperty.call(recommendProducts, key)) {
+            if (items.length === 0) {
+              for (const key in recommendProducts) {
+                if (Object.hasOwnProperty.call(recommendProducts, key)) {
+                  delete recommendProducts[key]
+                }
+              }
+              deleteCookie('cart_recommend')
+            } else {
+              items.forEach(element => {
+                cartItems.push(element.id)
+              });
+
+              for (const key in recommendProducts) {
+                if (Object.hasOwnProperty.call(recommendProducts, key)) {
+                  if (!cartItems.includes(+key)) {
                     delete recommendProducts[key]
                   }
                 }
-                deleteCookie('cart_recommend')
-              } else {
-                items.forEach(element => {
-                  cartItems.push(element.id)
-                });
-
-                for (const key in recommendProducts) {
-                  if (Object.hasOwnProperty.call(recommendProducts, key)) {
-                    if (!cartItems.includes(+key)) {
-                     delete recommendProducts[key]
-                    }
-                  }
-                }
               }
-              setCookie('cart_recommend', recommendProducts)
             }
-          });
-        }
-        
+            setCookie('cart_recommend', recommendProducts)
+          }
+        });
+      }
     })
     
     liquidAjaxCart.cartRequestUpdate()
@@ -76,12 +80,15 @@ if ( 'liquidAjaxCart' in window ) {
                 }
               }
 
-              let handles =  getRecommendProducts(cartIds)
+              //if (!recommendResults) {
+                let handles =  getRecommendProducts(cartIds)
               
-              handles.then((result) => {
-                let strHandles = result.join('=')
-                sentRecommendIds(strHandles)
-              })
+                handles.then((result) => {
+                  let strHandles = result.join('=')
+                  sentRecommendIds(strHandles)
+                })
+              //}
+              
             } else {
               refreshCookie(state)
             }
@@ -93,10 +100,66 @@ if ( 'liquidAjaxCart' in window ) {
     }
 }
 
-async function getRecommendProducts(ids) {
+function buildNotification() {
+  fetch(window.Shopify.routes.root + "?section_id=cart-notification")
+  .then(response => response.text())
+  .then((text) => {
+    let html = document.createElement('div')
+    html.innerHTML = text;
+    let cartNotification = html.querySelector('.js-cart-notification')
+    document.body.appendChild(cartNotification);
+    let modal = document.querySelector('.js-cart-notification')
+    modal.classList.add('open')
+    document.body.classList.add('overflow-hidden')
+  })
+}
+
+function getNotification(state) {
+  let imageSize = document.querySelector('#cart-recommend').getAttribute('data-size')
+  let modal = document.querySelector('.js-cart-notification')
+  trapFocus(modal)
+
+  modal.querySelector('.js-cart-notification-title').textContent = state.responseData.body.product_title
+  modal.querySelector('.js-cart-notification-image').parentElement.classList.add('media__size--'+imageSize)
+  modal.querySelector('.js-cart-notification-image').src = state.responseData.body.image
+  modal.querySelector('.js-cart-notification-image').alt = state.responseData.body.product_title
+
+  modal.classList.add('open')
+  document.body.classList.add('overflow-hidden')
+
+  let close = document.querySelectorAll('.js-modal-close')
+
+  close.forEach(element => {
+    element.addEventListener('click', (event) => {
+      event.preventDefault()
+      closeNotification(modal)
+    })
+  })
+  
+  modal.addEventListener('click', (event) => {
+    if (event.target == modal) {
+      closeNotification(modal)
+    }
+  })
+
+  modal.addEventListener('keyup', (event) => {
+    if (event.code.toUpperCase() === 'ESCAPE') {
+      closeNotification(modal)
+    }
+  })  
+}
+
+function closeNotification(modal) {
+  modal.classList.remove('open')
+  document.body.classList.remove('overflow-hidden')
+  modal.remove()
+  removeTrapFocus(modal)
+}
+
+function getRecommendProducts(ids) {
   let productsItems = []
   
-  const promise = new Promise(function(resolve) {
+  const promise = new Promise(async function(resolve) {
     ids.forEach(id => {
       fetch(window.Shopify.routes.root + "recommendations/products.json?product_id="+id+"&limit=4&intent=complementary")
       .then(response => response.json())
@@ -118,13 +181,14 @@ async function getRecommendProducts(ids) {
         }
       });
     });
-    setTimeout(() => resolve(productsItems), 1000)
+    setTimeout( () => resolve(productsItems), 1000)
   })
-  let result = await promise
-  return result
+  let result =  promise
+  return result  
 }
 
 function sentRecommendIds(ids) {
+  //console.log(ids)
   const cartRecommendREsults = document.querySelector('#cart-recommend')
   const imageSize = document.querySelector('#cart-recommend').getAttribute('data-size')
 
@@ -137,6 +201,7 @@ function sentRecommendIds(ids) {
     const cartRecommend = html.querySelector('.js-cart-recommend-block')
     
     if (cartRecommend && cartRecommend.innerHTML.trim().length) {
+      recommendResults = true
       cartRecommendREsults.innerHTML = cartRecommend.innerHTML
 
       let cartRecommendREsultsItem = cartRecommendREsults.querySelectorAll('.js-cart-recommend-item')
@@ -153,7 +218,7 @@ function refreshCookie(state) {
     state.cart.items.forEach(element => {
       let product_key = element.id
       let product_id = String(element.product_id)
-
+      //console.log(element)
       recommendProducts[product_key] = product_id
       setCookie('cart_recommend', recommendProducts)
     });
