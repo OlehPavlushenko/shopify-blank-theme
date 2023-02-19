@@ -25,30 +25,9 @@
 
 {% assign styles = styles | strip_newlines %}
 
-<link
-    rel='stylesheet'
-    href='{{ 'section-header.css' | asset_url }}'
-    media='print'
-    onload="this.media='all'"
->
-
-<link
-    rel='stylesheet'
-    href='{{ 'component-mega-menu.css' | asset_url }}'
-    media='print'
-    onload="this.media='all'"
->
-
-<link
-    rel='stylesheet'
-    href='{{ 'component-mobile-menu.css' | asset_url }}'
-    media='print'
-    onload="this.media='all'"
->
-
-<noscript>{{ 'section-header.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'component-mega-menu.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'component-mobile-menu.css' | asset_url | stylesheet_tag }}</noscript>
+{{ 'section-header.css' | asset_url | stylesheet_tag }}
+{{ 'component-mega-menu.css' | asset_url | stylesheet_tag }}
+{{ 'component-mobile-menu.css' | asset_url | stylesheet_tag }}
 
 <sticky-header id='shopify-section-header' class='header-wrapper{{ sticky_header }}' style='{{- styles -}}'>
     <header class='header js-header'>
