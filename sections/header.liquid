@@ -25,30 +25,9 @@
 
 {% assign styles = styles | strip_newlines %}
 
-<link
-    rel='stylesheet'
-    href='{{ 'section-header.css' | asset_url }}'
-    media='print'
-    onload="this.media='all'"
->
-
-<link
-    rel='stylesheet'
-    href='{{ 'component-mega-menu.css' | asset_url }}'
-    media='print'
-    onload="this.media='all'"
->
-
-<link
-    rel='stylesheet'
-    href='{{ 'component-mobile-menu.css' | asset_url }}'
-    media='print'
-    onload="this.media='all'"
->
-
-<noscript>{{ 'section-header.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'component-mega-menu.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'component-mobile-menu.css' | asset_url | stylesheet_tag }}</noscript>
+{{ 'section-header.css' | asset_url | stylesheet_tag }}
+{{ 'component-mega-menu.css' | asset_url | stylesheet_tag }}
+{{ 'component-mobile-menu.css' | asset_url | stylesheet_tag }}
 
 <sticky-header id='shopify-section-header' class='header-wrapper{{ sticky_header }}' style='{{- styles -}}'>
     <header class='header js-header'>
@@ -183,9 +162,18 @@
                         </li>
                     {% endif %}
                     <li class='header__menu-item'>
-                        <a href='#' class='header__menu-item-link'>
+                        <a
+                            href='{{ routes.cart_url }}'
+                            class='header__menu-item-link cart-page-link mobile-cart-page-link'
+                            data-ajax-cart-toggle-class-button='js-ajax-cart-open'
+                        >
                             <i class='fa fa-shopping-basket' aria-hidden='true'></i>
-                            <span class='header__menu-item-text'>Cart</span>
+                            <span class='cart-count{% if cart.item_count == 0 %} hidden-count{% endif %}'>
+                                <span data-ajax-cart-bind-state='cart.item_count'>{{ cart.item_count }}</span> |
+                                <span data-ajax-cart-bind-state='cart.total_price | money_with_currency'>
+                                    {{- cart.total_price | money_with_currency -}}
+                                </span>
+                            </span>
                         </a>
                     </li>
                 </ul>

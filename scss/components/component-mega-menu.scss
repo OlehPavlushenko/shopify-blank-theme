@@ -283,7 +283,7 @@
 .mega-menu-product-post__vendor {
     display: block;
     color: var(--footer-text-color);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     margin-bottom: 0.5rem;
 }
 
@@ -326,6 +326,6 @@
     opacity: 0.7;
 }
 
-.mega-menu-product-post_price.price--on-sale .price__sale .price-item--sale .money {
+.mega-menu-product-post_price.price--on-sale .price__sale .price-item--sale {
     color: var(--color-danger);
 }

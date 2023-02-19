@@ -98,16 +98,7 @@
             media='print'
             onload="this.media='all'"
         >
-
-        <link
-            rel='stylesheet'
-            href='{{ 'font-awesome.min.css' | asset_url }}'
-            media='print'
-            onload="this.media='all'"
-        >
-
         <noscript>{{ 'base.css' | asset_url | stylesheet_tag }}</noscript>
-        <noscript>{{ 'font-awesome.min.css' | asset_url | stylesheet_tag }}</noscript>
 
         {% unless settings.type_body_font.system? %}
             <link rel='preload' as='font' href='{{ settings.type_body_font | font_url }}' type='font/woff2' crossorigin>
@@ -140,9 +131,12 @@
 
         {% section 'footer' %}
 
+        {% section 'cart-drawer' %}
+
         <ul hidden>
             <li id='a11y-refresh-page-message'>{{ 'accessibility.refresh_page' | t }}</li>
         </ul>
+        {{ 'font-awesome.min.css' | asset_url | stylesheet_tag }}
 
         <script src='{{ 'helper-functions.js' | asset_url }}' defer='defer'></script>
         <script src='{{ 'global.js' | asset_url }}' defer='defer'></script>
