@@ -14,9 +14,9 @@
 ---
 
 development:
-  password: shptka_71751999cf076ff314fa8d4182fe981d
-  theme_id: 129857585317
-  store: modulusstore.myshopify.com
+  password: 
+  theme_id: 
+  store: website.myshopify.com
   ignore_files:
     - settings_data.json # Uncomment this line to avoid resetting theme settings
 
