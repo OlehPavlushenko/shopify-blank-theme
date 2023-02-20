@@ -1,0 +1,22 @@
+{% liquid
+    assign title = block.settings.title
+    assign text = block.settings.text
+    assign link = block.settings.link
+%}
+
+<div class='featured-multi-column-card featured-multi-column_type--{{ block.type }}' {{ block.shopify_attributes }}>
+    <div class='featured-multi-column-card__info'>
+        {% if title != blank %}
+            <h3 class='featured-multi-column__title h6'>
+                {% if link != blank %}
+                    <a href='{{ link }}'>{{ title | escape }}</a>
+                {% else %}
+                    {{ title | escape }}
+                {% endif %}
+            </h3>
+        {% endif %}
+        {% if text != blank %}
+            <div class='featured-multi-column__text rte utility'>{{ text }}</div>
+        {% endif %}
+    </div>
+</div>

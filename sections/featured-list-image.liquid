@@ -1,0 +1,492 @@
+{% liquid
+    assign image = section.settings.image
+    assign title = section.settings.title
+    assign limited_list_mobile = section.settings.limited_list
+
+    assign caption_color = section.settings.caption_color | default: 'inherit'
+    assign text_color = section.settings.text_color | default: 'inherit'
+    assign background_color = section.settings.bg_color | default: 'transparent'
+
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+%}
+
+{% capture styles %}
+  --caption-color-list-image: {{- caption_color -}};
+  --text-color-list-image: {{- text_color -}};
+  --background-color-list-image: {{- background_color -}};
+  --pad-top-list-image: {{ pad_top }}px;
+  --pad-bot-list-image: {{ pad_bot }}px;
+
+{% endcapture %}
+
+{% assign styles = styles | strip_newlines %}
+
+{%- capture image_desktop -%}
+  {%- if image.width >= 375 -%}{{ image | image_url: width: 375 }} 375w,{%- endif -%}
+  {%- if image.width >= 550 -%}{{ image | image_url: width: 550 }} 550w,{%- endif -%}
+  {%- if image.width >= 750 -%}{{ image | image_url: width: 750 }} 750w,{%- endif -%}
+  {%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w,{%- endif -%}
+  {%- if image.width >= 1500 -%}{{ image | image_url: width: 1500 }} 1500w,{%- endif -%}
+  {%- if image.width >= 1780 -%}{{ image | image_url: width: 1780 }} 1780w,{%- endif -%}
+  {%- if image.width >= 2000 -%}{{ image | image_url: width: 2000 }} 2000w,{%- endif -%}
+  {%- if image.width >= 2800 -%}{{ image | image_url: width: 2800 }} 2800w{%- endif -%}
+{%- endcapture -%}
+
+<link
+    rel='stylesheet'
+    href='{{ 'section-featured-list-image.css' | asset_url }}'
+    media='print'
+    onload="this.media='all'"
+>
+<noscript>{{ 'section-featured-list-image.css' | asset_url | stylesheet_tag }}</noscript>
+
+<div class='list-image' style='{{- styles -}}'>
+    <div class='list-image__page-width page-width'>
+        <div class='list-image__box' tabindex='-1'>
+            {% if image != blank %}
+                <picture class='list-image__media-placeholder'>
+                    <img
+                        srcset='{{- image_desktop -}}'
+                        src='{{ image | image_url: width: 790 }}'
+                        class='list-image__media--image-placeholder'
+                        sizes='100vw'
+                        width='{{ image.width }}'
+                        height='{{ image.width | divided_by: image.aspect_ratio }}'
+                        alt='{{ title | escape }}'
+                        loading='lazy'
+                    >
+                </picture>
+            {% endif %}
+            {% if title != blank %}
+                <h2 class='list-image__heading h3'>
+                    {{ title | escape }}
+                </h2>
+            {% endif %}
+            {% if section.blocks.size > 0 %}
+                <div class='list-image__row'>
+                    {% for block in section.blocks %}
+                        {% liquid
+                            assign image_block = block.settings.image
+                            assign image_position_mobile = block.settings.image_position
+                            assign title = block.settings.title
+                            assign text = block.settings.text
+                            assign link = block.settings.link
+                            assign limited_caption = block.settings.limited_caption
+                        %}
+
+                        {% capture image_block %}
+                            {%- if image_block.width >= 375 -%}{{ image_block | image_url: width: 375 }} 375w,{%- endif -%}
+                            {%- if image_block.width >= 550 -%}{{ image_block | image_url: width: 550 }} 550w,{%- endif -%}
+                            {%- if image_block.width >= 750 -%}{{ image_block | image_url: width: 750 }} 750w,{%- endif -%}
+                            {%- if image_block.width >= 1100 -%}{{ image_block | image_url: width: 1100 }} 1100w,{%- endif -%}
+                            {%- if image_block.width >= 1500 -%}{{ image_block | image_url: width: 1500 }} 1500w,{%- endif -%}
+                            {%- if image_block.width >= 1780 -%}{{ image_block | image_url: width: 1780 }} 1780w,{%- endif -%}
+                            {%- if image_block.width >= 2000 -%}{{ image_block | image_url: width: 2000 }} 2000w,{%- endif -%}
+                            {%- if image_block.width >= 2800 -%}{{ image_block | image_url: width: 2800 }} 2800w{%- endif -%}
+                        {% endcapture %}
+
+                        {% case block.type %}
+                            {%- when 'collection' -%}
+                                {% assign collection_list = block.settings.collection_list %}
+                                {% for collection in collection_list.products limit: 1 %}
+                                    {% assign collection_block = collection.featured_image %}
+                                    {%- capture collection_block -%}
+                                        {%- if collection_block.width >= 375 -%}{{ collection_block | image_url: width: 375 }} 375w,{%- endif -%}
+                                        {%- if collection_block.width >= 550 -%}{{ collection_block | image_url: width: 550 }} 550w,{%- endif -%}
+                                        {%- if collection_block.width >= 750 -%}{{ collection_block | image_url: width: 750 }} 750w,{%- endif -%}
+                                        {%- if collection_block.width >= 1100 -%}{{ collection_block | image_url: width: 1100 }} 1100w,{%- endif -%}
+                                        {%- if collection_block.width >= 1500 -%}{{ collection_block | image_url: width: 1500 }} 1500w,{%- endif -%}
+                                        {%- if collection_block.width >= 1780 -%}{{ collection_block | image_url: width: 1780 }} 1780w,{%- endif -%}
+                                        {%- if collection_block.width >= 2000 -%}{{ collection_block | image_url: width: 2000 }} 2000w,{%- endif -%}
+                                        {%- if collection_block.width >= 2800 -%}{{ collection_block | image_url: width: 2800 }} 2800w{%- endif -%}
+                                    {%- endcapture -%}
+                                    <div
+                                        class='list-image__content list-image__content--{{ image_position_mobile }} count-item--{{ forloop.index }} list-image__limited--{{ limited_list_mobile }}'
+                                        {{ block.shopify_attributes }}
+                                    >
+                                        <div class='list-image__list'>
+                                            <a
+                                                href='{{ collection.url }}'
+                                                class='list-image__link focus-inset'
+                                                tabindex='0'
+                                            >
+                                                <span class='visually-hidden'>
+                                                    {{ collection.title | escape }}
+                                                </span>
+                                            </a>
+                                            <div class='list-image__indent'>
+                                                <h3 class='list-image__title h5'>
+                                                    {{ collection.title | escape }}
+                                                </h3>
+                                                {% if collection.description != blank %}
+                                                    <div class='list-image__text'>
+                                                        {{
+                                                            collection.description
+                                                            | strip_html
+                                                            | strip_newlines
+                                                            | truncate: limited_caption
+                                                        }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class='list-image__image'>
+                                            {% if image_block == blank %}
+                                                <picture class='list-image__media'>
+                                                    <img
+                                                        srcset='{{- collection_block -}}'
+                                                        src='{{ collection_block | image_url: width: 790 }}'
+                                                        class='list-image__media--image'
+                                                        sizes='100vw'
+                                                        width='{{ collection.featured_image.width }}'
+                                                        height='{{ collection.featured_image.width | divided_by: collection.featured_image.aspect_ratio }}'
+                                                        alt='{{ collection.title | escape }}'
+                                                        loading='lazy'
+                                                    >
+                                                </picture>
+                                            {% else %}
+                                                <picture class='list-image__media'>
+                                                    <img
+                                                        srcset='{{- image_block -}}'
+                                                        src='{{ image_block | image_url: width: 790 }}'
+                                                        class='list-image__media--image'
+                                                        sizes='100vw'
+                                                        alt='{{ collection.title | escape }}'
+                                                        width='{{ block.settings.image.width }}'
+                                                        height='{{ block.settings.image.width | divided_by: block.settings.image.aspect_ratio }}'
+                                                        loading='lazy'
+                                                    >
+                                                </picture>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {%- when 'product' -%}
+                                {% liquid
+                                    assign product = block.settings.product_list
+                                    assign product_block = product.featured_media
+                                %}
+
+                                {%- capture product_block -%}
+                                    {%- if product_block.width >= 375 -%}{{ product_block | image_url: width: 375 }} 375w,{%- endif -%}
+                                    {%- if product_block.width >= 550 -%}{{ product_block | image_url: width: 550 }} 550w,{%- endif -%}
+                                    {%- if product_block.width >= 750 -%}{{ product_block | image_url: width: 750 }} 750w,{%- endif -%}
+                                    {%- if product_block.width >= 1100 -%}{{ product_block | image_url: width: 1100 }} 1100w,{%- endif -%}
+                                    {%- if product_block.width >= 1500 -%}{{ product_block | image_url: width: 1500 }} 1500w,{%- endif -%}
+                                    {%- if product_block.width >= 1780 -%}{{ product_block | image_url: width: 1780 }} 1780w,{%- endif -%}
+                                    {%- if product_block.width >= 2000 -%}{{ product_block | image_url: width: 2000 }} 2000w,{%- endif -%}
+                                    {%- if product_block.width >= 2800 -%}{{ product_block | image_url: width: 2800 }} 2800w{%- endif -%}
+                                {%- endcapture -%}
+                                <div
+                                    class='list-image__content list-image__content--{{ image_position_mobile }} count-item--{{ forloop.index }} list-image__limited--{{ limited_list_mobile }}'
+                                    {{ block.shopify_attributes }}
+                                >
+                                    <div class='list-image__list'>
+                                        <a
+                                            href='{{ product.url | within: collection }}'
+                                            class='list-image__link focus-inset'
+                                            tabindex='0'
+                                        >
+                                            <span class='visually-hidden'>
+                                                {{ product.title | escape }}
+                                            </span>
+                                        </a>
+                                        <div class='list-image__indent'>
+                                            <h3 class='list-image__title h5'>
+                                                {{ product.title | escape }}
+                                            </h3>
+                                            {% if product.description != blank %}
+                                                <div class='list-image__text'>
+                                                    {{
+                                                        product.description
+                                                        | strip_html
+                                                        | strip_newlines
+                                                        | truncate: limited_caption
+                                                    }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class='list-image__image'>
+                                        {% if image_block == blank %}
+                                            <picture class='list-image__media'>
+                                                <img
+                                                    srcset='{{- product_block -}}'
+                                                    src='{{ product_block | image_url: width: 790 }}'
+                                                    class='list-image__media--image'
+                                                    sizes='100vw'
+                                                    alt='{{ product.title | escape }}'
+                                                    width='{{ product.featured_media.width }}'
+                                                    height='{{ product.featured_media.width | divided_by: product.featured_media.aspect_ratio }}'
+                                                    loading='lazy'
+                                                >
+                                            </picture>
+                                        {% else %}
+                                            <picture class='list-image__media'>
+                                                <img
+                                                    srcset='{{- image_block -}}'
+                                                    src='{{ image_block | image_url: width: 790 }}'
+                                                    class='list-image__media--image'
+                                                    sizes='100vw'
+                                                    width='{{ block.settings.image.width }}'
+                                                    height='{{ block.settings.image.width | divided_by: block.settings.image.aspect_ratio }}'
+                                                    alt='{{ product.title | escape }}'
+                                                    loading='lazy'
+                                                >
+                                            </picture>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {%- when 'custom' -%}
+                                <div
+                                    class='list-image__content list-image__content--{{ image_position_mobile }} count-item--{{ forloop.index }} list-image__limited--{{ limited_list_mobile }}'
+                                    {{ block.shopify_attributes }}
+                                >
+                                    <div class='list-image__list'>
+                                        {% if link != blank %}
+                                            <a href='{{ link }}' class='list-image__link focus-inset' tabindex='0'>
+                                                <span class='visually-hidden'>
+                                                    {{ title | escape }}
+                                                </span>
+                                            </a>
+                                        {% endif %}
+                                        {% if title != blank %}
+                                            <div class='list-image__indent'>
+                                                <h3 class='list-image__title h5'>
+                                                    {{ title | escape }}
+                                                </h3>
+                                                {% if text != blank %}
+                                                    <div class='list-image__text'>
+                                                        {{ text }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class='list-image__image'>
+                                        {% if image_block != blank %}
+                                            <picture class='list-image__media'>
+                                                <img
+                                                    srcset='{{- image_block -}}'
+                                                    src='{{ image_block | image_url: width: 790 }}'
+                                                    class='list-image__media--image'
+                                                    sizes='100vw'
+                                                    alt='{{ title | escape }}'
+                                                    width='{{ block.settings.image.width }}'
+                                                    height='{{ block.settings.image.width | divided_by: block.settings.image.aspect_ratio }}'
+                                                    loading='lazy'
+                                                >
+                                            </picture>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                        {% endcase %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "List with image",
+    "tag": "section",
+    "class": "index-section",
+    "max_blocks": 5,
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "default": "Veniam ipsam, commodi expedita",
+            "label": "Title"
+        },
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image placeholder"
+        },
+        {
+            "type": "range",
+            "label": "Maximum list items for mobile",
+            "id": "limited_list",
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "default": 3
+        },
+        {
+            "type": "paragraph",
+            "content": "Style Option"
+        },
+        {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background Color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color"
+        },
+        {
+            "type": "color",
+            "id": "caption_color",
+            "label": "Caption Color"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ],
+    "blocks": [
+        {
+            "type": "custom",
+            "name": "Custom Type",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "image"
+                },
+                {
+                    "type": "select",
+                    "id": "image_position",
+                    "options": [
+                        {
+                            "value": "left",
+                            "label": "Left"
+                        },
+                        {
+                            "value": "right",
+                            "label": "Right"
+                        }
+                    ],
+                    "default": "left",
+                    "label": "Mobile image position"
+                },
+                {
+                    "type": "text",
+                    "id": "title",
+                    "default": "Title",
+                    "label": "Title"
+                },
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "label": "Text"
+                },
+                {
+                    "type": "url",
+                    "id": "link",
+                    "label": "Link"
+                }
+            ]
+        },
+        {
+            "type": "product",
+            "name": "Product Type",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image"
+                },
+                {
+                    "type": "product",
+                    "id": "product_list",
+                    "label": "Product"
+                },
+                {
+                    "type": "select",
+                    "id": "image_position",
+                    "options": [
+                        {
+                            "value": "left",
+                            "label": "Left"
+                        },
+                        {
+                            "value": "right",
+                            "label": "Right"
+                        }
+                    ],
+                    "default": "left",
+                    "label": "Mobile image position"
+                },
+                {
+                    "type": "range",
+                    "label": "Limited caption",
+                    "id": "limited_caption",
+                    "min": 10,
+                    "max": 100,
+                    "step": 5,
+                    "default": 30
+                }
+            ]
+        },
+        {
+            "type": "collection",
+            "name": "Colection Type",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image"
+                },
+                {
+                    "type": "collection",
+                    "id": "collection_list",
+                    "label": "Collection"
+                },
+                {
+                    "type": "select",
+                    "id": "image_position",
+                    "options": [
+                        {
+                            "value": "left",
+                            "label": "Left"
+                        },
+                        {
+                            "value": "right",
+                            "label": "Right"
+                        }
+                    ],
+                    "default": "left",
+                    "label": "Mobile image position"
+                },
+                {
+                    "type": "range",
+                    "label": "Limited caption",
+                    "id": "limited_caption",
+                    "min": 10,
+                    "max": 100,
+                    "step": 5,
+                    "default": 30
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "List with image"
+        }
+    ]
+}
+{% endschema %}
