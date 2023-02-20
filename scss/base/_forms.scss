@@ -122,7 +122,7 @@ option:hover {
     border: .2rem solid var(--color-input-border);
     border-radius: .2rem;
     height: 2rem;
-    margin-left: 1rem;
+    margin-right: .5rem;
     position: relative;
     vertical-align: text-bottom;
     width: 2rem;
@@ -165,8 +165,8 @@ option:hover {
 
 [type="radio"]:checked::before,
 [type="checkbox"]:checked::before {
-    background-color: var(--color-input);
-    border-color: var(--color-input);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
     content: '';
     height: 1.2rem;
     left: .2rem;
@@ -194,7 +194,7 @@ option:hover {
 [type="radio"]:focus-visible,
 [type="checkbox"]:focus,
 [type="checkbox"]:focus-visible {
-    margin-left: 1rem;
+    margin-left: 0;
     outline: none;
 }
 

@@ -1,0 +1,158 @@
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 11; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+
+
+.modal.open {
+    display: block;
+}
+
+.modal__dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: var(--color-body-background);
+    margin: auto auto; /* 15% from the top and centered */
+    padding: 20px;
+    width: 32rem; /* Could be more or less, depending on screen size */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+.js-ajax-cart-request-in-progress .modal__dialog {
+    display: none;
+}
+
+.modal .spinner {
+    width: 5rem;
+    height: 5rem;
+    line-height: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 2;
+    display: none;
+}
+
+.js-ajax-cart-request-in-progress .modal .spinner {
+    display: block;
+}
+
+.spinner {
+    animation: rotator 1.4s linear infinite;
+}
+
+@keyframes rotator {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(270deg);
+    }
+}
+
+.path {
+    stroke-dasharray: 280;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    stroke: var(--color-dark) !important;
+    animation: dash 1.4s ease-in-out infinite;
+}
+
+@media screen and (forced-colors: active) {
+    .path{
+        stroke: CanvasText;
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dashoffset: 280;
+    }
+
+    50% {
+        stroke-dashoffset: 75;
+        transform: rotate(135deg);
+    }
+    
+    100% {
+        stroke-dashoffset: 280;
+        transform: rotate(450deg);
+    }
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:50%; opacity:1}
+}
+  
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:50%; opacity:1}
+}
+
+.modal__body {
+    position: relative;
+}
+
+.modal__box {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.modal__media-wrapper {
+    width: 35%;
+    padding-right: 2rem;
+}
+
+.modal__title {
+    width: 65%;
+    padding-right: 2rem;
+}
+
+.modal__msg {
+    color: var(--color-success);
+    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
+    span {
+        margin-right: 1rem;
+    }
+}
+
+.modal__button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal__close-btn {
+    padding: 0;
+    background: none!important;
+    border: none;
+    position: absolute;
+    right: -1rem;
+    top: -1rem;
+    svg {
+        pointer-events: none;
+    }
+}
+
+

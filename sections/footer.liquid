@@ -37,22 +37,8 @@
 
 {% assign styles = styles | strip_newlines %}
 
-<link
-    rel='stylesheet'
-    href='{{ 'section-footer.css' | asset_url }}'
-    media='print'
-    onload="this.media='all'"
->
-
-<link
-    rel='stylesheet'
-    href='{{ 'component-footer.css' | asset_url }}'
-    media='print'
-    onload="this.media='all'"
->
-
-<noscript>{{ 'section-footer.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'component-footer.css' | asset_url | stylesheet_tag }}</noscript>
+{{ 'section-footer.css' | asset_url | stylesheet_tag }}
+{{ 'component-footer.css' | asset_url | stylesheet_tag }}
 
 <footer class='footer' style='{{ styles }}'>
     <div class='footer__row'>

@@ -1,0 +1,17 @@
+{% assign url = canonical_url | url_decode | split: '?' %}
+{% assign url = url[1] | split: '=' %}
+{%- if url != blank -%}
+    <div class='cart-recommend__block js-cart-recommend-block'>
+        <h3>{{ 'sections.cart.recommend' | t }}</h3>
+        <ul class='cart-recommend__list js-cart-recommend'>
+            {%- for item in url -%}
+                {% if item != 'id' %}
+                    {%- assign product = all_products[item] -%}
+                    <li class='cart-recommend__item js-cart-recommend-item'>
+                        {% render 'card-product', card_product: product %}
+                    </li>
+                {% endif %}
+            {%- endfor -%}
+        </ul>
+    </div>
+{%- endif -%}

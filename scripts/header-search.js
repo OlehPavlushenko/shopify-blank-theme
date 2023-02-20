@@ -130,6 +130,8 @@ class HeaderSearch extends HTMLElement {
           .querySelector('#shopify-section-header-search').innerHTML
         this.cachedResults[queryKey] = resultsMarkup
         this.renderSearchResults(resultsMarkup)
+        const resultsMarkups = new DOMParser().parseFromString(text, 'text/html')
+        console.log(resultsMarkups)
       })
       .catch((error) => {
         this.close()
