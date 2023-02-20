@@ -1,33 +1,20 @@
-{%- if card_product and card_product != empty -%}
-    <div class="mega-menu-product-post__madia-wrapper">
-        <picture class="mega-menu-product-post__media mega-menu-product-post__size--{{ image_size }}">
-            <img
-                srcset="{%- if card_product.featured_media.width >= 165 -%}{{ card_product.featured_media | image_url: width: 165 }} 165w,{%- endif -%}
-                    {%- if card_product.featured_media.width >= 330 -%}{{ card_product.featured_media | image_url: width: 330 }} 330w,{%- endif -%}
-                    {%- if card_product.featured_media.width >= 535 -%}{{ card_product.featured_media | image_url: width: 535 }} 535w,{%- endif -%}
-                    {%- if card_product.featured_media.width >= 750 -%}{{ card_product.featured_media | image_url: width: 750 }} 750w,{%- endif -%}
-                    {%- if card_product.featured_media.width >= 1000 -%}{{ card_product.featured_media | image_url: width: 1000 }} 1000w,{%- endif -%}
-                    {%- if card_product.featured_media.width >= 1500 -%}{{ card_product.featured_media | image_url: width: 1500 }} 1500w,{%- endif -%}
-                    {%- if card_product.featured_media.width >= 3000 -%}{{ card_product.featured_media | image_url: width: 3000 }} 3000w,{%- endif -%}
-                    {{ card_product.featured_media | image_url }} {{ card_product.featured_media.width }}w"
-                src="{{ card_product.featured_media | image_url: width: 533 }}"
-                sizes="(min-width: 1440px) {{ '1440px' | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
-                alt="{{ card_product.featured_media.src.alt | escape }}"
-                height="{{ card_product.featured_media.height }}"
-                width="{{ card_product.featured_media.width }}"
-                loading="lazy"
-                class="mega-menu-product-post__image"
-            >
+{% if card_product and card_product != empty %}
+    <div class='mega-menu-product-post__madia-wrapper'>
+        <picture class='mega-menu-product-post__media  media media__size--{{ image_size }}'>
+            {% render 'image',
+                image_box: card_product.featured_media,
+                image_box_class: 'mega-menu-product-post__image'
+            %}
         </picture>
     </div>
-    <div class="mega-menu-product-post__content">
-        <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
-        <span class="mega-menu-product-post__vendor">{{ card_product.vendor }}</span>
-        <h4 class="mega-menu-product-post__title">
-            <a href="{{ card_product.url }}">
+    <div class='mega-menu-product-post__content'>
+        <span class='visually-hidden'>{{ 'accessibility.vendor' | t }}</span>
+        <span class='mega-menu-product-post__vendor'>{{ card_product.vendor }}</span>
+        <h4 class='mega-menu-product-post__title'>
+            <a href='{{ card_product.url }}'>
                 {{ card_product.title | truncate: 30 | escape }}
             </a>
         </h4>
         {% render 'mega-menu-price', product: card_product, price_class: '' %}
     </div>
-{%- endif -%}
+{% endif %}

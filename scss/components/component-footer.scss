@@ -167,7 +167,7 @@
     margin: 0;
 }
 
-.footer-product-post_price .money {
+.footer-product-post_price .price-item--regular {
     color: var(--footer-title-color);
 }
 
@@ -189,7 +189,7 @@
     opacity: 0.7;
 }
 
-.footer-product-post_price.price--on-sale .price__sale .price-item--sale .money {
+.footer-product-post_price.price--on-sale .price__sale .price-item--sale {
     color: var(--color-danger);
 }
 

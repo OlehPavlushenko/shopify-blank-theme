@@ -1,0 +1,24 @@
+{% if card_collection and card_collection != empty %}
+    {% if show_image %}
+        <div class='search-collection-post__madia-wrapper'>
+            <picture class='search-collection-post__media'>
+                {% render 'image',
+                    image_box: card_collection.featured_image,
+                    image_box_class: 'search-collection-post__image'
+                %}
+            </picture>
+        </div>
+    {% endif %}
+    <div class='search-collection-post__content'>
+        <h4 class='search-collection-post__title'>
+            <a href='{{ card_collection.url }}'>
+                {{ card_collection.title | truncate: 30 | escape }}
+            </a>
+        </h4>
+        {% if card_collection.description != blank %}
+            <p class='card__caption'>
+                {{ card_collection.description | strip_html | truncatewords: 12 }}
+            </p>
+        {% endif %}
+    </div>
+{% endif %}

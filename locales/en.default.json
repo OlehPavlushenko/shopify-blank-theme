@@ -20,6 +20,7 @@
     "vendor": "Vendor:",
     "menu_open": "Menu open",
     "menu_close": "Menu close",
+    "close": "Close",
     "unit_price_separator": "per",
     "link_messages": {
       "new_window": "Opens in a new window.",
@@ -146,12 +147,55 @@
         "unit_price": "Unit price"
       }
     },
+    "cart": {
+      "cart": "Cart",
+      "recommend": "You may also like",
+      "close": "Close",
+      "empty": "Your cart is currently empty!",
+      "quantity": "Quantity",
+      "total": "Total:",
+      "remove": "Remove",
+      "comments": "Additional Comments",
+      "note": "Cart note:",
+      "attributes": "Cart attributes:",
+      "package": "Package text:",
+      "any_day": "Any day",
+      "delivery_day": "Delivery day:",
+      "delivery_time": "Delivery time:",
+      "leave": "Leave at the door",
+      "checkout": "Checkout",
+      "shipping": {
+        "success": "You're eligible for Free Shipping!",
+        "outer_first": "You're",
+        "outer_second": "away from free shipping!"
+      },
+      "price": {
+        "regular_price": "Regular price",
+        "sale_price": "Sale price",
+        "unit_price": "Unit price"
+      }
+    },
+    "search": {
+      "search": "Search",
+      "placeholder": "Type here",
+      "suggestions": "Suggestions",
+      "terms": {
+        "products": "Products",
+        "articles": "Articles",
+        "collections": "Collections",
+        "pages": "Pages",
+        "no_results": "No results for",
+        "no_results_terms": "No results for “{{ terms }}”",
+        "no_results_description": "It looks like this search returned no results, but don't worry, we'll find you something just as good."
+      },
+      "view_all_results": "View All Results",
+      "load_more": "Load More"
+    },
     "newsletter": {
       "placeholder": "Enter your email",
       "label": "Your email",
       "button": "Subscribe",
       "success": "Thanks for subscribing"
-      
     }
   }
 
