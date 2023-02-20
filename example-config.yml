@@ -16,7 +16,7 @@
 development:
   password: 
   theme_id: 
-  store: web.myshopify.com
+  store: website.myshopify.com
   ignore_files:
     - settings_data.json # Uncomment this line to avoid resetting theme settings
 
