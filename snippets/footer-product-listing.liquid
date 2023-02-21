@@ -15,7 +15,7 @@
             <span class='footer-product-post__vendor'>{{ card_product.vendor }}</span>
         {% endif %}
         <h4 class='footer-product-post__title'>
-            <a href='{{ card_product.url }}'>
+            <a href='{{ card_product.url | within: collection }}'>
                 {{ card_product.title | truncate: 30 | escape }}
             </a>
         </h4>

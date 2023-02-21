@@ -537,6 +537,7 @@ form[action="/cart/add"].js-ajax-cart-form-in-progress [type="submit"]:after {
 	.card-product__madia-wrapper {
 		margin-bottom: 1rem;
 	}
+
 	.card-product__vendor {
 		font-size: 1.2rem;
 		margin-bottom: .5rem;
@@ -552,16 +553,20 @@ form[action="/cart/add"].js-ajax-cart-form-in-progress [type="submit"]:after {
 		.price__sale {
 			display: none;
 		}
+
 		dl {
 			margin-top: 0.5rem;
 			margin-bottom: 0;
 		}
+
 		dd {
 			margin: 0;
 		}
+
 		.price-item--regular {
 			color: var(--cart-drawer-title-color);
 		}
+
 		&.price--on-sale .price__regular {
 			display: none;
 		}
@@ -570,15 +575,17 @@ form[action="/cart/add"].js-ajax-cart-form-in-progress [type="submit"]:after {
 			display: -ms-flexbox;
 			display: flex;
 		}
+
 		&.price--on-sale .price__sale dd.price__compare {
 			margin-right: 0.6rem;
 		}
+
 		&.price--on-sale .price__sale .price-item--regular {
 			opacity: 0.7;
 		}
+		
 		&.price--on-sale .price__sale .price-item--sale {
 			color: var(--color-danger);
 		}
-		
 	}
 }

@@ -1,6 +1,6 @@
 {% if card_product and card_product != empty %}
     <div class='card-product__madia-wrapper'>
-        <picture class='card-product__media media'>
+        <picture class='card-product__media {% if img_size %} media__size--{{ img_size }}{% endif %} media'>
             {% render 'image', image_box: card_product.featured_media, image_box_class: 'card-product__image' %}
         </picture>
     </div>
@@ -8,10 +8,55 @@
         <span class='visually-hidden'>{{ 'accessibility.vendor' | t }}</span>
         <span class='card-product__vendor'>{{ card_product.vendor }}</span>
         <h4 class='card-product__title'>
-            <a href='{{ card_product.url }}'>
+            <a href='{{ card_product.url | within: collection }}'>
                 {{ card_product.title | truncate: 30 | escape }}
             </a>
         </h4>
         {% render 'price', product: card_product, price_class: 'card-product__price' %}
     </div>
+    {% if btn %}
+        {% form 'product', card_product, class: 'card-product__form' %}
+            {{ form | payment_terms }}
+            {% if card_product.variants.size > 1 %}
+                <select name='id' id='ProductSelect-{{ section.id }}' class='card-product__variants'>
+                    {% for variant in card_product.variants %}
+                        {% if variant.available %}
+                            <option
+                                {% if variant == card_product.selected_or_first_available_variant %}
+                                    selected='selected'
+                                {% endif %}
+                                data-sku='{{ variant.sku }}'
+                                value='{{ variant.id }}'
+                            >
+                                {{ variant.title }} - {{ variant.price | money_with_currency }}
+                            </option>
+
+                        {% else %}
+                            <option disabled='disabled'>
+                                {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            {% endif %}
+            <input
+                type='number'
+                id='Quantity'
+                name='quantity'
+                value='1'
+                min='1'
+                class='quantity-selector hidden'
+            >
+
+            <button
+                type='submit'
+                name='add'
+                id='AddToCart-{{ section.id }}'
+                class='btn button--secondary'
+            >
+                <span id='AddToCartText'>{{ 'products.product.add_to_cart' | t }}</span>
+            </button>
+            <div data-ajax-cart-messages='form'></div>
+        {% endform %}
+    {% endif %}
 {% endif %}
