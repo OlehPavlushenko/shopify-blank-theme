@@ -38,13 +38,13 @@ button[aria-disabled="true"],
 .button--secondary {
     background-color: var(--color-secondary-button-background);
     color: var(--color-secondary-button-text);
-    border: .1rem solid var(--color-secondary-button-text);
+    border: .1rem solid var(--color-secondary-button-background);
 }
 
 .button--secondary:hover {
     color: var(--color-secondary-button-text);
     background-color: var(--color-secondary-button-background-hover);
-    border-color: var(--color-secondary-button-text);
+    border-color: var(--color-secondary-button-background-hover);
 }
 
 .button--secondary:disabled,

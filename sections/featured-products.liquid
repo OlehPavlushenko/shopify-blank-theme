@@ -1,0 +1,131 @@
+{% liquid
+    assign heading = section.settings.heading
+    assign products_list = section.settings.products_list
+    assign show_add_to_cart = true
+
+    assign bg_color = section.settings.bg_color | default: 'transparent'
+    assign title_color = section.settings.title_color | default: 'inherit'
+
+    assign img_size = section.settings.prod_img_size
+    assign pad_top = section.settings.padding_top
+    assign pad_bot = section.settings.padding_bottom
+%}
+
+{% capture styles %}
+    --title-color-featured-products: {{ title_color }};
+    --background-color-featured-products: {{ bg_color }};
+    --pad-top-featured-products: {{ pad_top }}px;
+    --pad-bot-featured-products: {{ pad_bot }}px;
+  {% endcapture %}
+
+{%- assign styles = styles | strip_newlines -%}
+
+{{ 'section-featured-products.css' | asset_url | stylesheet_tag }}
+{{ 'component-card-products.css' | asset_url | stylesheet_tag }}
+
+{% if products_list != blank %}
+    <div class='featured-products' style='{{ styles }}'>
+        <div class='page-width'>
+            {%- if heading != blank -%}
+                <h3 class='featured-products__heading h3'>
+                    {{ heading | escape }}
+                </h3>
+            {%- endif -%}
+            <ul class='featured-products__list'>
+                {% for product in products_list %}
+                    <li class='featured-products__item'>
+                        {% render 'card-product', card_product: product, img_size: img_size, btn: show_add_to_cart %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+
+{% schema %}
+{
+    "name": "Featured Products",
+    "class": "index-section",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "text",
+            "id": "heading",
+            "default": "Featured Products",
+            "label": "Title"
+        },
+        {
+            "type": "product_list",
+            "id": "products_list",
+            "label": "Products List",
+            "limit": 8
+        },
+        {
+            "type": "paragraph",
+            "content": "Style option"
+        },
+        {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background color"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Title color"
+        },
+        {
+            "type": "select",
+            "id": "prod_img_size",
+            "label": "Image size",
+            "options": [
+                {
+                    "value": "cropped",
+                    "label": "Cropped"
+                },
+                {
+                    "value": "landscape",
+                    "label": "Landscape"
+                },
+                {
+                    "value": "square",
+                    "label": "Square"
+                },
+                {
+                    "value": "portrait",
+                    "label": "Portrait"
+                },
+                {
+                    "value": "circle",
+                    "label": "Circle"
+                }
+            ]
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding top",
+            "default": 30
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 60,
+            "step": 5,
+            "unit": "px",
+            "label": "Padding bottom",
+            "default": 30
+        }
+    ],
+    "presets": [
+        {
+            "name": "Featured Products"
+        }
+    ]
+}
+{% endschema %}
