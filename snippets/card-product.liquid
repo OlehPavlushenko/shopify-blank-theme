@@ -1,44 +1,62 @@
-{% if card_product and card_product != empty %}
+{% if product and product != empty %}
     <div class='card-product__madia-wrapper'>
         <picture class='card-product__media {% if img_size %} media__size--{{ img_size }}{% endif %} media'>
-            {% render 'image', image_box: card_product.featured_media, image_box_class: 'card-product__image' %}
+            {% render 'image', image_box: product.featured_media, image_box_class: 'card-product__image' %}
         </picture>
     </div>
     <div class='card-product__content'>
         <span class='visually-hidden'>{{ 'accessibility.vendor' | t }}</span>
-        <span class='card-product__vendor'>{{ card_product.vendor }}</span>
+        <span class='card-product__vendor'>{{ product.vendor }}</span>
         <h4 class='card-product__title'>
-            <a href='{{ card_product.url | within: collection }}'>
-                {{ card_product.title | truncate: 30 | escape }}
+            <a href='{{ product.url | within: collection }}'>
+                {{ product.title | truncate: 30 | escape }}
             </a>
         </h4>
-        {% render 'price', product: card_product, price_class: 'card-product__price' %}
+        {% render 'price', product: product, price_class: 'card-product__price' %}
     </div>
     {% if btn %}
-        {% form 'product', card_product, class: 'card-product__form' %}
-            {{ form | payment_terms }}
-            {% if card_product.variants.size > 1 %}
-                <select name='id' id='ProductSelect-{{ section.id }}' class='card-product__variants'>
-                    {% for variant in card_product.variants %}
-                        {% if variant.available %}
-                            <option
-                                {% if variant == card_product.selected_or_first_available_variant %}
-                                    selected='selected'
-                                {% endif %}
-                                data-sku='{{ variant.sku }}'
-                                value='{{ variant.id }}'
-                            >
-                                {{ variant.title }} - {{ variant.price | money_with_currency }}
-                            </option>
+        {% form 'product', product, class: 'card-product__form' %}
+            {% if product.available and product.variants.size > 1 %}
+                <variant-selects
+                    class='swatch-wrap'
+                    data-section='{{ section.id }}-{{ product.id }}'
+                    data-url='{{ product.url }}'
+                    {{ block.shopify_attributes }}
+                >
+                    {% render 'swatch' for product.options as swatch, product: product %}
 
-                        {% else %}
-                            <option disabled='disabled'>
-                                {{ variant.title }} - {{ 'products.product.sold_out' | t }}
-                            </option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
+                    <script type='application/json'>
+                        {{ product.variants | json }}
+                    </script>
+
+                    <select
+                        name='id'
+                        id='ProductSelect-{{ product.id }}'
+                        class='card-product__variants no-js'
+                        data-product-select
+                    >
+                        {% for variant in product.variants %}
+                            {% if variant.available %}
+                                <option
+                                    {% if variant == product.selected_or_first_available_variant %}
+                                        selected='selected'
+                                    {% endif %}
+                                    data-sku='{{ variant.sku }}'
+                                    value='{{ variant.id }}'
+                                >
+                                    {{ variant.title }} - {{ variant.price | money_with_currency }}
+                                </option>
+
+                            {% else %}
+                                <option disabled='disabled'>
+                                    {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </variant-selects>
             {% endif %}
+
             <input
                 type='number'
                 id='Quantity'
@@ -51,7 +69,7 @@
             <button
                 type='submit'
                 name='add'
-                id='AddToCart-{{ section.id }}'
+                id='AddToCart-{{ product.id }}'
                 class='btn button--secondary'
             >
                 <span id='AddToCartText'>{{ 'products.product.add_to_cart' | t }}</span>
@@ -60,3 +78,8 @@
         {% endform %}
     {% endif %}
 {% endif %}
+{% unless product == empty %}
+    <script type='application/json' id='ProductJson-{{ product.id }}'>
+        {{ product | json }}
+    </script>
+{% endunless %}

@@ -34,7 +34,7 @@
             <ul class='featured-products__list'>
                 {% for product in products_list %}
                     <li class='featured-products__item'>
-                        {% render 'card-product', card_product: product, img_size: img_size, btn: show_add_to_cart %}
+                        {% render 'card-product', product: product, img_size: img_size, btn: show_add_to_cart %}
                     </li>
                 {% endfor %}
             </ul>

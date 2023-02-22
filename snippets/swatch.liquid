@@ -1,0 +1,153 @@
+{% comment %}
+    Set the extension of your color files below. Use 'png', 'jpeg', 'jpg' or 'gif'.
+{% endcomment %}
+
+{% assign file_extension = 'png' %}
+
+{% if swatch == blank %}
+    <div class='swatch swatch--product error'>
+        <p>You must include the snippet swatch.liquid with the name of a product option.</p>
+        <p>
+            Use: <code>{% raw %}{% include 'swatch' with 'name of your product option here' %}{% endraw %}</code>
+        </p>
+        <p>
+            Example: <code>{% raw %}{% include 'swatch' with 'Color' %}{% endraw %}</code>
+        </p>
+    </div>
+{% else %}
+    {% assign found_option = false %}
+    {% assign is_color = false %}
+    {% assign is_size = false %}
+    {% assign is_fill = false %}
+    {% assign option_index = 0 %}
+    {% for option in product.options %}
+        {% if option == swatch %}
+            {% assign found_option = true %}
+            {% assign option_index = forloop.index0 %}
+            {% assign downcased_option = swatch | downcase %}
+
+            {% if downcased_option contains 'color' or downcased_option contains 'colour' %}
+                {% assign is_color = true %}
+            {% endif %}
+
+            {% if downcased_option contains 'size' %}
+                {% assign is_size = true %}
+            {% endif %}
+
+            {% if downcased_option contains 'fill' or downcased_option contains 'pattern' %}
+                {% assign is_fill = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% unless found_option %}
+        <div class='swatch swatch--product error'>
+            <p>
+                You included the snippet swatch.liquid with the name of a product option — <code>'{{ swatch }}'</code> —
+                that does not belong to your product.
+            </p>
+            <p>
+                Use <code>{% raw %}{% include 'swatch' with 'name of your product option here' %}{% endraw %}</code>
+            </p>
+            <p>
+                Example: <code>{% raw %}{% include 'swatch' with 'Color' %}{% endraw %}</code>
+            </p>
+            <p>
+                <strong>This is case-sensitive!</strong> Do not put in <code>'color'</code> if your product option name
+                is <code>'Color'</code>.
+            </p>
+        </div>
+    {% else %}
+        {%- assign current_variant = product.selected_or_first_available_variant -%}
+        {% if is_color %}
+            {% assign class = 'swatch-color' %}
+        {% elsif is_size %}
+            {% assign class = 'swatch-size' %}
+        {% else %}
+            {% assign class = 'swatch-fill' %}
+        {% endif %}
+        <div
+            class='swatch swatch--product clearfix swatch-item-{{ swatch }} js-{{ class }}'
+            data-option-index='{{ option_index }}'
+            data-swatch='{{ swatch }}'
+        >
+            <div class='swatch-header js-swatch-header'>
+                <span>
+                    {{ swatch }}:
+                    <em>{{ current_variant.options[option_index] }}</em>
+                </span>
+            </div>
+
+            {% assign values = '' %}
+
+            {% for variant in product.variants %}
+                {% assign value = variant.options[option_index] %}
+                {% assign values_lvl2 = '' %}
+                {% assign values_lvl3 = '' %}
+
+                {% unless values contains value %}
+                    {% assign values = values | join: ',' | append: ',' | append: value | split: ',' %}
+
+                    {% for item in product.variants %}
+                        {% if is_color or is_size %}
+                            {% if value == item.options[option_index] %}
+                                {% assign values_lvl2 = values_lvl2
+                                    | join: ','
+                                    | append: item.options[1]
+                                    | append: ','
+                                %}
+
+                                {% if values_lvl2 contains item.options[1] %}
+                                    {% assign values_lvl3 = values_lvl3
+                                        | join: ','
+                                        | append: item.options[1]
+                                        | append: ':'
+                                        | append: item.options[2]
+                                        | append: ','
+                                    %}
+                                    {% assign title_lvl3 = title_lvl3 | join: ',' | append: values_lvl3 | append: ',' %}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    <div
+                        {% if is_color and values_lvl2.size > 1 %}
+                            data-variant-size='{{ values_lvl2 | split: ',' | uniq | json }}'
+                        {% endif %}
+                        {% if is_color and values_lvl3.size > 1 %}
+                            data-variant-fill='{{- values_lvl3 | split: ',' | uniq | json -}}'
+                        {% endif %}
+                        data-value='{{ value }}'
+                        class='swatch-element {% if is_color %}color {% endif %}{{ value | handle }} {% if variant.available or is_color %}available{% else %}soldout{% endif %} js-swatch-element'
+                    >
+                        <input
+                            id='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'
+                            type='radio'
+                            data-variant-image='{{ variant.id }}'
+                            name='option-{{ option_index }}-{{ product.id }}'
+                            value='{{ value | escape }}'
+                            {% if current_variant.options[option_index] == variant.options[option_index] %}
+                                checked=''
+                            {% endif %}
+                            data-swatch-option='{{ option_index }}'
+                        >
+                        {% if is_color %}
+                            {% assign sku_array = variant.sku | split: ' ' %}
+                            {% assign url_handle = value | handle %}
+
+                            <label
+                                for='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'
+                                style='background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ url_handle | replace: "-", "_" | append: '.' | append: file_extension | file_url }})'
+                            >
+                            </label>
+                        {% else %}
+                            <label for='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'>
+                                {{ value }}
+                            </label>
+                        {% endif %}
+                    </div>
+                {% endunless %}
+            {% endfor %}
+        </div>
+    {% endunless %}
+{% endif %}

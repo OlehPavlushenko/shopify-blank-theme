@@ -342,17 +342,12 @@ input.cart-drawer__input--property {
 /* Line Item */
 .ajax-cart__line-item {
 	border-top: .1rem solid var(--cart-drawer-divider-color);
-	padding: 3rem 5rem 0 0;
-	margin-top: 3rem;
+	padding: 3rem 5rem 3rem 0;
+	//margin-top: 3rem;
 	position: relative;
 	display: flex;
 	flex-wrap: nowrap;
 	align-items: flex-start;
-}
-
-.ajax-cart__line-item:first-child {
-	border-top: none;
-	margin-top: 0;
 }
 
 .ajax-cart-item__media {
@@ -515,7 +510,6 @@ form[action="/cart/add"].js-ajax-cart-form-in-progress [type="submit"]:after {
 	display: none;
 }
 #cart-recommend h3 {
-	margin-top: 3rem;
 	padding-top: 3rem;
 	border-top: .1rem solid var(--cart-drawer-divider-color);
 }

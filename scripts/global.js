@@ -236,3 +236,111 @@ class DeferredMedia extends HTMLElement {
 }
 
 customElements.define('deferred-media', DeferredMedia)
+
+class VariantSelects extends HTMLElement {
+  constructor() {
+    super();
+
+    this.swatchColor = this.querySelector('.js-swatch-color');
+    this.swatchSize = this.querySelector('.js-swatch-size');
+    this.swatchFill = this.querySelector('.js-swatch-fill');
+    this.swatchElement = this.querySelectorAll('.js-swatch-element');
+    this.activeSwatch()
+    
+    
+  }
+
+
+  activeSwatch() {
+    var getFillList,
+        getSizeList
+    this.swatchElement.forEach((element) => { 
+      element.addEventListener('click', (event) => {
+        if (event.target.tagName === "INPUT") {
+          let radio = event.target.value
+          let details = event.target.closest('.swatch').querySelector('.js-swatch-header em')
+          console.log(event.target)
+          details.textContent = radio
+          
+          if (event.target.closest('.js-swatch-color')) {
+            console.log('color')
+            getSizeList = JSON.parse(event.target.parentElement.getAttribute('data-variant-size'))
+            getFillList = JSON.parse(event.target.parentElement.getAttribute('data-variant-fill'))
+
+            console.log(getFillList)
+
+            if (getSizeList != null)  {
+              console.log(getSizeList)
+
+              this.swatchSize.querySelectorAll('.js-swatch-element').forEach((element) => { 
+                element.classList.remove('hidden')
+                let key = element.getAttribute('data-value')
+                if (!getSizeList.includes(key)) {
+                  element.classList.add('hidden')
+                }
+              })
+              
+              console.log()
+            }
+            
+          }
+          if (event.target.closest('.js-swatch-size')) {
+            console.log('size'+radio)
+            if (getFillList != null)  {
+              console.log(getFillList)
+              this.swatchFill.querySelectorAll('.js-swatch-element').forEach((element) => {
+                element.classList.remove('hidden')
+                let key = radio+':'+element.getAttribute('data-value')
+                console.log(key)
+                if (!getFillList.includes(key)) {
+                  console.log(element)
+                  element.classList.add('hidden')
+                }
+              })
+            }
+          }
+
+        }
+      })
+    })
+  }
+
+  updateSwatchSize() {
+  }
+
+  updateSwatchFill() {
+  }
+  
+  updateOptions() {
+    this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+  }
+
+  updateMasterId() {
+    this.currentVariant = this.getVariantData().find((variant) => {
+      return !variant.options.map((option, index) => {
+        return this.options[index] === option;
+      }).includes(false);
+    });
+  }
+
+  updateURL() {
+    if (!this.currentVariant) return;
+    window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+  }
+
+  updateVariantInput() {
+    const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment`);
+    productForms.forEach((productForm) => {
+      const input = productForm.querySelector('input[name="id"]');
+      input.value = this.currentVariant.id;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }
+
+  getVariantData() {
+    this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+    return this.variantData;
+  }
+}
+
+customElements.define('variant-selects', VariantSelects);

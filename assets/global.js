@@ -1,1 +1,346 @@
-void 0===window.Shopify&&(window.Shopify={}),Shopify.bind=function(e,t){return function(){return e.apply(t,arguments)}},Shopify.setSelectorByValue=function(e,t){for(var n=0,i=e.options.length;n<i;n++){var o=e.options[n];if(t==o.value||t==o.innerHTML)return e.selectedIndex=n,n}},Shopify.addListener=function(e,t,n){e.addEventListener?e.addEventListener(t,n,!1):e.attachEvent("on"+t,n)},Shopify.postLink=function(e,t){var n=(t=t||{}).method||"post",i=t.parameters||{},o=document.createElement("form");for(var r in o.setAttribute("method",n),o.setAttribute("action",e),i){var s=document.createElement("input");s.setAttribute("type","hidden"),s.setAttribute("name",r),s.setAttribute("value",i[r]),o.appendChild(s)}document.body.appendChild(o),o.submit(),document.body.removeChild(o)},Shopify.CountryProvinceSelector=function(e,t,n){this.countryEl=document.getElementById(e),this.provinceEl=document.getElementById(t),this.provinceContainer=document.getElementById(n.hideElement||t),Shopify.addListener(this.countryEl,"change",Shopify.bind(this.countryHandler,this)),this.initCountry(),this.initProvince()},Shopify.CountryProvinceSelector.prototype={initCountry:function(){var e=this.countryEl.getAttribute("data-default");Shopify.setSelectorByValue(this.countryEl,e),this.countryHandler()},initProvince:function(){var e=this.provinceEl.getAttribute("data-default");e&&this.provinceEl.options.length>0&&Shopify.setSelectorByValue(this.provinceEl,e)},countryHandler:function(e){var t=(o=this.countryEl.options[this.countryEl.selectedIndex]).getAttribute("data-provinces"),n=JSON.parse(t);if(this.clearOptions(this.provinceEl),n&&0==n.length)this.provinceContainer.style.display="none";else{for(var i=0;i<n.length;i++){var o;(o=document.createElement("option")).value=n[i][0],o.innerHTML=n[i][1],this.provinceEl.appendChild(o)}this.provinceContainer.style.display=""}},clearOptions:function(e){for(;e.firstChild;)e.removeChild(e.firstChild)},setOptions:function(e,t){var n=0;for(t.length;n<t.length;n++){var i=document.createElement("option");i.value=t[n],i.innerHTML=t[n],e.appendChild(i)}}},Shopify.formatMoney=function(e,t){"string"==typeof e&&(e=e.replace(".",""));var n="",i=/\{\{\s*(\w+)\s*\}\}/,o=t||this.money_format;function r(e,t){return void 0===e?t:e}function s(e,t,n,i){if(t=r(t,2),n=r(n,","),i=r(i,"."),isNaN(e)||null==e)return 0;var o=(e=(e/100).toFixed(t)).split(".");return o[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g,"$1"+n)+(o[1]?i+o[1]:"")}switch(o.match(i)[1]){case"amount":n=s(e,2);break;case"amount_no_decimals":n=s(e,0);break;case"amount_with_comma_separator":n=s(e,2,".",",");break;case"amount_no_decimals_with_comma_separator":n=s(e,0,".",",")}return o.replace(i,n)};class ProductRecommendations extends HTMLElement{constructor(){super()}connectedCallback(){new IntersectionObserver(((e,t)=>{e[0].isIntersecting&&(t.unobserve(this),fetch(this.dataset.url).then((e=>e.text())).then((e=>{const t=document.createElement("div");t.innerHTML=e;const n=t.querySelector("product-recommendations");n&&n.innerHTML.trim().length&&(this.innerHTML=n.innerHTML),!this.querySelector("slideshow-component")&&this.classList.contains("complementary-products")&&this.remove(),t.querySelector(".grid__item")&&this.classList.add("product-recommendations--loaded")})).catch((e=>{console.error(e)})))}).bind(this),{rootMargin:"0px 0px 400px 0px"}).observe(this)}}customElements.define("product-recommendations",ProductRecommendations);class DeferredMedia extends HTMLElement{constructor(){super(),this.querySelector('[id^="Deferred-Poster-"]')?.addEventListener("click",this.loadContent.bind(this))}loadContent(){if(!this.getAttribute("loaded")){const e=document.createElement("div");e.appendChild(this.querySelector("template").content.firstElementChild.cloneNode(!0)),this.setAttribute("loaded",!0),this.appendChild(e.querySelector("video, model-viewer, iframe")).focus(),setTimeout((()=>{const e=this.querySelector("template").nextElementSibling;e.muted="true"===e.dataset.muted,e.play()}))}}}customElements.define("deferred-media",DeferredMedia);
+/*
+ * Shopify Common JS
+ *
+ */
+if (typeof window.Shopify == 'undefined') {
+  window.Shopify = {}
+}
+
+Shopify.bind = function (fn, scope) {
+  return function () {
+    return fn.apply(scope, arguments)
+  }
+}
+
+Shopify.setSelectorByValue = function (selector, value) {
+  for (var i = 0, count = selector.options.length; i < count; i++) {
+    var option = selector.options[i]
+    if (value == option.value || value == option.innerHTML) {
+      selector.selectedIndex = i
+      return i
+    }
+  }
+}
+
+Shopify.addListener = function (target, eventName, callback) {
+  target.addEventListener
+    ? target.addEventListener(eventName, callback, false)
+    : target.attachEvent('on' + eventName, callback)
+}
+
+Shopify.postLink = function (path, options) {
+  options = options || {}
+  var method = options['method'] || 'post'
+  var params = options['parameters'] || {}
+
+  var form = document.createElement('form')
+  form.setAttribute('method', method)
+  form.setAttribute('action', path)
+
+  for (var key in params) {
+    var hiddenField = document.createElement('input')
+    hiddenField.setAttribute('type', 'hidden')
+    hiddenField.setAttribute('name', key)
+    hiddenField.setAttribute('value', params[key])
+    form.appendChild(hiddenField)
+  }
+  document.body.appendChild(form)
+  form.submit()
+  document.body.removeChild(form)
+}
+
+Shopify.CountryProvinceSelector = function (
+  country_domid,
+  province_domid,
+  options
+) {
+  this.countryEl = document.getElementById(country_domid)
+  this.provinceEl = document.getElementById(province_domid)
+  this.provinceContainer = document.getElementById(
+    options['hideElement'] || province_domid
+  )
+
+  Shopify.addListener(
+    this.countryEl,
+    'change',
+    Shopify.bind(this.countryHandler, this)
+  )
+
+  this.initCountry()
+  this.initProvince()
+}
+
+Shopify.CountryProvinceSelector.prototype = {
+  initCountry: function () {
+    var value = this.countryEl.getAttribute('data-default')
+    Shopify.setSelectorByValue(this.countryEl, value)
+    this.countryHandler()
+  },
+
+  initProvince: function () {
+    var value = this.provinceEl.getAttribute('data-default')
+    if (value && this.provinceEl.options.length > 0) {
+      Shopify.setSelectorByValue(this.provinceEl, value)
+    }
+  },
+
+  countryHandler: function (e) {
+    var opt = this.countryEl.options[this.countryEl.selectedIndex]
+    var raw = opt.getAttribute('data-provinces')
+    var provinces = JSON.parse(raw)
+
+    this.clearOptions(this.provinceEl)
+    if (provinces && provinces.length == 0) {
+      this.provinceContainer.style.display = 'none'
+    } else {
+      for (var i = 0; i < provinces.length; i++) {
+        var opt = document.createElement('option')
+        opt.value = provinces[i][0]
+        opt.innerHTML = provinces[i][1]
+        this.provinceEl.appendChild(opt)
+      }
+
+      this.provinceContainer.style.display = ''
+    }
+  },
+
+  clearOptions: function (selector) {
+    while (selector.firstChild) {
+      selector.removeChild(selector.firstChild)
+    }
+  },
+
+  setOptions: function (selector, values) {
+    for (var i = 0, count = values.length; i < values.length; i++) {
+      var opt = document.createElement('option')
+      opt.value = values[i]
+      opt.innerHTML = values[i]
+      selector.appendChild(opt)
+    }
+  },
+}
+
+Shopify.formatMoney = function(cents, format) {
+  if (typeof cents == 'string') { cents = cents.replace('.',''); }
+  var value = '';
+  var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+  var formatString = (format || this.money_format);
+
+  function defaultOption(opt, def) {
+     return (typeof opt == 'undefined' ? def : opt);
+  }
+
+  function formatWithDelimiters(number, precision, thousands, decimal) {
+    precision = defaultOption(precision, 2);
+    thousands = defaultOption(thousands, ',');
+    decimal   = defaultOption(decimal, '.');
+
+    if (isNaN(number) || number == null) { return 0; }
+
+    number = (number/100.0).toFixed(precision);
+
+    var parts   = number.split('.'),
+        dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+        cents   = parts[1] ? (decimal + parts[1]) : '';
+
+    return dollars + cents;
+  }
+
+  switch(formatString.match(placeholderRegex)[1]) {
+    case 'amount':
+      value = formatWithDelimiters(cents, 2);
+      break;
+    case 'amount_no_decimals':
+      value = formatWithDelimiters(cents, 0);
+      break;
+    case 'amount_with_comma_separator':
+      value = formatWithDelimiters(cents, 2, '.', ',');
+      break;
+    case 'amount_no_decimals_with_comma_separator':
+      value = formatWithDelimiters(cents, 0, '.', ',');
+      break;
+  }
+
+  return formatString.replace(placeholderRegex, value);
+};
+
+class ProductRecommendations extends HTMLElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    const handleIntersection = (entries, observer) => {
+      if (!entries[0].isIntersecting) return;
+      observer.unobserve(this);
+
+      fetch(this.dataset.url)
+        .then(response => response.text())
+        .then(text => {
+          const html = document.createElement('div');
+          html.innerHTML = text;
+          const recommendations = html.querySelector('product-recommendations');
+
+          if (recommendations && recommendations.innerHTML.trim().length) {
+            this.innerHTML = recommendations.innerHTML;
+          }
+
+          if (!this.querySelector('slideshow-component') && this.classList.contains('complementary-products')) {
+            this.remove();
+          }
+
+          if (html.querySelector('.grid__item')) {
+            this.classList.add('product-recommendations--loaded');
+          }
+        })
+        .catch(e => {
+          console.error(e);
+        });
+    }
+
+    new IntersectionObserver(handleIntersection.bind(this), {rootMargin: '0px 0px 400px 0px'}).observe(this);
+  }
+}
+
+customElements.define('product-recommendations', ProductRecommendations);
+
+class DeferredMedia extends HTMLElement {
+  constructor() {
+    super()
+    this.querySelector('[id^="Deferred-Poster-"]')?.addEventListener(
+      'click',
+      this.loadContent.bind(this)
+    )
+  }
+
+  loadContent() {
+    if (!this.getAttribute('loaded')) {
+      const content = document.createElement('div')
+      content.appendChild(
+        this.querySelector('template').content.firstElementChild.cloneNode(true)
+      )
+
+      this.setAttribute('loaded', true)
+      //window.pauseAllMedia()
+      this.appendChild(
+        content.querySelector('video, model-viewer, iframe')
+      ).focus()
+
+      setTimeout(() => {
+        const video = this.querySelector('template').nextElementSibling
+        video.muted = video.dataset.muted === 'true'
+        video.play()
+      })
+    }
+  }
+}
+
+customElements.define('deferred-media', DeferredMedia)
+
+class VariantSelects extends HTMLElement {
+  constructor() {
+    super();
+
+    this.swatchColor = this.querySelector('.js-swatch-color');
+    this.swatchSize = this.querySelector('.js-swatch-size');
+    this.swatchFill = this.querySelector('.js-swatch-fill');
+    this.swatchElement = this.querySelectorAll('.js-swatch-element');
+    this.activeSwatch()
+    
+    
+  }
+
+
+  activeSwatch() {
+    var getFillList,
+        getSizeList
+    this.swatchElement.forEach((element) => { 
+      element.addEventListener('click', (event) => {
+        if (event.target.tagName === "INPUT") {
+          let radio = event.target.value
+          let details = event.target.closest('.swatch').querySelector('.js-swatch-header em')
+          console.log(event.target)
+          details.textContent = radio
+          
+          if (event.target.closest('.js-swatch-color')) {
+            console.log('color')
+            getSizeList = JSON.parse(event.target.parentElement.getAttribute('data-variant-size'))
+            getFillList = JSON.parse(event.target.parentElement.getAttribute('data-variant-fill'))
+
+            console.log(getFillList)
+
+            if (getSizeList != null)  {
+              console.log(getSizeList)
+
+              this.swatchSize.querySelectorAll('.js-swatch-element').forEach((element) => { 
+                element.classList.remove('hidden')
+                let key = element.getAttribute('data-value')
+                if (!getSizeList.includes(key)) {
+                  element.classList.add('hidden')
+                }
+              })
+              
+              console.log()
+            }
+            
+          }
+          if (event.target.closest('.js-swatch-size')) {
+            console.log('size'+radio)
+            if (getFillList != null)  {
+              console.log(getFillList)
+              this.swatchFill.querySelectorAll('.js-swatch-element').forEach((element) => {
+                element.classList.remove('hidden')
+                let key = radio+':'+element.getAttribute('data-value')
+                console.log(key)
+                if (!getFillList.includes(key)) {
+                  console.log(element)
+                  element.classList.add('hidden')
+                }
+              })
+            }
+          }
+
+        }
+      })
+    })
+  }
+
+  updateSwatchSize() {
+  }
+
+  updateSwatchFill() {
+  }
+  
+  updateOptions() {
+    this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+  }
+
+  updateMasterId() {
+    this.currentVariant = this.getVariantData().find((variant) => {
+      return !variant.options.map((option, index) => {
+        return this.options[index] === option;
+      }).includes(false);
+    });
+  }
+
+  updateURL() {
+    if (!this.currentVariant) return;
+    window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+  }
+
+  updateVariantInput() {
+    const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment`);
+    productForms.forEach((productForm) => {
+      const input = productForm.querySelector('input[name="id"]');
+      input.value = this.currentVariant.id;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }
+
+  getVariantData() {
+    this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+    return this.variantData;
+  }
+}
+
+customElements.define('variant-selects', VariantSelects);
