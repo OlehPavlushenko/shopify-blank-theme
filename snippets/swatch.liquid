@@ -60,14 +60,14 @@
     {% else %}
         {%- assign current_variant = product.selected_or_first_available_variant -%}
         {% if is_color %}
-            {% assign class = 'swatch-color' %}
+            {% assign class = 'swatch-first' %}
         {% elsif is_size %}
-            {% assign class = 'swatch-size' %}
+            {% assign class = 'swatch-second' %}
         {% else %}
-            {% assign class = 'swatch-fill' %}
+            {% assign class = 'swatch-third' %}
         {% endif %}
         <div
-            class='swatch swatch--product clearfix swatch-item-{{ swatch }} js-{{ class }}'
+            class='swatch swatch--product swatch-item-{{ swatch }} js-{{ class }}'
             data-option-index='{{ option_index }}'
             data-swatch='{{ swatch }}'
         >
@@ -82,43 +82,22 @@
 
             {% for variant in product.variants %}
                 {% assign value = variant.options[option_index] %}
-                {% assign values_lvl2 = '' %}
-                {% assign values_lvl3 = '' %}
 
                 {% unless values contains value %}
                     {% assign values = values | join: ',' | append: ',' | append: value | split: ',' %}
 
-                    {% for item in product.variants %}
-                        {% if is_color or is_size %}
-                            {% if value == item.options[option_index] %}
-                                {% assign values_lvl2 = values_lvl2
-                                    | join: ','
-                                    | append: item.options[1]
-                                    | append: ','
-                                %}
-
-                                {% if values_lvl2 contains item.options[1] %}
-                                    {% assign values_lvl3 = values_lvl3
-                                        | join: ','
-                                        | append: item.options[1]
-                                        | append: ':'
-                                        | append: item.options[2]
-                                        | append: ','
-                                    %}
-                                    {% assign title_lvl3 = title_lvl3 | join: ',' | append: values_lvl3 | append: ',' %}
-                                {% endif %}
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
                     <div
-                        {% if is_color and values_lvl2.size > 1 %}
-                            data-variant-size='{{ values_lvl2 | split: ',' | uniq | json }}'
+                        {% if is_color %}
+                            data-color='{{ value }}'
                         {% endif %}
-                        {% if is_color and values_lvl3.size > 1 %}
-                            data-variant-fill='{{- values_lvl3 | split: ',' | uniq | json -}}'
+                        {% if is_size %}
+                            data-size='{{ value }}'
+                        {% endif %}
+                        {% if is_fill %}
+                            data-material='{{ value }}'
                         {% endif %}
                         data-value='{{ value }}'
-                        class='swatch-element {% if is_color %}color {% endif %}{{ value | handle }} {% if variant.available or is_color %}available{% else %}soldout{% endif %} js-swatch-element'
+                        class='swatch-element {% if is_color %}color {% endif %}{{ value | handle }} js-swatch-element hiddens'
                     >
                         <input
                             id='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'
@@ -126,9 +105,6 @@
                             data-variant-image='{{ variant.id }}'
                             name='option-{{ option_index }}-{{ product.id }}'
                             value='{{ value | escape }}'
-                            {% if current_variant.options[option_index] == variant.options[option_index] %}
-                                checked=''
-                            {% endif %}
                             data-swatch-option='{{ option_index }}'
                         >
                         {% if is_color %}

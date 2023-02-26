@@ -64,6 +64,9 @@
 }
 
 .swatch-wrap {
+    .visible, .active {
+        display: block!important;
+    }
     .swatch--product.swatch-item-Color {
         .swatch-element {
             width: 20px;
@@ -135,6 +138,9 @@
             }
             &.hidden {
                 display: none;
+            }
+            &.unavailable {
+                opacity: .2;
             }
         }
     }

@@ -241,63 +241,195 @@ class VariantSelects extends HTMLElement {
   constructor() {
     super();
 
-    this.swatchColor = this.querySelector('.js-swatch-color');
-    this.swatchSize = this.querySelector('.js-swatch-size');
-    this.swatchFill = this.querySelector('.js-swatch-fill');
-    this.swatchElement = this.querySelectorAll('.js-swatch-element');
-    this.activeSwatch()
+    this.swatchFirst = this.querySelector('.js-swatch-first')
+    this.swatchSecond = this.querySelector('.js-swatch-second')
+    this.swatchThird = this.querySelector('.js-swatch-third')
+    this.swatchElement = this.querySelectorAll('.js-swatch-element')
+
+    this.swatchColor = false
+    this.swatchSize = false
+    this.swatchFill = false
+
+    this.getVariantList = {}
     
+    this.initSwatch()
     
   }
 
 
-  activeSwatch() {
-    var getFillList,
-        getSizeList
+  initSwatch() {
+    this.getVariantData()
+
+    this.createNewListVariant(this.variantData)
+
+    if ((this.swatchColor && !this.swatchSize)) {
+      console.log('lvl-1')
+      const availableColors = Object.entries(this.getVariantList).filter(([color, data]) => data.available).map(([color, data]) => color)
+
+      this.swatchFirst.querySelectorAll('[data-color]').forEach(element => {
+        const color = element.dataset.color
+        element.classList.toggle('available', availableColors.includes(color))
+        element.classList.toggle('unavailable', !availableColors.includes(color))
+      });
+    }
+
+    if (this.swatchColor && this.swatchSize && !this.swatchFill) {
+      console.log('lvl-2')
+      const availableColors = Object.keys(this.getVariantList).filter((color) => {
+        const sizes = this.getVariantList[color];
+        return Object.keys(sizes).some((size) => sizes[size].available);
+      });
+
+      this.swatchFirst.querySelectorAll('[data-color]').forEach(element => {
+        const color = element.dataset.color
+        element.classList.toggle('available', availableColors.includes(color))
+        element.classList.toggle('unavailable', !availableColors.includes(color))
+      });
+      
+      const firstColor = availableColors[0];
+      console.log(firstColor)
+      const availableSizes = Object.keys(this.getVariantList[firstColor]).filter((size) => {
+        return this.getVariantList[firstColor][size].available
+      })
+
+      this.swatchSecond.querySelectorAll('[data-size]').forEach(element => {
+        const size = element.dataset.size
+        element.classList.toggle('available', availableSizes.includes(size))
+        element.classList.toggle('unavailable', !availableSizes.includes(size))
+      });
+    }
+
+    if (this.swatchColor && this.swatchSize && this.swatchFill) {
+      console.log('lvl-3')
+      const availableColors = Object.keys(this.getVariantList).filter(color => {
+        return Object.values(this.getVariantList[color]).some(sizes => {
+          return Object.values(sizes).some(materials => materials.available)
+        })
+      })
+
+      this.swatchFirst.querySelectorAll('[data-color]').forEach(element => {
+        const color = element.dataset.color
+        element.classList.toggle('available', availableColors.includes(color))
+        element.classList.toggle('unavailable', !availableColors.includes(color))
+      });
+
+      const firstColor = availableColors[0];
+      const availableSizes = Object.keys(this.getVariantList[firstColor]).filter((size) => {
+        const materials = this.getVariantList[firstColor][size]
+        return Object.keys(materials).some((material) => materials[material].available)
+      })
+
+      this.swatchSecond.querySelectorAll('[data-size]').forEach(element => {
+        const size = element.dataset.size
+        element.classList.toggle('available', availableSizes.includes(size))
+        element.classList.toggle('unavailable', !availableSizes.includes(size))
+      });
+
+      const firstSize = availableSizes[0];
+      const availableMaterials = Object.keys(this.getVariantList[firstColor][firstSize]).filter((material) => {
+        return this.getVariantList[firstColor][firstSize][material].available
+      })
+
+      this.swatchThird.querySelectorAll('[data-material]').forEach(element => {
+        const material = element.dataset.material
+        element.classList.toggle('available', availableMaterials.includes(material))
+        element.classList.toggle('unavailable', !availableMaterials.includes(material))
+      });
+    }
+
+    
+
+    
+  
+
+
+    // Получить первый доступный цвет
+
+   // const firstColor = Object.keys(this.getVariantList).find((color) => {
+      //const sizes = this.getVariantList[color];
+      //return Object.keys(sizes).some((size) => {
+        //const materials = sizes[size];
+        //return Object.keys(materials).some((material) => materials[material].available);
+      //});
+    //});
+
+    // Получить список доступных размеров для первого доступного цвета
+
+    //const availableSizes = Object.keys(this.getVariantList[firstColor]).filter((size) => {
+      //const materials = this.getVariantList[firstColor][size];
+      //return Object.keys(materials).some((material) => materials[material].available);
+   // });
+
+    // Получить список доступных материалов для первого доступного размера
+
+    //const firstSize = availableSizes[0];
+    //const availableMaterials = Object.keys(this.getVariantList[firstColor][firstSize]).filter((material) => {
+      //return this.getVariantList[firstColor][firstSize][material].available;
+    //});
+
+    // Отметить кнопки на странице, соответствующие доступным свойствам
+
+    //availableColors.forEach((color) => {
+      //console.log(color)
+      //const colorButton = this.swatchFirst.querySelector(`[data-color="${color}"]`)
+      
+      //if (color === firstColor) {
+        //colorButton.classList.add("active");
+        //colorButton.firstElementChild.checked = true;
+      //} else {
+        //colorButton.classList.add("visible");
+      //}
+    //});
+
+   // console.log(availableSizes)
+
+    //availableSizes.forEach((size) => {
+      //const sizeButton = this.swatchSecond.querySelector(`[data-size="${size}"]`);
+
+     // if (size === firstSize) {
+        //sizeButton.classList.add("active");
+        //sizeButton.firstElementChild.checked = true;
+      //} else {
+        //sizeButton.classList.add("visible");
+      //}
+    //});
+
+
+    //const firstMaterials = availableMaterials[0];
+    //availableMaterials.forEach((material) => {
+     // const materialButton = this.swatchThird.querySelector(`[data-material="${material}"]`);
+
+     // materialButton.classList.add("active");
+     // if (material === firstMaterials) {
+        //materialButton.classList.add("active");
+        //materialButton.firstElementChild.checked = true;
+     // } else {
+       // materialButton.classList.add("visible");
+     //}
+   // });
+
+
+    
+
+    //console.log(this.getSecondList)
+    //console.log(this.getThirdList)
+
     this.swatchElement.forEach((element) => { 
       element.addEventListener('click', (event) => {
+
         if (event.target.tagName === "INPUT") {
           let radio = event.target.value
           let details = event.target.closest('.swatch').querySelector('.js-swatch-header em')
-          console.log(event.target)
+          //console.log(event.target)
           details.textContent = radio
           
           if (event.target.closest('.js-swatch-color')) {
-            console.log('color')
-            getSizeList = JSON.parse(event.target.parentElement.getAttribute('data-variant-size'))
-            getFillList = JSON.parse(event.target.parentElement.getAttribute('data-variant-fill'))
-
-            console.log(getFillList)
-
-            if (getSizeList != null)  {
-              console.log(getSizeList)
-
-              this.swatchSize.querySelectorAll('.js-swatch-element').forEach((element) => { 
-                element.classList.remove('hidden')
-                let key = element.getAttribute('data-value')
-                if (!getSizeList.includes(key)) {
-                  element.classList.add('hidden')
-                }
-              })
-              
-              console.log()
-            }
             
+            //this.updateSwatchSize(event)
           }
+
           if (event.target.closest('.js-swatch-size')) {
-            console.log('size'+radio)
-            if (getFillList != null)  {
-              console.log(getFillList)
-              this.swatchFill.querySelectorAll('.js-swatch-element').forEach((element) => {
-                element.classList.remove('hidden')
-                let key = radio+':'+element.getAttribute('data-value')
-                console.log(key)
-                if (!getFillList.includes(key)) {
-                  console.log(element)
-                  element.classList.add('hidden')
-                }
-              })
-            }
+            //this.updateSwatchFill()
           }
 
         }
@@ -305,10 +437,84 @@ class VariantSelects extends HTMLElement {
     })
   }
 
-  updateSwatchSize() {
+  createNewListVariant(variantData) {
+    for (let i = 0; i < variantData.length; i++) {
+      let color = variantData[i].option1;
+      let size = variantData[i].option2;
+      let material = variantData[i].option3;
+      let available = variantData[i].available;
+      if (color) {
+        this.swatchColor = true
+      }
+      if (size) {
+        this.swatchSize = true
+      }
+      if (material) {
+        this.swatchFill = true
+      }
+            
+      // если объект для этого цвета еще не создан, создаем его
+
+      if (!this.getVariantList[color]) {
+        if (size || material ) {
+          this.getVariantList[color] = {}
+        }else {
+          this.getVariantList[color] = {
+            available: available
+          }
+        }
+        
+      }
+      
+      // если массив для этого размера еще не создан, создаем его
+
+      if (!this.getVariantList[color][size]) {
+        if (material ) {
+          this.getVariantList[color][size] = {}
+        }else {
+          this.getVariantList[color][size] = {
+            available: available
+          }
+        }
+      }
+      
+      // добавляем свойство для этого материала
+
+      if (!this.getVariantList[color][size][material]) {
+        if (material ) {
+          this.getVariantList[color][size][material] = {
+            available: available
+          }
+        }
+      }
+    }
+  }
+
+  updateSwatchSize(event) {
+    this.getSizeList = JSON.parse(event.target.parentElement.getAttribute('data-variant-size'))
+    this.getFillList = JSON.parse(event.target.parentElement.getAttribute('data-variant-fill'))
+
+    if (this.getSizeList != null)  {
+      this.swatchSize.querySelectorAll('.js-swatch-element').forEach((element) => { 
+        element.classList.remove('hidden')
+        let key = element.getAttribute('data-value')
+        if (!this.getSizeList.includes(key)) {
+          element.classList.add('hidden')
+        }
+      })
+    }
   }
 
   updateSwatchFill() {
+    if (this.getFillList != null)  {
+      this.swatchFill.querySelectorAll('.js-swatch-element').forEach((element) => {
+        element.classList.remove('hidden')
+        let key = radio+':'+element.getAttribute('data-value')
+        if (!this.getFillList.includes(key)) {
+          element.classList.add('hidden')
+        }
+      })
+    }
   }
   
   updateOptions() {
