@@ -265,38 +265,70 @@ class VariantSelects extends HTMLElement {
     if ((this.swatchColor && !this.swatchSize)) {
       console.log('lvl-1')
       const availableColors = Object.entries(this.getVariantList).filter(([color, data]) => data.available).map(([color, data]) => color)
+      const firstColor = availableColors[0];
 
       this.swatchFirst.querySelectorAll('[data-color]').forEach(element => {
         const color = element.dataset.color
         element.classList.toggle('available', availableColors.includes(color))
         element.classList.toggle('unavailable', !availableColors.includes(color))
       });
+
+      availableColors.forEach((color) => {
+        const colorButton = this.swatchFirst.querySelector(`[data-color="${color}"]`)
+        if (color === firstColor) {
+          colorButton.classList.add("active");
+          colorButton.firstElementChild.checked = true
+        }
+      })
     }
 
     if (this.swatchColor && this.swatchSize && !this.swatchFill) {
       console.log('lvl-2')
       const availableColors = Object.keys(this.getVariantList).filter((color) => {
-        const sizes = this.getVariantList[color];
-        return Object.keys(sizes).some((size) => sizes[size].available);
-      });
+        const sizes = this.getVariantList[color]
+        return Object.keys(sizes).some((size) => sizes[size].available)
+      })
+      const firstColor = availableColors[0]
 
       this.swatchFirst.querySelectorAll('[data-color]').forEach(element => {
         const color = element.dataset.color
         element.classList.toggle('available', availableColors.includes(color))
         element.classList.toggle('unavailable', !availableColors.includes(color))
-      });
+      })
+
+      availableColors.forEach((color) => {
+        const colorButton = this.swatchFirst.querySelector(`[data-color="${color}"]`)
+        if (color === firstColor) {
+          colorButton.classList.add('active')
+          colorButton.firstElementChild.checked = true
+        }
+      })
       
-      const firstColor = availableColors[0];
-      console.log(firstColor)
+      this.swatchSecond.querySelectorAll('.js-swatch-element').forEach(element => {
+        let value = element.getAttribute('data-value')
+        if(!this.getVariantList[firstColor].hasOwnProperty(value)) {
+          element.classList.add('hidden')
+        }
+      })
+
       const availableSizes = Object.keys(this.getVariantList[firstColor]).filter((size) => {
         return this.getVariantList[firstColor][size].available
       })
+      const firstSize = availableSizes[0]
 
       this.swatchSecond.querySelectorAll('[data-size]').forEach(element => {
         const size = element.dataset.size
         element.classList.toggle('available', availableSizes.includes(size))
         element.classList.toggle('unavailable', !availableSizes.includes(size))
-      });
+      })
+
+      availableSizes.forEach((size) => {
+        const sizeButton = this.swatchSecond.querySelector(`[data-size="${size}"]`)
+        if (size === firstSize) {
+          sizeButton.classList.add('active')
+          sizeButton.firstElementChild.checked = true
+        } 
+      })
     }
 
     if (this.swatchColor && this.swatchSize && this.swatchFill) {
@@ -306,68 +338,77 @@ class VariantSelects extends HTMLElement {
           return Object.values(sizes).some(materials => materials.available)
         })
       })
+      const firstColor = availableColors[0]
 
       this.swatchFirst.querySelectorAll('[data-color]').forEach(element => {
         const color = element.dataset.color
         element.classList.toggle('available', availableColors.includes(color))
         element.classList.toggle('unavailable', !availableColors.includes(color))
-      });
+      })
 
-      const firstColor = availableColors[0];
+      availableColors.forEach((color) => {
+        const colorButton = this.swatchFirst.querySelector(`[data-color="${color}"]`)
+        if (color === firstColor) {
+          colorButton.classList.add('active');
+          colorButton.firstElementChild.checked = true
+        }
+      })
+
+      this.swatchSecond.querySelectorAll('.js-swatch-element').forEach(element => {
+        let value = element.getAttribute('data-value')
+        if(!this.getVariantList[firstColor].hasOwnProperty(value)) {
+          element.classList.add('hidden')
+        }
+      })
+
       const availableSizes = Object.keys(this.getVariantList[firstColor]).filter((size) => {
         const materials = this.getVariantList[firstColor][size]
         return Object.keys(materials).some((material) => materials[material].available)
       })
+      const firstSize = availableSizes[0]
 
       this.swatchSecond.querySelectorAll('[data-size]').forEach(element => {
         const size = element.dataset.size
         element.classList.toggle('available', availableSizes.includes(size))
         element.classList.toggle('unavailable', !availableSizes.includes(size))
-      });
+      })
 
-      const firstSize = availableSizes[0];
+      availableSizes.forEach((size) => {
+        const sizeButton = this.swatchSecond.querySelector(`[data-size="${size}"]`)
+        if (size === firstSize) {
+          sizeButton.classList.add('active')
+          sizeButton.firstElementChild.checked = true
+        } 
+      })
+
+      this.swatchThird.querySelectorAll('.js-swatch-element').forEach(element => {
+        let value = element.getAttribute('data-value')
+        if(!this.getVariantList[firstColor][firstSize].hasOwnProperty(value)) {
+          element.classList.add('hidden')
+        }
+      })
+
       const availableMaterials = Object.keys(this.getVariantList[firstColor][firstSize]).filter((material) => {
         return this.getVariantList[firstColor][firstSize][material].available
       })
+      const firstMaterials = availableMaterials[0]
 
       this.swatchThird.querySelectorAll('[data-material]').forEach(element => {
         const material = element.dataset.material
         element.classList.toggle('available', availableMaterials.includes(material))
         element.classList.toggle('unavailable', !availableMaterials.includes(material))
-      });
+      })
+
+      availableMaterials.forEach((material) => {
+        const materialButton = this.swatchThird.querySelector(`[data-material="${material}"]`)
+
+        materialButton.classList.add('active')
+          if (material === firstMaterials) {
+            materialButton.classList.add('active')
+            materialButton.firstElementChild.checked = true
+          } 
+      })
     }
-
-    
-
-    
-  
-
-
-    // Получить первый доступный цвет
-
-   // const firstColor = Object.keys(this.getVariantList).find((color) => {
-      //const sizes = this.getVariantList[color];
-      //return Object.keys(sizes).some((size) => {
-        //const materials = sizes[size];
-        //return Object.keys(materials).some((material) => materials[material].available);
-      //});
-    //});
-
-    // Получить список доступных размеров для первого доступного цвета
-
-    //const availableSizes = Object.keys(this.getVariantList[firstColor]).filter((size) => {
-      //const materials = this.getVariantList[firstColor][size];
-      //return Object.keys(materials).some((material) => materials[material].available);
-   // });
-
-    // Получить список доступных материалов для первого доступного размера
-
-    //const firstSize = availableSizes[0];
-    //const availableMaterials = Object.keys(this.getVariantList[firstColor][firstSize]).filter((material) => {
-      //return this.getVariantList[firstColor][firstSize][material].available;
-    //});
-
-    // Отметить кнопки на странице, соответствующие доступным свойствам
 
     //availableColors.forEach((color) => {
       //console.log(color)
