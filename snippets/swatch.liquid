@@ -16,26 +16,29 @@
     </div>
 {% else %}
     {% assign found_option = false %}
+    {% assign is_first = false %}
     {% assign is_color = false %}
-    {% assign is_size = false %}
-    {% assign is_fill = false %}
+    {% assign is_second = false %}
+    {% assign is_third = false %}
     {% assign option_index = 0 %}
+
     {% for option in product.options %}
         {% if option == swatch %}
             {% assign found_option = true %}
             {% assign option_index = forloop.index0 %}
             {% assign downcased_option = swatch | downcase %}
 
-            {% if downcased_option contains 'color' or downcased_option contains 'colour' %}
+            {% if downcased_option contains 'color' %}
                 {% assign is_color = true %}
+                {% assign is_first = true %}
             {% endif %}
 
             {% if downcased_option contains 'size' %}
-                {% assign is_size = true %}
+                {% assign is_second = true %}
             {% endif %}
 
             {% if downcased_option contains 'fill' or downcased_option contains 'pattern' %}
-                {% assign is_fill = true %}
+                {% assign is_third = true %}
             {% endif %}
         {% endif %}
     {% endfor %}
@@ -59,9 +62,9 @@
         </div>
     {% else %}
         {%- assign current_variant = product.selected_or_first_available_variant -%}
-        {% if is_color %}
+        {% if is_first %}
             {% assign class = 'swatch-first' %}
-        {% elsif is_size %}
+        {% elsif is_second %}
             {% assign class = 'swatch-second' %}
         {% else %}
             {% assign class = 'swatch-third' %}
@@ -87,22 +90,21 @@
                     {% assign values = values | join: ',' | append: ',' | append: value | split: ',' %}
 
                     <div
-                        {% if is_color %}
-                            data-color='{{ value }}'
+                        {% if is_first %}
+                            data-lvl-first='{{ value }}'
                         {% endif %}
-                        {% if is_size %}
-                            data-size='{{ value }}'
+                        {% if is_second %}
+                            data-lvl-second='{{ value }}'
                         {% endif %}
-                        {% if is_fill %}
-                            data-material='{{ value }}'
+                        {% if is_third %}
+                            data-lvl-third='{{ value }}'
                         {% endif %}
                         data-value='{{ value }}'
-                        class='swatch-element {% if is_color %}color {% endif %}{{ value | handle }} js-swatch-element'
+                        class='swatch-element {% if is_color %}swatch-element-color {% endif %}{{ value | handle }} js-swatch-element'
                     >
                         <input
                             id='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'
                             type='radio'
-                            data-variant-image='{{ variant.id }}'
                             name='option-{{ option_index }}-{{ product.id }}'
                             value='{{ value | escape }}'
                             data-swatch-option='{{ option_index }}'

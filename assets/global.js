@@ -246,9 +246,9 @@ class VariantSelects extends HTMLElement {
     this.swatchThird = this.querySelector('.js-swatch-third')
     this.swatchElement = this.querySelectorAll('.js-swatch-element')
 
-    this.swatchColor = false
-    this.swatchSize = false
-    this.swatchFill = false
+    this.swatchLvlFirst = false
+    this.swatchLvlSecond = false
+    this.swatchLvlThird = false
 
     this.getVariantList = {}
     
@@ -262,198 +262,23 @@ class VariantSelects extends HTMLElement {
 
     this.createNewListVariant(this.variantData)
 
-    if ((this.swatchColor && !this.swatchSize)) {
+    //Check the level First of available buttons
+    if ((this.swatchLvlFirst && !this.swatchLvlSecond)) {
       console.log('lvl-1')
-      const availableColors = Object.entries(this.getVariantList).filter(([color, data]) => data.available).map(([color, data]) => color)
-      const firstColor = availableColors[0];
-
-      this.swatchFirst.querySelectorAll('[data-color]').forEach(element => {
-        const color = element.dataset.color
-        element.classList.toggle('available', availableColors.includes(color))
-        element.classList.toggle('unavailable', !availableColors.includes(color))
-      });
-
-      availableColors.forEach((color) => {
-        const colorButton = this.swatchFirst.querySelector(`[data-color="${color}"]`)
-        if (color === firstColor) {
-          colorButton.classList.add("active");
-          colorButton.firstElementChild.checked = true
-        }
-      })
+      this.checkSwatchLvlFirst()
     }
 
-    if (this.swatchColor && this.swatchSize && !this.swatchFill) {
+    //Check the level Second of available buttons
+    if (this.swatchLvlFirst && this.swatchLvlSecond && !this.swatchLvlThird) {
       console.log('lvl-2')
-      const availableColors = Object.keys(this.getVariantList).filter((color) => {
-        const sizes = this.getVariantList[color]
-        return Object.keys(sizes).some((size) => sizes[size].available)
-      })
-      const firstColor = availableColors[0]
-
-      this.swatchFirst.querySelectorAll('[data-color]').forEach(element => {
-        const color = element.dataset.color
-        element.classList.toggle('available', availableColors.includes(color))
-        element.classList.toggle('unavailable', !availableColors.includes(color))
-      })
-
-      availableColors.forEach((color) => {
-        const colorButton = this.swatchFirst.querySelector(`[data-color="${color}"]`)
-        if (color === firstColor) {
-          colorButton.classList.add('active')
-          colorButton.firstElementChild.checked = true
-        }
-      })
-      
-      this.swatchSecond.querySelectorAll('.js-swatch-element').forEach(element => {
-        let value = element.getAttribute('data-value')
-        if(!this.getVariantList[firstColor].hasOwnProperty(value)) {
-          element.classList.add('hidden')
-        }
-      })
-
-      const availableSizes = Object.keys(this.getVariantList[firstColor]).filter((size) => {
-        return this.getVariantList[firstColor][size].available
-      })
-      const firstSize = availableSizes[0]
-
-      this.swatchSecond.querySelectorAll('[data-size]').forEach(element => {
-        const size = element.dataset.size
-        element.classList.toggle('available', availableSizes.includes(size))
-        element.classList.toggle('unavailable', !availableSizes.includes(size))
-      })
-
-      availableSizes.forEach((size) => {
-        const sizeButton = this.swatchSecond.querySelector(`[data-size="${size}"]`)
-        if (size === firstSize) {
-          sizeButton.classList.add('active')
-          sizeButton.firstElementChild.checked = true
-        } 
-      })
+      this.checkSwatchLvlSecond()
     }
 
-    if (this.swatchColor && this.swatchSize && this.swatchFill) {
+    //Check the level Third of available buttons
+    if (this.swatchLvlFirst && this.swatchLvlSecond && this.swatchLvlThird) {
       console.log('lvl-3')
-      const availableColors = Object.keys(this.getVariantList).filter(color => {
-        return Object.values(this.getVariantList[color]).some(sizes => {
-          return Object.values(sizes).some(materials => materials.available)
-        })
-      })
-      const firstColor = availableColors[0]
-
-      this.swatchFirst.querySelectorAll('[data-color]').forEach(element => {
-        const color = element.dataset.color
-        element.classList.toggle('available', availableColors.includes(color))
-        element.classList.toggle('unavailable', !availableColors.includes(color))
-      })
-
-      availableColors.forEach((color) => {
-        const colorButton = this.swatchFirst.querySelector(`[data-color="${color}"]`)
-        if (color === firstColor) {
-          colorButton.classList.add('active');
-          colorButton.firstElementChild.checked = true
-        }
-      })
-
-      this.swatchSecond.querySelectorAll('.js-swatch-element').forEach(element => {
-        let value = element.getAttribute('data-value')
-        if(!this.getVariantList[firstColor].hasOwnProperty(value)) {
-          element.classList.add('hidden')
-        }
-      })
-
-      const availableSizes = Object.keys(this.getVariantList[firstColor]).filter((size) => {
-        const materials = this.getVariantList[firstColor][size]
-        return Object.keys(materials).some((material) => materials[material].available)
-      })
-      const firstSize = availableSizes[0]
-
-      this.swatchSecond.querySelectorAll('[data-size]').forEach(element => {
-        const size = element.dataset.size
-        element.classList.toggle('available', availableSizes.includes(size))
-        element.classList.toggle('unavailable', !availableSizes.includes(size))
-      })
-
-      availableSizes.forEach((size) => {
-        const sizeButton = this.swatchSecond.querySelector(`[data-size="${size}"]`)
-        if (size === firstSize) {
-          sizeButton.classList.add('active')
-          sizeButton.firstElementChild.checked = true
-        } 
-      })
-
-      this.swatchThird.querySelectorAll('.js-swatch-element').forEach(element => {
-        let value = element.getAttribute('data-value')
-        if(!this.getVariantList[firstColor][firstSize].hasOwnProperty(value)) {
-          element.classList.add('hidden')
-        }
-      })
-
-      const availableMaterials = Object.keys(this.getVariantList[firstColor][firstSize]).filter((material) => {
-        return this.getVariantList[firstColor][firstSize][material].available
-      })
-      const firstMaterials = availableMaterials[0]
-
-      this.swatchThird.querySelectorAll('[data-material]').forEach(element => {
-        const material = element.dataset.material
-        element.classList.toggle('available', availableMaterials.includes(material))
-        element.classList.toggle('unavailable', !availableMaterials.includes(material))
-      })
-
-      availableMaterials.forEach((material) => {
-        const materialButton = this.swatchThird.querySelector(`[data-material="${material}"]`)
-
-        materialButton.classList.add('active')
-          if (material === firstMaterials) {
-            materialButton.classList.add('active')
-            materialButton.firstElementChild.checked = true
-          } 
-      })
+      this.checkSwatchLvlThird()
     }
-
-    //availableColors.forEach((color) => {
-      //console.log(color)
-      //const colorButton = this.swatchFirst.querySelector(`[data-color="${color}"]`)
-      
-      //if (color === firstColor) {
-        //colorButton.classList.add("active");
-        //colorButton.firstElementChild.checked = true;
-      //} else {
-        //colorButton.classList.add("visible");
-      //}
-    //});
-
-   // console.log(availableSizes)
-
-    //availableSizes.forEach((size) => {
-      //const sizeButton = this.swatchSecond.querySelector(`[data-size="${size}"]`);
-
-     // if (size === firstSize) {
-        //sizeButton.classList.add("active");
-        //sizeButton.firstElementChild.checked = true;
-      //} else {
-        //sizeButton.classList.add("visible");
-      //}
-    //});
-
-
-    //const firstMaterials = availableMaterials[0];
-    //availableMaterials.forEach((material) => {
-     // const materialButton = this.swatchThird.querySelector(`[data-material="${material}"]`);
-
-     // materialButton.classList.add("active");
-     // if (material === firstMaterials) {
-        //materialButton.classList.add("active");
-        //materialButton.firstElementChild.checked = true;
-     // } else {
-       // materialButton.classList.add("visible");
-     //}
-   // });
-
-
-    
-
-    //console.log(this.getSecondList)
-    //console.log(this.getThirdList)
 
     this.swatchElement.forEach((element) => { 
       element.addEventListener('click', (event) => {
@@ -464,12 +289,12 @@ class VariantSelects extends HTMLElement {
           //console.log(event.target)
           details.textContent = radio
           
-          if (event.target.closest('.js-swatch-color')) {
+          if (event.target.closest('.js-swatch-first')) {
             
             //this.updateSwatchSize(event)
           }
 
-          if (event.target.closest('.js-swatch-size')) {
+          if (event.target.closest('.js-swatch-second')) {
             //this.updateSwatchFill()
           }
 
@@ -480,86 +305,201 @@ class VariantSelects extends HTMLElement {
 
   createNewListVariant(variantData) {
     for (let i = 0; i < variantData.length; i++) {
-      let color = variantData[i].option1;
-      let size = variantData[i].option2;
-      let material = variantData[i].option3;
+      let option1 = variantData[i].option1;
+      let option2 = variantData[i].option2;
+      let option3 = variantData[i].option3;
       let available = variantData[i].available;
-      if (color) {
-        this.swatchColor = true
-      }
-      if (size) {
-        this.swatchSize = true
-      }
-      if (material) {
-        this.swatchFill = true
-      }
-            
-      // если объект для этого цвета еще не создан, создаем его
-
-      if (!this.getVariantList[color]) {
-        if (size || material ) {
-          this.getVariantList[color] = {}
-        }else {
-          this.getVariantList[color] = {
-            available: available
-          }
-        }
-        
-      }
       
-      // если массив для этого размера еще не создан, создаем его
-
-      if (!this.getVariantList[color][size]) {
-        if (material ) {
-          this.getVariantList[color][size] = {}
-        }else {
-          this.getVariantList[color][size] = {
-            available: available
-          }
-        }
+      if (option1) {
+        this.swatchLvlFirst = true
       }
+      if (option2) {
+        this.swatchLvlSecond = true
+      }
+      if (option3) {
+        this.swatchLvlThird = true
+      }
+    
+      const lvlFirst = this.getVariantList[option1] || {}
+      const lvlSecond = lvlFirst[option2] || {}
+      const lvlThird = lvlSecond[option3] || {}
       
-      // добавляем свойство для этого материала
-
-      if (!this.getVariantList[color][size][material]) {
-        if (material ) {
-          this.getVariantList[color][size][material] = {
-            available: available
-          }
+      if (option3) {
+        //check availability level 3
+        lvlSecond[option3] = {
+          ...lvlThird,
+          available: available,
+        }
+        lvlFirst[option2] = lvlSecond;
+        this.getVariantList[option1] = lvlFirst;
+      } else if (option2) {
+        //check availability level 2
+        lvlFirst[option2] = {
+          ...lvlSecond,
+          available: available,
+        }
+        this.getVariantList[option1] = lvlFirst;
+      } else {
+        //check availability level 1
+        this.getVariantList[option1] = {
+          ...lvlFirst,
+          available: available,
         }
       }
     }
   }
 
-  updateSwatchSize(event) {
-    this.getSizeList = JSON.parse(event.target.parentElement.getAttribute('data-variant-size'))
-    this.getFillList = JSON.parse(event.target.parentElement.getAttribute('data-variant-fill'))
+  checkSwatchLvlFirst() {
+    const availableItem = Object.entries(this.getVariantList).filter(([item, data]) => data.available).map(([item, data]) => item)
+    const firstItem = availableItem[0]
 
-    if (this.getSizeList != null)  {
-      this.swatchSize.querySelectorAll('.js-swatch-element').forEach((element) => { 
-        element.classList.remove('hidden')
-        let key = element.getAttribute('data-value')
-        if (!this.getSizeList.includes(key)) {
-          element.classList.add('hidden')
-        }
-      })
-    }
+    this.swatchFirst.querySelectorAll('[data-lvl-first]').forEach(element => {
+      const item = element.dataset.lvlFirst
+      element.classList.toggle('available', availableItem.includes(item))
+      element.classList.toggle('unavailable', !availableItem.includes(item))
+    });
+
+    availableItem.forEach((item) => {
+      const button = this.swatchFirst.querySelector(`[data-lvl-first="${item}"]`)
+      if (item === firstItem) {
+        button.classList.add("active");
+        button.firstElementChild.checked = true
+      }
+    })
   }
 
-  updateSwatchFill() {
-    if (this.getFillList != null)  {
-      this.swatchFill.querySelectorAll('.js-swatch-element').forEach((element) => {
-        element.classList.remove('hidden')
-        let key = radio+':'+element.getAttribute('data-value')
-        if (!this.getFillList.includes(key)) {
-          element.classList.add('hidden')
-        }
+  checkSwatchLvlSecond() {
+    const availableFirst = Object.keys(this.getVariantList).filter((first) => {
+      const second = this.getVariantList[first]
+      return Object.keys(second).some((item) => second[item].available)
+    })
+    const firstSelected = availableFirst[0]
+
+    this.swatchFirst.querySelectorAll('[data-lvl-first]').forEach(element => {
+      const item = element.dataset.lvlFirst
+      element.classList.toggle('available', availableFirst.includes(item))
+      element.classList.toggle('unavailable', !availableFirst.includes(item))
+    })
+
+    availableFirst.forEach((item) => {
+      const button = this.swatchFirst.querySelector(`[data-lvl-first="${item}"]`)
+      if (item === firstSelected) {
+        button.classList.add('active')
+        button.firstElementChild.checked = true
+      }
+    })
+    
+    this.swatchSecond.querySelectorAll('.js-swatch-element').forEach(element => {
+      let value = element.getAttribute('data-value')
+      if(!this.getVariantList[firstSelected].hasOwnProperty(value)) {
+        element.classList.add('hidden')
+      }
+    })
+
+    const availableSecond = Object.keys(this.getVariantList[firstSelected]).filter((item) => {
+      return this.getVariantList[firstSelected][item].available
+    })
+    const secondSelected = availableSecond[0]
+
+    this.swatchSecond.querySelectorAll('[data-lvl-second]').forEach(element => {
+      const item = element.dataset.lvlSecond
+      element.classList.toggle('available', availableSecond.includes(item))
+      element.classList.toggle('unavailable', !availableSecond.includes(item))
+    })
+
+    availableSecond.forEach((item) => {
+      const button = this.swatchSecond.querySelector(`[data-lvl-second="${item}"]`)
+      if (item === secondSelected) {
+        button.classList.add('active')
+        button.firstElementChild.checked = true
+      } 
+    })
+  }
+
+  checkSwatchLvlThird() {
+    const availableFirst = Object.keys(this.getVariantList).filter(first => {
+      return Object.values(this.getVariantList[first]).some(second => {
+        return Object.values(second).some(third => third.available)
       })
-    }
+    })
+    const firstSelected = availableFirst[0]
+
+    this.swatchFirst.querySelectorAll('[data-lvl-first]').forEach(element => {
+      const item = element.dataset.lvlFirst
+      element.classList.toggle('available', availableFirst.includes(item))
+      element.classList.toggle('unavailable', !availableFirst.includes(item))
+    })
+
+    availableFirst.forEach((item) => {
+      const button = this.swatchFirst.querySelector(`[data-lvl-first="${item}"]`)
+      if (item === firstSelected) {
+        button.classList.add('active');
+        button.firstElementChild.checked = true
+      }
+    })
+
+    this.swatchSecond.querySelectorAll('.js-swatch-element').forEach(element => {
+      let value = element.getAttribute('data-value')
+      if(!this.getVariantList[firstSelected].hasOwnProperty(value)) {
+        element.classList.add('hidden')
+      }
+    })
+
+    const availableSecond = Object.keys(this.getVariantList[firstSelected]).filter((item) => {
+      const third = this.getVariantList[firstSelected][item]
+      return Object.keys(third).some((item) => third[item].available)
+    })
+    const secondSelected = availableSecond[0]
+
+    this.swatchSecond.querySelectorAll('[data-lvl-second]').forEach(element => {
+      const item = element.dataset.lvlSecond
+      element.classList.toggle('available', availableSecond.includes(item))
+      element.classList.toggle('unavailable', !availableSecond.includes(item))
+    })
+
+    availableSecond.forEach((item) => {
+      const button = this.swatchSecond.querySelector(`[data-lvl-second="${item}"]`)
+      if (item === secondSelected) {
+        button.classList.add('active')
+        button.firstElementChild.checked = true
+      } 
+    })
+
+    this.swatchThird.querySelectorAll('.js-swatch-element').forEach(element => {
+      let value = element.getAttribute('data-value')
+      if(!this.getVariantList[firstSelected][secondSelected].hasOwnProperty(value)) {
+        element.classList.add('hidden')
+      }
+    })
+
+    const availableThird = Object.keys(this.getVariantList[firstSelected][secondSelected]).filter((item) => {
+      return this.getVariantList[firstSelected][secondSelected][item].available
+    })
+    const thirdSelected = availableThird[0]
+
+    this.swatchThird.querySelectorAll('[data-lvl-third]').forEach(element => {
+      const item = element.dataset.lvlThird
+      element.classList.toggle('available', availableThird.includes(item))
+      element.classList.toggle('unavailable', !availableThird.includes(item))
+    })
+
+    availableThird.forEach((item) => {
+      const button = this.swatchThird.querySelector(`[data-lvl-third="${item}"]`)
+
+      button.classList.add('active')
+        if (item === thirdSelected) {
+          button.classList.add('active')
+          button.firstElementChild.checked = true
+        } 
+    })
+  }
+
+
+
+  updateSwatchLvlSecond() {
   }
   
   updateOptions() {
-    this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
   }
 
   updateMasterId() {
@@ -573,15 +513,6 @@ class VariantSelects extends HTMLElement {
   updateURL() {
     if (!this.currentVariant) return;
     window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
-  }
-
-  updateVariantInput() {
-    const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment`);
-    productForms.forEach((productForm) => {
-      const input = productForm.querySelector('input[name="id"]');
-      input.value = this.currentVariant.id;
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    });
   }
 
   getVariantData() {
