@@ -1,19 +1,28 @@
 {% liquid
+    assign blocks = section.blocks
     assign heading = section.settings.heading
-    assign products_list = section.settings.products_list
-    assign show_add_to_cart = true
+    assign add_btn = section.settings.enable_add_btn
+    assign btn = section.settings.btn
+    assign columns_desktop = section.settings.columns_desktop
+    assign columns_mobile = section.settings.columns_mobile
 
     assign bg_color = section.settings.bg_color | default: 'transparent'
     assign title_color = section.settings.title_color | default: 'inherit'
 
     assign img_size = section.settings.prod_img_size
+    assign width = section.settings.width
     assign pad_top = section.settings.padding_top
     assign pad_bot = section.settings.padding_bottom
+    assign price_variant = false
+    if btn == 'quick'
+        assign price_variant = true
+    endif
 %}
 
 {% capture styles %}
     --title-color-featured-products: {{ title_color }};
     --background-color-featured-products: {{ bg_color }};
+    --width-featured-products: {{ width }}px;
     --pad-top-featured-products: {{ pad_top }}px;
     --pad-bot-featured-products: {{ pad_bot }}px;
   {% endcapture %}
@@ -23,7 +32,7 @@
 {{ 'section-featured-products.css' | asset_url | stylesheet_tag }}
 {{ 'component-card-products.css' | asset_url | stylesheet_tag }}
 
-{% if products_list != blank %}
+{% if blocks.size > 0 %}
     <div class='featured-products' style='{{ styles }}'>
         <div class='page-width'>
             {%- if heading != blank -%}
@@ -31,10 +40,23 @@
                     {{ heading | escape }}
                 </h3>
             {%- endif -%}
-            <ul class='featured-products__list'>
-                {% for product in products_list %}
+            <ul class='featured-products__list columns__desktop--{{ columns_desktop }} columns__mobile--{{ columns_mobile }}'>
+                {%- for block in blocks -%}
+                    {% liquid
+                        assign product = block.settings.product
+                        assign image_custom = block.settings.custom_image
+                        assign fill_image = block.settings.fill_image
+                    %}
                     <li class='featured-products__item'>
-                        {% render 'card-product', product: product, img_size: img_size, btn: show_add_to_cart %}
+                        {% render 'card-product',
+                            product: product,
+                            use_variant: price_variant,
+                            add_btn: add_btn,
+                            btn: btn,
+                            img_size: img_size,
+                            image_custom: image_custom,
+                            fill: fill_image
+                        %}
                     </li>
                 {% endfor %}
             </ul>
@@ -54,11 +76,53 @@
             "default": "Featured Products",
             "label": "Title"
         },
+
         {
-            "type": "product_list",
-            "id": "products_list",
-            "label": "Products List",
-            "limit": 8
+            "type": "checkbox",
+            "id": "enable_add_btn",
+            "default": false,
+            "label": "Enable add button"
+        },
+        {
+            "type": "select",
+            "id": "btn",
+            "default": "details",
+            "label": "Link or Quick add to cart",
+            "options": [
+                {
+                    "value": "quick",
+                    "label": "Quick add to cart"
+                },
+                {
+                    "value": "details",
+                    "label": "Details"
+                }
+            ]
+        },
+        {
+            "type": "range",
+            "id": "columns_desktop",
+            "min": 2,
+            "max": 4,
+            "step": 1,
+            "default": 4,
+            "label": "Number of columns on desktop"
+        },
+        {
+            "type": "select",
+            "id": "columns_mobile",
+            "default": "2",
+            "label": "Number of columns on mobile",
+            "options": [
+                {
+                    "value": "1",
+                    "label": "1 column"
+                },
+                {
+                    "value": "2",
+                    "label": "2 columns"
+                }
+            ]
         },
         {
             "type": "paragraph",
@@ -103,6 +167,16 @@
         },
         {
             "type": "range",
+            "id": "width",
+            "min": 1000,
+            "max": 1600,
+            "step": 100,
+            "default": 1200,
+            "unit": "px",
+            "label": "Section Width"
+        },
+        {
+            "type": "range",
             "id": "padding_top",
             "min": 0,
             "max": 60,
@@ -120,6 +194,31 @@
             "unit": "px",
             "label": "Padding bottom",
             "default": 30
+        }
+    ],
+    "blocks": [
+        {
+            "name": "Product ",
+            "type": "product_",
+            "settings": [
+                {
+                    "type": "product",
+                    "id": "product",
+                    "label": "Product"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "custom_image",
+                    "label": "Image",
+                    "info": "Custom image for the product instead of its featured image"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "fill_image",
+                    "default": false,
+                    "label": "Fill Image"
+                }
+            ]
         }
     ],
     "presets": [

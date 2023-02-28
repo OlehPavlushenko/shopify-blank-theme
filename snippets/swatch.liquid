@@ -37,7 +37,10 @@
                 {% assign is_second = true %}
             {% endif %}
 
-            {% if downcased_option contains 'fill' or downcased_option contains 'pattern' %}
+            {% if downcased_option contains 'fill'
+                or downcased_option contains 'pattern'
+                or downcased_option contains 'material'
+            %}
                 {% assign is_third = true %}
             {% endif %}
         {% endif %}

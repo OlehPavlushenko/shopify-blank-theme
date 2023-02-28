@@ -1,0 +1,59 @@
+{% form 'product', product, class: 'card-product__form' %}
+    {% if product.available and product.variants.size > 1 %}
+        <variant-selects
+            class='swatch-wrap'
+            data-section='{{ section.id }}-{{ product.id }}'
+            data-url='{{ product.url }}'
+            {{ block.shopify_attributes }}
+        >
+            {% render 'swatch' for product.options as swatch, product: product %}
+
+            <script type='application/json'>
+                {{ product.variants | json }}
+            </script>
+
+            <select
+                name='id'
+                id='ProductSelect-{{ product.id }}'
+                class='card-product__variants no-js'
+                data-product-select
+            >
+                {% for variant in product.variants %}
+                    {% if variant.available %}
+                        <option
+                            {% if variant == product.selected_or_first_available_variant %}
+                                selected='selected'
+                            {% endif %}
+                            data-sku='{{ variant.sku }}'
+                            value='{{ variant.id }}'
+                        >
+                            {{ variant.title }} - {{ variant.price | money_with_currency }}
+                        </option>
+
+                    {% else %}
+                        <option disabled='disabled'>{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </variant-selects>
+    {% endif %}
+
+    <input
+        type='number'
+        id='Quantity'
+        name='quantity'
+        value='1'
+        min='1'
+        class='quantity-selector hidden'
+    >
+
+    <button
+        type='submit'
+        name='add'
+        id='AddToCart-{{ product.id }}'
+        class='button--secondary'
+    >
+        <span id='AddToCartText'>{{ 'products.product.add_to_cart' | t }}</span>
+    </button>
+    <div data-ajax-cart-messages='form'></div>
+{% endform %}
