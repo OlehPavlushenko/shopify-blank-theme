@@ -6,18 +6,17 @@ if ( 'liquidAjaxCart' in window ) {
     liquidAjaxCart.configureCart('updateOnWindowFocus', false)
     liquidAjaxCart.subscribeToCartAjaxRequests(( requestState, subscribeToResult ) => {
         if ( requestState.requestType === 'add' ) {
-            buildNotification()
 
             subscribeToResult( requestState => {
-                if ( requestState.responseData?.ok ) {
-                let product_key = requestState.responseData.body.id
-                let product_id = String(requestState.responseData.body.product_id)
+                if ( requestState.responseData.ok ) {
+                    let product_key = requestState.responseData.body.id
+                    let product_id = String(requestState.responseData.body.product_id)
 
-                recommendProducts[product_key] = product_id
+                    recommendProducts[product_key] = product_id
 
-                setCookie('cart_recommend', recommendProducts)
-
-                getNotification(requestState)
+                    setCookie('cart_recommend', recommendProducts)
+                    buildNotification(requestState)
+                    
                 }
             })
 
@@ -100,19 +99,21 @@ if ( 'liquidAjaxCart' in window ) {
     }
 }
 
-function buildNotification() {
+function buildNotification(requestState) {
     fetch(window.Shopify.routes.root + "?section_id=cart-notification")
         .then(response => response.text())
         .then((text) => {
-            let html = document.createElement('div')
-            html.innerHTML = text;
-            let cartNotification = html.querySelector('.js-cart-notification')
-            document.body.appendChild(cartNotification);
-            let modal = document.querySelector('.js-cart-notification')
-            modal.classList.add('open')
-            document.body.classList.add('overflow-hidden')
-        }
-    )
+            if(text) {
+                let html = document.createElement('div')
+                html.innerHTML = text;
+                let cartNotification = html.querySelector('.js-cart-notification')
+                document.body.appendChild(cartNotification);
+                let modal = document.querySelector('.js-cart-notification')
+                modal.classList.add('open')
+                document.body.classList.add('overflow-hidden')
+                getNotification(requestState)
+            }
+        })
 }
 
 function getNotification(state) {

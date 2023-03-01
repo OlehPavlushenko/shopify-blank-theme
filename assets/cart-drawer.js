@@ -6,18 +6,17 @@ if ( 'liquidAjaxCart' in window ) {
     liquidAjaxCart.configureCart('updateOnWindowFocus', false)
     liquidAjaxCart.subscribeToCartAjaxRequests(( requestState, subscribeToResult ) => {
         if ( requestState.requestType === 'add' ) {
-            buildNotification()
 
             subscribeToResult( requestState => {
-                if ( requestState.responseData?.ok ) {
-                let product_key = requestState.responseData.body.id
-                let product_id = String(requestState.responseData.body.product_id)
+                if ( requestState.responseData.ok ) {
+                    let product_key = requestState.responseData.body.id
+                    let product_id = String(requestState.responseData.body.product_id)
 
-                recommendProducts[product_key] = product_id
+                    recommendProducts[product_key] = product_id
 
-                setCookie('cart_recommend', recommendProducts)
-
-                getNotification(requestState)
+                    setCookie('cart_recommend', recommendProducts)
+                    buildNotification(requestState)
+                    
                 }
             })
 
@@ -100,19 +99,21 @@ if ( 'liquidAjaxCart' in window ) {
     }
 }
 
-function buildNotification() {
+function buildNotification(requestState) {
     fetch(window.Shopify.routes.root + "?section_id=cart-notification")
         .then(response => response.text())
         .then((text) => {
-            let html = document.createElement('div')
-            html.innerHTML = text;
-            let cartNotification = html.querySelector('.js-cart-notification')
-            document.body.appendChild(cartNotification);
-            let modal = document.querySelector('.js-cart-notification')
-            modal.classList.add('open')
-            document.body.classList.add('overflow-hidden')
-        }
-    )
+            if(text) {
+                let html = document.createElement('div')
+                html.innerHTML = text;
+                let cartNotification = html.querySelector('.js-cart-notification')
+                document.body.appendChild(cartNotification);
+                let modal = document.querySelector('.js-cart-notification')
+                modal.classList.add('open')
+                document.body.classList.add('overflow-hidden')
+                getNotification(requestState)
+            }
+        })
 }
 
 function getNotification(state) {
@@ -185,7 +186,7 @@ async function getRecommendProducts(ids) {
         })
         setTimeout(() => resolve(productsItems), 1000)
     })
-    
+
     let result = await promise
     return result  
 }
@@ -228,22 +229,22 @@ function refreshCookie(state) {
 }
 
 function setCookie(name, json) {
-    let cookieValue = '';
-    let expire = '';
-    let period = '';
+    let cookieValue = ''
+    let expire = ''
+    let period = ''
 
     //Specify the cookie name and value
-    cookieValue = name + '=' + JSON.stringify(json) + ';';
+    cookieValue = name + '=' + JSON.stringify(json) + ';'
 
     //Specify the path to set the cookie
-    cookieValue += 'path=/ ;';
+    cookieValue += 'path=/ ;'
 
     //Specify how long you want to keep cookie
-    period = 30; //days to store
-    expire = new Date();
-    expire.setTime(expire.getTime() + 1000 * 3600 * 24 * period);
-    expire.toString();
-    cookieValue += 'expires=' + expire + ';';
+    period = 30 //days to store
+    expire = new Date()
+    expire.setTime(expire.getTime() + 1000 * 3600 * 24 * period)
+    expire.toString()
+    cookieValue += 'expires=' + expire + ';'
 
     //console.log('set-'+cookieValue)
     //Set cookie
@@ -251,7 +252,7 @@ function setCookie(name, json) {
 }
 
 function deleteCookie(name) {
-    document.cookie = name +"=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie = name +"=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;"
 }
 
 function getCookie(name) {

@@ -242,14 +242,14 @@ class VideoHover extends HTMLElement {
     super();
     this.video = this.querySelector('.js-video')
 
-    this.resizeFunction();
-    window.addEventListener('resize', this.resizeFunction.bind(this));
+    this.resizeFunction()
+    window.addEventListener('resize', this.resizeFunction.bind(this))
   }
 
   onClick() {
     this.classList.contains('open')
       ? this.close()
-      : this.open();
+      : this.open()
   }
 
   close() {
@@ -263,7 +263,7 @@ class VideoHover extends HTMLElement {
   }
 
   resizeFunction() {
-    let mobile = window.matchMedia('(max-width: 990px)').matches;
+    let mobile = window.matchMedia('(max-width: 990px)').matches
     if (mobile) {
       this.addEventListener(
         'click',
@@ -282,7 +282,38 @@ class VideoHover extends HTMLElement {
   }
 }
 
-customElements.define('video-hover', VideoHover);
+customElements.define('video-hover', VideoHover)
+
+class QuantityInput extends HTMLElement {
+  constructor() {
+    super();
+    this.input = this.querySelector('input')
+    
+
+    this.changeEvent = new Event('change', { bubbles: true })
+
+    this.querySelectorAll('button').forEach(
+      (button) => button.addEventListener('click', this.onButtonClick.bind(this))
+    );
+  }
+
+  onButtonClick(event) {
+    event.preventDefault();
+    const previousValue = this.input.value;
+
+    event.target.name === 'plus' ? this.input.stepUp() : this.input.stepDown()
+    
+    if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent)
+    this.changeValue(this.input.value)
+  }
+
+  changeValue(newValue) {
+    this.input.value = newValue;
+    this.input.dispatchEvent(this.changeEvent);
+  }
+}
+
+customElements.define('quantity-input', QuantityInput);
 
 class VariantSelects extends HTMLElement {
   constructor() {
@@ -292,6 +323,9 @@ class VariantSelects extends HTMLElement {
     this.swatchSecond = this.querySelector('.js-swatch-second')
     this.swatchThird = this.querySelector('.js-swatch-third')
     this.swatchElement = this.querySelectorAll('.js-swatch-element')
+    this.price = this.closest('.js-card-product-wrapper').querySelector('.js-card-product-price')
+
+    
 
     this.swatchLvlFirst = false
     this.swatchLvlSecond = false
@@ -311,28 +345,28 @@ class VariantSelects extends HTMLElement {
     // Event handler for product option buttons
     const handleClick = (event) => {
       if (event.target.tagName === "INPUT") {
-        const firstElement = event.target.closest('.js-swatch-first');
-        const secondElement = event.target.closest('.js-swatch-second');
-        const thirdElement = event.target.closest('.js-swatch-third');
+        const firstElement = event.target.closest('.js-swatch-first')
+        const secondElement = event.target.closest('.js-swatch-second')
+        const thirdElement = event.target.closest('.js-swatch-third')
 
         let firstValue, secondValue, thirdValue
 
         if (firstElement) {
-          firstValue = event.target.value;
-          secondValue = undefined;
-          thirdValue = undefined;
+          firstValue = event.target.value
+          secondValue = undefined
+          thirdValue = undefined
         }
 
         if (secondElement) {
-          firstValue = this.getActiveSwatchValue(this.swatchFirst);
-          secondValue = event.target.value;
-          thirdValue = undefined;
+          firstValue = this.getActiveSwatchValue(this.swatchFirst)
+          secondValue = event.target.value
+          thirdValue = undefined
         }
 
         if (thirdElement) {
-          firstValue = this.getActiveSwatchValue(this.swatchFirst);
-          secondValue = this.getActiveSwatchValue(this.swatchSecond);
-          thirdValue = event.target.value;
+          firstValue = this.getActiveSwatchValue(this.swatchFirst)
+          secondValue = this.getActiveSwatchValue(this.swatchSecond)
+          thirdValue = event.target.value
         }
 
         if (this.swatchLvlFirst && !this.swatchLvlSecond) {
@@ -352,26 +386,27 @@ class VariantSelects extends HTMLElement {
       }
     }
 
+    const delay = 300
+
     // Installing event handlers on product option buttons
     this.swatchElement.forEach((element) => {
-      element.addEventListener('click', handleClick);
+      element.addEventListener('click', debounce(handleClick, delay))
     })
 
     //Check the level First of available buttons
     if (this.swatchLvlFirst && !this.swatchLvlSecond) {
-      this.updateSwatchLvlFirst();
+      this.updateSwatchLvlFirst()
     }
 
     //Check the level Second of available buttons
     if (this.swatchLvlFirst && this.swatchLvlSecond && !this.swatchLvlThird) {
-      this.updateSwatchLvlSecond();
+      this.updateSwatchLvlSecond()
     }
 
     //Check the level Third of available buttons
     if (this.swatchLvlFirst && this.swatchLvlSecond && this.swatchLvlThird) {
-      this.updateSwatchLvlThird();
+      this.updateSwatchLvlThird()
     }
-
   }
 
   getActiveSwatchValue(swatch) {
@@ -394,8 +429,7 @@ class VariantSelects extends HTMLElement {
     const firstSelected = firstValue !== undefined ? firstValue : availableFirst[0]
     
     this.availableSwatchFirst(availableFirst, firstSelected)
-
-    this.availableHiddenButtonSwatchSecond(firstSelected)
+    this.hiddenButtonSwatchSecond(firstSelected)
 
     const availableSecond = Object.keys(this.getVariantList[firstSelected]).filter((item) => {
       return this.getVariantList[firstSelected][item].available
@@ -414,10 +448,7 @@ class VariantSelects extends HTMLElement {
     const firstSelected = firstValue !== undefined ? firstValue : availableFirst[0]
 
     this.availableSwatchFirst(availableFirst, firstSelected)
-
-    
-
-    this.availableHiddenButtonSwatchSecond(firstSelected)
+    this.hiddenButtonSwatchSecond(firstSelected)
 
     const availableSecond = Object.keys(this.getVariantList[firstSelected]).filter((item) => {
       const third = this.getVariantList[firstSelected][item]
@@ -426,8 +457,7 @@ class VariantSelects extends HTMLElement {
     const secondSelected = secondValue !== undefined ? secondValue : availableSecond[0]
 
     this.availableSwatchSecond(availableSecond, secondSelected)
-
-    this.availableHiddenButtonSwatchThird(firstSelected,secondSelected)
+    this.hiddenButtonSwatchThird(firstSelected,secondSelected)
 
     const availableThird = Object.keys(this.getVariantList[firstSelected][secondSelected]).filter((item) => {
       return this.getVariantList[firstSelected][secondSelected][item].available
@@ -498,7 +528,7 @@ class VariantSelects extends HTMLElement {
     })
   }
 
-  availableHiddenButtonSwatchSecond(firstSelected) {
+  hiddenButtonSwatchSecond(firstSelected) {
     this.swatchSecond.querySelectorAll('.js-swatch-element').forEach(element => {
       let value = element.getAttribute('data-value')
       element.classList.remove('hidden')
@@ -509,7 +539,7 @@ class VariantSelects extends HTMLElement {
     })
   }
 
-  availableHiddenButtonSwatchThird(firstSelected,secondSelected) {
+  hiddenButtonSwatchThird(firstSelected,secondSelected) {
     this.swatchThird.querySelectorAll('.js-swatch-element').forEach(element => {
       let value = element.getAttribute('data-value')
       element.classList.remove('hidden')
@@ -574,29 +604,71 @@ class VariantSelects extends HTMLElement {
     this.swatchElement.forEach(element => {
       let radio = element.firstElementChild
       if (radio.checked) {
-        selectedOptions.push(radio.value);
+        selectedOptions.push(radio.value)
       }
     })
 
     // Filtering the data array by the selected options
     this.availableVariant = products.filter(product => {
       return selectedOptions.every((option, index) => {
-        return product.options[index] === option;
-      });
-    });
+        return product.options[index] === option
+      })
+    })
 
-    console.log(this.availableVariant);
+    console.log(this.availableVariant)
+    this.updateOptions()
+    this.updatePrice()
+  }
+
+  updateOptions() {
+    const availableVariantId = String(this.availableVariant[0].id)
+    const selectElement = this.querySelector('select');
+
+    for (let i = 0; i < selectElement.options.length; i++) {
+      const option = selectElement.options[i]
+      if (option.value === availableVariantId) {
+        option.selected = true;
+        break;
+      }
+    }
+  }
+
+  updatePrice() {
+    const comparePrice = this.availableVariant[0].compare_at_price
+    const salePrice = this.availableVariant[0].price
+    let elementSalePrice = this.price.querySelector('.price__item--sale')
+    let elementComparePrice = this.price.querySelector('.price__item--regular')
+
+    if (comparePrice !== null) {
+      if (!this.price.classList.contains('price--on-sale')) {
+        this.price.classList.add('price--on-sale')
+      }
+      elementComparePrice.textContent = Shopify.formatMoney(comparePrice)
+      elementSalePrice.textContent = Shopify.formatMoney(salePrice)
+    }else {
+      this.price.classList.remove('price--on-sale')
+      elementComparePrice.textContent = ''
+      elementSalePrice.textContent = Shopify.formatMoney(salePrice)
+    }
   }
 
   updateURL() {
     if (!this.currentVariant) return;
-    window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+    window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`)
   }
 
   getVariantData() {
-    this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
-    return this.variantData;
+    this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent)
+    return this.variantData
+  }
+
+  debounce = (fn, wait) => {
+    let t
+    return (...args) => {
+      clearTimeout(t)
+      t = setTimeout(() => fn.apply(this, args), wait)
+    }
   }
 }
 
-customElements.define('variant-selects', VariantSelects);
+customElements.define('variant-selects', VariantSelects)

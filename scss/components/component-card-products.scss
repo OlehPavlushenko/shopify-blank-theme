@@ -124,6 +124,60 @@
     margin-top: 2rem;
 }
 
+quantity-input {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 1rem;
+    padding-right: 3rem;
+    /* Chrome, Safari, Edge, Opera */
+    .quantity__input::-webkit-outer-spin-button,
+    .quantity__input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    .quantity__input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .quantity__input {
+        width: 60px;
+        text-align: center;
+    }
+
+    .quantity__button {
+        border: none;
+        width: 24px;
+        height: 24px;
+        overflow: hidden;
+        background-color: transparent;
+        vertical-align: middle;
+        display: inline-block;
+        text-align: center;
+        color: var(--color-black);
+        padding: 0;
+        &.quantity__button--plus {
+            position: absolute;
+            right: 0;
+            top: -0.4rem;
+        }
+    
+        &.quantity__button--minus {
+            position: absolute;
+            right: 0;
+            bottom: -0.4rem;
+        }
+    }
+
+    .icon {
+        width: 1.6rem;
+        height: 1.6rem;
+        margin-top: 0.4rem;
+        pointer-events: none;
+    }
+}
+
 .card-product__variants {
     margin-bottom: 1rem;
 }

@@ -404,11 +404,11 @@ input.cart-drawer__input--property {
 	flex: 0 0 auto;
 }
 
-form[action="/cart/add"] button {
+form[action="/cart/add"].cart-drawer button {
 	position: relative;
 }
 
-form[action="/cart/add"] button:after {
+form[action="/cart/add"].cart-drawer button:after {
     content: '';
     position: absolute;
     border-radius: 100%;
@@ -422,11 +422,11 @@ form[action="/cart/add"] button:after {
     opacity: 0;
     transition: all .3s;
 }
-form[action="/cart/add"].js-ajax-cart-form-in-progress [type="submit"] {
+form[action="/cart/add"].cart-drawer.js-ajax-cart-form-in-progress [type="submit"] {
 	opacity: .7;
 	background-color: gray;
 }
-form[action="/cart/add"].js-ajax-cart-form-in-progress [type="submit"]:after {
+form[action="/cart/add"].cart-drawer.js-ajax-cart-form-in-progress [type="submit"]:after {
 	opacity: 1;
 }
 

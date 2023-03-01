@@ -1,5 +1,5 @@
 {% if product and product != empty %}
-    <div class='card-product__wrapper'>
+    <div class='card-product__wrapper js-card-product-wrapper'>
         {%- assign video = product.media | where: 'media_type', 'video' -%}
         {% if video != blank %}
             <video-hover class='card-product__media-wrapper'>
@@ -23,7 +23,7 @@
                         {% endfor %}
                     </div>
                 </div>
-                <picture class='card-product__media media__size--{{ img_size }} media'>
+                <picture class='card-product__media media__size--{{ img_size }} media js-card-product-media'>
                     {% if image_custom != blank %}
                         {% render 'image', image_box: image_custom, image_box_class: 'card-product__image' %}
                     {% else %}
@@ -33,7 +33,7 @@
             </video-hover>
         {% else %}
             <div class='card-product__media-wrapper '>
-                <picture class='card-product__media media__size--{{ img_size }} media'>
+                <picture class='card-product__media media__size--{{ img_size }} media js-card-product-media'>
                     {% if image_custom != blank %}
                         {% render 'image', image_box: image_custom, image_box_class: 'card-product__image' %}
                     {% else %}
@@ -43,14 +43,17 @@
             </div>
         {% endif %}
         <div class='card-product__content card-product__content--{{ fill }}'>
-            <span class='visually-hidden'>{{ 'accessibility.vendor' | t }}</span>
             <span class='card-product__vendor'>{{ product.vendor }}</span>
             <h4 class='card-product__title'>
                 <a href='{{ product.url | within: collection }}'>
                     {{ product.title | truncate: 30 | escape }}
                 </a>
             </h4>
-            {% render 'price', product: product, price_class: 'card-product__price', use_variant: use_variant %}
+            {% render 'price',
+                product: product,
+                price_class: 'card-product__price js-card-product-price',
+                use_variant: use_variant
+            %}
 
             {% if add_btn %}
                 {% if btn == 'quick' %}
