@@ -7,11 +7,9 @@
             {{ block.shopify_attributes }}
         >
             {% render 'swatch' for product.options as swatch, product: product %}
-
             <script type='application/json'>
                 {{ product.variants | json }}
             </script>
-
             <select
                 name='id'
                 id='ProductSelect-{{ product.id }}'
@@ -25,6 +23,8 @@
                                 selected='selected'
                             {% endif %}
                             data-sku='{{ variant.sku }}'
+                            data-qty='{{ variant.inventory_quantity }}'
+                            data-inventory-policy='{{ variant.inventory_policy }}'
                             value='{{ variant.id }}'
                         >
                             {{ variant.title }} - {{ variant.price | money_with_currency }}
@@ -49,7 +49,11 @@
                         min='1'
                         step='1'
                         value='1'
-                        max='null'
+                        {% if product.selected_or_first_available_variant.inventory_management == 'shopify'
+                            and product.selected_or_first_available_variant.inventory_policy != 'continue'
+                        %}
+                            max='{{ product.selected_or_first_available_variant.inventory_quantity }}'
+                        {% endif %}
                     >
                     <button class='quantity__button quantity__button--plus no-js-hidden' name='plus' type='button'>
                         <span class='visually-hidden'>Increase quantity for Liveli Scallop Hem Sports Bra</span>
@@ -65,6 +69,7 @@
             >
                 <span id='AddToCartText'>{{ 'products.product.add_to_cart' | t }}</span>
             </button>
+            <div data-ajax-cart-messages='form'></div>
         </variant-selects>
     {% else %}
         <select
@@ -90,34 +95,51 @@
                 {% endif %}
             {% endfor %}
         </select>
-        <div>
-            <quantity-input class='quantity'>
-                <button class='quantity__button quantity__button--minus' name='minus' type='button'>
-                    {% render 'icon-minus' %}
-                </button>
-                <input
-                    class='quantity__input js-quantity'
-                    type='number'
-                    name='quantity'
-                    id='Quantity-{{ product.id }}'
-                    min='1'
-                    step='1'
-                    value='1'
-                    max='null'
-                >
-                <button class='quantity__button quantity__button--plus' name='plus' type='button'>
-                    {% render 'icon-plus' %}
-                </button>
-            </quantity-input>
-        </div>
-        <button
-            type='submit'
-            name='add'
-            id='AddToCart-{{ product.id }}'
-            class='button--secondary'
-        >
-            <span id='AddToCartText'>{{ 'products.product.add_to_cart' | t }}</span>
-        </button>
+        {% if product.available %}
+            <div>
+                <quantity-input class='quantity'>
+                    <button class='quantity__button quantity__button--minus' name='minus' type='button'>
+                        {% render 'icon-minus' %}
+                    </button>
+
+                    <input
+                        class='quantity__input js-quantity'
+                        type='number'
+                        name='quantity'
+                        id='Quantity-{{ product.id }}'
+                        min='1'
+                        step='1'
+                        value='1'
+                        {% if product.variants[0].inventory_management == 'shopify'
+                            and product.variants[0].inventory_policy != 'continue'
+                        %}
+                            max='{{ product.variants[0].inventory_quantity }}'
+                        {% endif %}
+                    >
+
+                    <button class='quantity__button quantity__button--plus' name='plus' type='button'>
+                        {% render 'icon-plus' %}
+                    </button>
+                </quantity-input>
+            </div>
+            <button
+                type='submit'
+                name='add'
+                id='AddToCart-{{ product.id }}'
+                class='button--secondary'
+            >
+                <span id='AddToCartText'>{{ 'products.product.add_to_cart' | t }}</span>
+            </button>
+            <div data-ajax-cart-messages='form'></div>
+        {% else %}
+            <button
+                type='submit'
+                name='add'
+                id='AddToCart-{{ product.id }}'
+                class='button--secondary'
+            >
+                <span id='AddToCartText'>{{ 'products.product.sold_out' | t }}</span>
+            </button>
+        {% endif %}
     {% endif %}
-    <div data-ajax-cart-messages='form'></div>
 {% endform %}

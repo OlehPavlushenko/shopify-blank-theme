@@ -324,8 +324,8 @@ class VariantSelects extends HTMLElement {
     this.swatchThird = this.querySelector('.js-swatch-third')
     this.swatchElement = this.querySelectorAll('.js-swatch-element')
     this.price = this.closest('.js-card-product-wrapper').querySelector('.js-card-product-price')
-
-    
+    this.image = this.closest('.js-card-product-wrapper').querySelector('.js-card-product-media')
+    this.qty = this.closest('.js-card-product-wrapper').querySelector('.js-quantity')
 
     this.swatchLvlFirst = false
     this.swatchLvlSecond = false
@@ -618,19 +618,36 @@ class VariantSelects extends HTMLElement {
     console.log(this.availableVariant)
     this.updateOptions()
     this.updatePrice()
+    this.updateImage()
   }
 
   updateOptions() {
     const availableVariantId = String(this.availableVariant[0].id)
-    const selectElement = this.querySelector('select');
+    const selectElement = this.querySelector('select')
+    const inventoryManagement = this.availableVariant[0].inventory_management
+    
+    let inventoryPolicy
+    let inventoryQty
 
     for (let i = 0; i < selectElement.options.length; i++) {
       const option = selectElement.options[i]
       if (option.value === availableVariantId) {
-        option.selected = true;
-        break;
+        option.selected = true
+        inventoryQty = option.dataset.qty
+        inventoryPolicy = option.dataset.inventoryPolicy
+        break
       }
     }
+
+    if (inventoryManagement === 'shopify' && inventoryPolicy === 'deny') {
+      this.qty.setAttribute('max', inventoryQty)
+    } else {
+      this.qty.removeAttribute('max')
+    }
+
+    console.log(inventoryManagement)
+    console.log(inventoryPolicy)
+    console.log(inventoryQty)
   }
 
   updatePrice() {
@@ -649,6 +666,14 @@ class VariantSelects extends HTMLElement {
       this.price.classList.remove('price--on-sale')
       elementComparePrice.textContent = ''
       elementSalePrice.textContent = Shopify.formatMoney(salePrice)
+    }
+  }
+
+  updateImage() {
+    const image = this.availableVariant[0].featured_image
+    
+    if (image !== null) {
+      this.image.firstElementChild.srcset = image.src
     }
   }
 

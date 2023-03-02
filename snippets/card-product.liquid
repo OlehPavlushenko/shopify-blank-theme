@@ -1,4 +1,12 @@
 {% if product and product != empty %}
+    {%- liquid
+        assign current_variant = product.selected_or_first_available_variant
+        if current_variant.featured_image != blank
+            assign image_box = current_variant.featured_image
+        else
+            assign image_box = product.featured_image
+        endif
+    -%}
     <div class='card-product__wrapper js-card-product-wrapper'>
         {%- assign video = product.media | where: 'media_type', 'video' -%}
         {% if video != blank %}
@@ -27,7 +35,7 @@
                     {% if image_custom != blank %}
                         {% render 'image', image_box: image_custom, image_box_class: 'card-product__image' %}
                     {% else %}
-                        {% render 'image', image_box: product.featured_media, image_box_class: 'card-product__image' %}
+                        {% render 'image', image_box: image_box, image_box_class: 'card-product__image' %}
                     {% endif %}
                 </picture>
             </video-hover>
@@ -37,7 +45,7 @@
                     {% if image_custom != blank %}
                         {% render 'image', image_box: image_custom, image_box_class: 'card-product__image' %}
                     {% else %}
-                        {% render 'image', image_box: product.featured_media, image_box_class: 'card-product__image' %}
+                        {% render 'image', image_box: image_box, image_box_class: 'card-product__image' %}
                     {% endif %}
                 </picture>
             </div>
