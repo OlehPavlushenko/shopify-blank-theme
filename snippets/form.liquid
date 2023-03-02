@@ -133,12 +133,12 @@
             <div data-ajax-cart-messages='form'></div>
         {% else %}
             <button
-                type='submit'
-                name='add'
-                id='AddToCart-{{ product.id }}'
+                type='button'
+                id='SoldOutText-{{ product.id }}'
                 class='button--secondary'
+                disabled=''
             >
-                <span id='AddToCartText'>{{ 'products.product.sold_out' | t }}</span>
+                <span id='SoldOutText'>{{ 'products.product.sold_out' | t }}</span>
             </button>
         {% endif %}
     {% endif %}

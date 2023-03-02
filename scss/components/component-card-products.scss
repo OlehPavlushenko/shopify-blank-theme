@@ -264,24 +264,10 @@ quantity-input {
                 label{
                     opacity: .5;
                 }
-                &::before {
-                    content: "";
-                    top: 50%;
-                    left: 0;
-                    height: 1px;
-                    opacity: 1;
-                    z-index: 1;
-                    border: none;
-                    position: absolute;
-                    visibility: visible;
-                    width: 100%;
-                    background-color: var(--color-error);
-                    transform: translateY(-50%) rotate(-25deg);
-                }
+                &::before ,
                 &::after {
                     content: "";
                     top: 50%;
-                    right: 0;
                     height: 1px;
                     opacity: 1;
                     z-index: 1;
@@ -290,6 +276,14 @@ quantity-input {
                     visibility: visible;
                     width: 100%;
                     background-color: var(--color-error);
+                    pointer-events: none;
+                }
+                &::before {
+                    left: 0;
+                    transform: translateY(-50%) rotate(-25deg);
+                }
+                &::after {
+                    right: 0;
                     transform: translateY(-50%) rotate(25deg);
                 }
             }

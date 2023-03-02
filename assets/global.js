@@ -326,7 +326,9 @@ class VariantSelects extends HTMLElement {
     this.price = this.closest('.js-card-product-wrapper').querySelector('.js-card-product-price')
     this.image = this.closest('.js-card-product-wrapper').querySelector('.js-card-product-media')
     this.qty = this.closest('.js-card-product-wrapper').querySelector('.js-quantity')
-
+    this.btnCart = this.closest('.js-card-product-wrapper').querySelector('.js-btn-cart')
+    this.btnSoldOut = this.closest('.js-card-product-wrapper').querySelector('.js-btn-sold-out')
+    
     this.swatchLvlFirst = false
     this.swatchLvlSecond = false
     this.swatchLvlThird = false
@@ -371,17 +373,17 @@ class VariantSelects extends HTMLElement {
 
         if (this.swatchLvlFirst && !this.swatchLvlSecond) {
           this.updateSwatchLvlFirst(firstValue)
-          this.getAvailableVariant()
+          this.getAvailableVariant(event)
         }
 
         if (this.swatchLvlFirst && this.swatchLvlSecond && !this.swatchLvlThird) {
           this.updateSwatchLvlSecond(firstValue, secondValue)
-          this.getAvailableVariant()
+          this.getAvailableVariant(event)
         }
 
         if (this.swatchLvlFirst && this.swatchLvlSecond && this.swatchLvlThird) {
           this.updateSwatchLvlThird(firstValue, secondValue, thirdValue)
-          this.getAvailableVariant()
+          this.getAvailableVariant(event)
         }
       }
     }
@@ -598,7 +600,7 @@ class VariantSelects extends HTMLElement {
   }
 
   
-  getAvailableVariant() {
+  getAvailableVariant(event) {
     const selectedOptions = []
     const products = this.variantData
     this.swatchElement.forEach(element => {
@@ -616,12 +618,12 @@ class VariantSelects extends HTMLElement {
     })
 
     console.log(this.availableVariant)
-    this.updateOptions()
+    this.updateOptions(event)
     this.updatePrice()
     this.updateImage()
   }
 
-  updateOptions() {
+  updateOptions(event) {
     const availableVariantId = String(this.availableVariant[0].id)
     const selectElement = this.querySelector('select')
     const inventoryManagement = this.availableVariant[0].inventory_management
@@ -645,9 +647,17 @@ class VariantSelects extends HTMLElement {
       this.qty.removeAttribute('max')
     }
 
-    console.log(inventoryManagement)
-    console.log(inventoryPolicy)
-    console.log(inventoryQty)
+    //if (!this.availableVariant[0].available) {
+      //this.qty.parentElement.classList.add('hidden')
+     // this.btnCart.classList.add('hidden')
+     // this.btnSoldOut.classList.remove('hidden')
+      //let headerSwatch = event.target.closest('.swatch--product').querySelector('.js-swatch-header em')
+     // headerSwatch.textContent = event.target.value
+   // } else {
+     // this.qty.parentElement.classList.remove('hidden')
+     // this.btnCart.classList.remove('hidden')
+     // this.btnSoldOut.classList.add('hidden')
+    //}
   }
 
   updatePrice() {
