@@ -181,7 +181,14 @@ quantity-input {
 .card-product__variants {
     margin-bottom: 1rem;
 }
-
+.selects-wrap {
+    .product-form__input--dropdown {
+        margin-bottom: 1rem;
+        select {
+            width: 100%;
+        }
+    }
+}
 .swatch-wrap {
     .visible, .active {
         display: block!important;
@@ -218,8 +225,24 @@ quantity-input {
                 top: 2px;
                 margin-bottom: 0;
                 border: none;
+                background-size: contain;
+                background-repeat: no-repeat;
                 &::before {
                     display: none;
+                }
+            }
+            &.swatch-element-image {
+                width: 40px;
+                height: 40px;
+                border-radius: 2px;
+                overflow: hidden;
+                input {
+                    border-radius: 2px;
+                }
+                label {
+                    width: 37px;
+                    height: 37px;
+                    border-radius: 2px;
                 }
             }
         }

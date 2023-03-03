@@ -315,7 +315,7 @@ class QuantityInput extends HTMLElement {
 
 customElements.define('quantity-input', QuantityInput);
 
-class VariantSelects extends HTMLElement {
+class VariantPills extends HTMLElement {
   constructor() {
     super();
 
@@ -706,4 +706,4 @@ class VariantSelects extends HTMLElement {
   }
 }
 
-customElements.define('variant-selects', VariantSelects)
+customElements.define('variant-pills', VariantPills)

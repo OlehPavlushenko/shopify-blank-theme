@@ -3,6 +3,8 @@
     assign heading = section.settings.heading
     assign add_btn = section.settings.enable_add_btn
     assign btn = section.settings.btn
+    assign variant_type = section.settings.variant
+
     assign columns_desktop = section.settings.columns_desktop
     assign columns_mobile = section.settings.columns_mobile
 
@@ -51,6 +53,7 @@
                         {% render 'card-product',
                             product: product,
                             use_variant: price_variant,
+                            variant_type: variant_type,
                             add_btn: add_btn,
                             btn: btn,
                             img_size: img_size,
@@ -81,7 +84,7 @@
             "type": "checkbox",
             "id": "enable_add_btn",
             "default": false,
-            "label": "Enable add button"
+            "label": "Enable add to cart button"
         },
         {
             "type": "select",
@@ -96,6 +99,26 @@
                 {
                     "value": "details",
                     "label": "Details"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "variant",
+            "default": "pills",
+            "label": "Variant picker type",
+            "options": [
+                {
+                    "value": "pills",
+                    "label": "Pills"
+                },
+                {
+                    "value": "pills_color_images",
+                    "label": "Pills color images"
+                },
+                {
+                    "value": "dropdown",
+                    "label": "Dropdown"
                 }
             ]
         },

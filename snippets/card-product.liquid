@@ -65,10 +65,10 @@
 
             {% if add_btn %}
                 {% if btn == 'quick' %}
-                    {% render 'form', product: product %}
+                    {% render 'form-collection', product: product, variant_type: variant_type %}
                 {% else %}
                     <a class='button button--secondary' href='{{ product.url | within: collection }}'>
-                        {{- 'products.product.add_to_cart' | t -}}
+                        {{- 'products.product.details' | t -}}
                     </a>
                 {% endif %}
             {% endif %}

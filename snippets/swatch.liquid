@@ -18,6 +18,7 @@
     {% assign found_option = false %}
     {% assign is_first = false %}
     {% assign is_color = false %}
+    {% assign is_image = false %}
     {% assign is_second = false %}
     {% assign is_third = false %}
     {% assign option_index = 0 %}
@@ -31,6 +32,9 @@
             {% if downcased_option contains 'color' %}
                 {% assign is_color = true %}
                 {% assign is_first = true %}
+                {% if variant_type == 'pills_color_images' %}
+                    {% assign is_image = true %}
+                {% endif %}
             {% endif %}
 
             {% if downcased_option contains 'size' %}
@@ -103,7 +107,7 @@
                             data-lvl-third='{{ value }}'
                         {% endif %}
                         data-value='{{ value }}'
-                        class='swatch-element {% if is_color %}swatch-element-color {% endif %}{{ value | handle }} js-swatch-element'
+                        class='swatch-element {% if is_color %}swatch-element-color {% endif %}{% if is_image %}swatch-element-image {% endif %}{{ value | handle }} js-swatch-element'
                     >
                         <input
                             id='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'
@@ -115,10 +119,13 @@
                         {% if is_color %}
                             {% assign sku_array = variant.sku | split: ' ' %}
                             {% assign url_handle = value | handle %}
-
                             <label
                                 for='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'
-                                style='background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ url_handle | replace: "-", "_" | append: '.' | append: file_extension | file_url }})'
+                                {% if is_image %}
+                                    style='background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ variant.featured_image | img_url: img_size, crop: 'center' }})'
+                                {% else %}
+                                    style='background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ url_handle | replace: "-", "_" | append: '.' | append: file_extension | file_url }})'
+                                {% endif %}
                             >
                             </label>
                         {% else %}

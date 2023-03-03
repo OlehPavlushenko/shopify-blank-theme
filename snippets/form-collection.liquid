@@ -1,0 +1,80 @@
+{% form 'product', product, class: 'card-product__form' %}
+    {% if product.available and product.variants.size > 1 %}
+        {% if variant_type != 'dropdown' %}
+            {% render 'swatch-pills', product: product, variant_type: variant_type %}
+        {% else %}
+            {% render 'swatch-selects', product: product %}
+        {% endif %}
+
+    {% else %}
+        <select
+            name='id'
+            id='ProductSelect-{{ product.id }}'
+            class='card-product__variants no-js'
+            data-product-select
+        >
+            {% for variant in product.variants %}
+                {% if variant.available %}
+                    <option
+                        {% if variant == product.selected_or_first_available_variant %}
+                            selected='selected'
+                        {% endif %}
+                        data-sku='{{ variant.sku }}'
+                        value='{{ variant.id }}'
+                    >
+                        {{ variant.title }} - {{ variant.price | money_with_currency }}
+                    </option>
+
+                {% else %}
+                    <option disabled='disabled'>{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        {% if product.available %}
+            <div>
+                <quantity-input class='quantity'>
+                    <button class='quantity__button quantity__button--minus' name='minus' type='button'>
+                        {% render 'icon-minus' %}
+                    </button>
+
+                    <input
+                        class='quantity__input js-quantity'
+                        type='number'
+                        name='quantity'
+                        id='Quantity-{{ product.id }}'
+                        min='1'
+                        step='1'
+                        value='1'
+                        {% if product.variants[0].inventory_management == 'shopify'
+                            and product.variants[0].inventory_policy != 'continue'
+                        %}
+                            max='{{ product.variants[0].inventory_quantity }}'
+                        {% endif %}
+                    >
+
+                    <button class='quantity__button quantity__button--plus' name='plus' type='button'>
+                        {% render 'icon-plus' %}
+                    </button>
+                </quantity-input>
+            </div>
+            <button
+                type='submit'
+                name='add'
+                id='AddToCart-{{ product.id }}'
+                class='button--secondary'
+            >
+                <span id='AddToCartText'>{{ 'products.product.add_to_cart' | t }}</span>
+            </button>
+            <div data-ajax-cart-messages='form'></div>
+        {% else %}
+            <button
+                type='button'
+                id='SoldOutText-{{ product.id }}'
+                class='button--secondary'
+                disabled=''
+            >
+                <span id='SoldOutText'>{{ 'products.product.sold_out' | t }}</span>
+            </button>
+        {% endif %}
+    {% endif %}
+{% endform %}
