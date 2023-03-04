@@ -1,6 +1,9 @@
 {% liquid
     assign blocks = section.blocks
     assign heading = section.settings.heading
+    assign vendor = section.settings.show_vendor
+    assign quantity = section.settings.show_quantity
+
     assign add_btn = section.settings.enable_add_btn
     assign btn = section.settings.btn
     assign variant_type = section.settings.variant
@@ -52,6 +55,8 @@
                     <li class='featured-products__item'>
                         {% render 'card-product',
                             product: product,
+                            show_vendor: vendor,
+                            show_quantity: quantity,
                             use_variant: price_variant,
                             variant_type: variant_type,
                             add_btn: add_btn,
@@ -79,7 +84,18 @@
             "default": "Featured Products",
             "label": "Title"
         },
-
+        {
+            "type": "checkbox",
+            "id": "show_vendor",
+            "label": "Show vendor",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "show_quantity",
+            "label": "Show quantity",
+            "default": false
+        },
         {
             "type": "checkbox",
             "id": "enable_add_btn",
@@ -115,10 +131,6 @@
                 {
                     "value": "pills_color_images",
                     "label": "Pills color images"
-                },
-                {
-                    "value": "dropdown",
-                    "label": "Dropdown"
                 }
             ]
         },

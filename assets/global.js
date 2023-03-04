@@ -599,7 +599,6 @@ class VariantPills extends HTMLElement {
     }
   }
 
-  
   getAvailableVariant(event) {
     const selectedOptions = []
     const products = this.variantData
@@ -621,63 +620,52 @@ class VariantPills extends HTMLElement {
     this.updateOptions(event)
     this.updatePrice()
     this.updateImage()
+    this.updateURL()
   }
 
   updateOptions(event) {
-    const availableVariantId = String(this.availableVariant[0].id)
-    const selectElement = this.querySelector('select')
-    const inventoryManagement = this.availableVariant[0].inventory_management
+    const availableVariant = this.availableVariant[0];
+    const availableVariantId = String(availableVariant.id);
+    const selectElement = this.querySelector('select');
+    const option = selectElement.querySelector(`option[value='${availableVariantId}']`);
+    const inventoryManagement = availableVariant.inventory_management;
+    const inventoryPolicy = option ? option.dataset.inventoryPolicy : null;
+    const inventoryQty = option ? option.dataset.qty : null;
+    const qtyParentElement = this.qty.parentElement;
     
-    let inventoryPolicy
-    let inventoryQty
-
-    for (let i = 0; i < selectElement.options.length; i++) {
-      const option = selectElement.options[i]
-      if (option.value === availableVariantId) {
-        option.selected = true
-        inventoryQty = option.dataset.qty
-        inventoryPolicy = option.dataset.inventoryPolicy
-        break
-      }
+    if (option) {
+      option.selected = true;
     }
-
+  
     if (inventoryManagement === 'shopify' && inventoryPolicy === 'deny') {
-      this.qty.setAttribute('max', inventoryQty)
+      this.qty.setAttribute('max', inventoryQty);
     } else {
-      this.qty.removeAttribute('max')
+      this.qty.removeAttribute('max');
     }
-
-    //if (!this.availableVariant[0].available) {
-      //this.qty.parentElement.classList.add('hidden')
-     // this.btnCart.classList.add('hidden')
-     // this.btnSoldOut.classList.remove('hidden')
-      //let headerSwatch = event.target.closest('.swatch--product').querySelector('.js-swatch-header em')
-     // headerSwatch.textContent = event.target.value
-   // } else {
-     // this.qty.parentElement.classList.remove('hidden')
-     // this.btnCart.classList.remove('hidden')
-     // this.btnSoldOut.classList.add('hidden')
-    //}
+  
+    const isAvailable = availableVariant.available;
+  
+    //qtyParentElement.classList.toggle('hidden', !isAvailable);
+    //this.btnCart.classList.toggle('hidden', !isAvailable);
+    //this.btnSoldOut.classList.toggle('hidden', isAvailable);
+  
+    if (!isAvailable) {
+      const headerSwatch = event.target.closest('.swatch--product').querySelector('.js-swatch-header em');
+      headerSwatch.textContent = event.target.value;
+    }
   }
 
   updatePrice() {
-    const comparePrice = this.availableVariant[0].compare_at_price
-    const salePrice = this.availableVariant[0].price
-    let elementSalePrice = this.price.querySelector('.price__item--sale')
-    let elementComparePrice = this.price.querySelector('.price__item--regular')
-
-    if (comparePrice !== null) {
-      if (!this.price.classList.contains('price--on-sale')) {
-        this.price.classList.add('price--on-sale')
-      }
-      elementComparePrice.textContent = Shopify.formatMoney(comparePrice)
-      elementSalePrice.textContent = Shopify.formatMoney(salePrice)
-    }else {
-      this.price.classList.remove('price--on-sale')
-      elementComparePrice.textContent = ''
-      elementSalePrice.textContent = Shopify.formatMoney(salePrice)
-    }
+    const { compare_at_price: comparePrice, price: salePrice } = this.availableVariant[0];
+    const elementSalePrice = this.price.querySelector('.price__item--sale');
+    const elementComparePrice = this.price.querySelector('.price__item--regular');
+    const hasComparePrice = comparePrice !== null;
+    
+    this.price.classList.toggle('price--on-sale', hasComparePrice);
+    elementSalePrice.textContent = Shopify.formatMoney(salePrice);
+    elementComparePrice.textContent = hasComparePrice ? Shopify.formatMoney(comparePrice) : '';
   }
+  
 
   updateImage() {
     const image = this.availableVariant[0].featured_image
@@ -688,8 +676,13 @@ class VariantPills extends HTMLElement {
   }
 
   updateURL() {
-    if (!this.currentVariant) return;
-    window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`)
+    const cardProductWrapper = this.closest('.js-card-product-wrapper');
+    if (!this.availableVariant || !cardProductWrapper) return;
+    
+    const url = cardProductWrapper.querySelector('.js-card-product-title > a');
+    if (url) {
+      url.search = `?variant=${this.availableVariant[0].id}`;
+    }
   }
 
   getVariantData() {

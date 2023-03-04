@@ -110,9 +110,9 @@
                         class='swatch-element {% if is_color %}swatch-element-color {% endif %}{% if is_image %}swatch-element-image {% endif %}{{ value | handle }} js-swatch-element'
                     >
                         <input
-                            id='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'
+                            id='swatch-{{ option_index }}-{{ value | handle }}-{{ section.id }}-{{ product.id }}'
                             type='radio'
-                            name='option-{{ option_index }}-{{ product.id }}'
+                            name='option-{{ option_index }}-{{ section.id }}-{{ product.id }}'
                             value='{{ value | escape }}'
                             data-swatch-option='{{ option_index }}'
                         >
@@ -120,16 +120,16 @@
                             {% assign sku_array = variant.sku | split: ' ' %}
                             {% assign url_handle = value | handle %}
                             <label
-                                for='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'
+                                for='swatch-{{ option_index }}-{{ value | handle }}-{{ section.id }}-{{ product.id }}'
                                 {% if is_image %}
-                                    style='background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ variant.featured_image | img_url: img_size, crop: 'center' }})'
+                                    style='background-image: url({{ variant.featured_image | img_url: img_size, crop: 'center' }})'
                                 {% else %}
                                     style='background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ url_handle | replace: "-", "_" | append: '.' | append: file_extension | file_url }})'
                                 {% endif %}
                             >
                             </label>
                         {% else %}
-                            <label for='swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}'>
+                            <label for='swatch-{{ option_index }}-{{ value | handle }}-{{ section.id }}-{{ product.id }}'>
                                 {{ value }}
                             </label>
                         {% endif %}

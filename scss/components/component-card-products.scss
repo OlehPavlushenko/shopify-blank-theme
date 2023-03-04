@@ -33,6 +33,14 @@
     .price__item--sale {
         color: var(--color-black);
     }
+    .price__box {
+        display: flex;
+        align-items: center;
+    }
+    .price__item {
+        display: inline-block;
+        padding-right: .4rem;
+    }
     &.price--on-sale {
         .price__item--regular {
             color: var(--color-black);
@@ -41,6 +49,18 @@
         .price__item--sale {
             color: var(--color-danger);
         }
+        .badge.sale {
+            display: inline-block;
+        }
+    }
+
+    .badge.sale {
+        font-size: 1.1rem;
+        padding: .3rem .6rem;
+        display: none;
+        border-color: var(--color-danger);
+        background-color: var(--color-danger);
+        color: var(--color-white);
     }
 }
 
@@ -240,8 +260,8 @@ quantity-input {
                     border-radius: 2px;
                 }
                 label {
-                    width: 37px;
-                    height: 37px;
+                    width: 36px;
+                    height: 36px;
                     border-radius: 2px;
                 }
             }

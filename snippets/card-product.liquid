@@ -51,8 +51,10 @@
             </div>
         {% endif %}
         <div class='card-product__content card-product__content--{{ fill }}'>
-            <span class='card-product__vendor'>{{ product.vendor }}</span>
-            <h4 class='card-product__title'>
+            {% if show_vendor %}
+                <span class='card-product__vendor'>{{ product.vendor }}</span>
+            {% endif %}
+            <h4 class='card-product__title js-card-product-title'>
                 <a href='{{ product.url | within: collection }}'>
                     {{ product.title | truncate: 30 | escape }}
                 </a>
@@ -65,7 +67,11 @@
 
             {% if add_btn %}
                 {% if btn == 'quick' %}
-                    {% render 'form-collection', product: product, variant_type: variant_type %}
+                    {% render 'form-collection',
+                        product: product,
+                        variant_type: variant_type,
+                        show_quantity: show_quantity
+                    %}
                 {% else %}
                     <a class='button button--secondary' href='{{ product.url | within: collection }}'>
                         {{- 'products.product.details' | t -}}

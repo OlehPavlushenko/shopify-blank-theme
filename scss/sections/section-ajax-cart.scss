@@ -1,10 +1,9 @@
 @media screen and (min-width: 1200px) {
 	body.js-ajax-cart-open {
-		padding-right: 50rem;
+		transform: translate(-100px);
 	}
   
 	body {
-		padding-right: 0;
 		transition: all .3s;
 	}
 }
@@ -46,13 +45,13 @@ body.js-ajax-cart-open {
 }
 
 .js-ajax-cart-open .cart-drawer {
-	transform: translateX(0); 
+	transform: translateX(100px); 
 }
 
 .js-ajax-cart-open .cart-overlay {
 	z-index: 10;
 	opacity: 1;
-	transform: translateX(0);
+	transform: translateX(100px);
 	right: 50rem;
 }
 
