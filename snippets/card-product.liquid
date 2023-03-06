@@ -1,62 +1,83 @@
-{% if card_product and card_product != empty %}
-    <div class='card-product__madia-wrapper'>
-        <picture class='card-product__media {% if img_size %} media__size--{{ img_size }}{% endif %} media'>
-            {% render 'image', image_box: card_product.featured_media, image_box_class: 'card-product__image' %}
-        </picture>
-    </div>
-    <div class='card-product__content'>
-        <span class='visually-hidden'>{{ 'accessibility.vendor' | t }}</span>
-        <span class='card-product__vendor'>{{ card_product.vendor }}</span>
-        <h4 class='card-product__title'>
-            <a href='{{ card_product.url | within: collection }}'>
-                {{ card_product.title | truncate: 30 | escape }}
-            </a>
-        </h4>
-        {% render 'price', product: card_product, price_class: 'card-product__price' %}
-    </div>
-    {% if btn %}
-        {% form 'product', card_product, class: 'card-product__form' %}
-            {{ form | payment_terms }}
-            {% if card_product.variants.size > 1 %}
-                <select name='id' id='ProductSelect-{{ section.id }}' class='card-product__variants'>
-                    {% for variant in card_product.variants %}
-                        {% if variant.available %}
-                            <option
-                                {% if variant == card_product.selected_or_first_available_variant %}
-                                    selected='selected'
-                                {% endif %}
-                                data-sku='{{ variant.sku }}'
-                                value='{{ variant.id }}'
-                            >
-                                {{ variant.title }} - {{ variant.price | money_with_currency }}
-                            </option>
-
-                        {% else %}
-                            <option disabled='disabled'>
-                                {{ variant.title }} - {{ 'products.product.sold_out' | t }}
-                            </option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
+{% if product and product != empty %}
+    {%- liquid
+        assign current_variant = product.selected_or_first_available_variant
+        if current_variant.featured_image != blank
+            assign image_box = current_variant.featured_image
+        else
+            assign image_box = product.featured_image
+        endif
+    -%}
+    <div class='card-product__wrapper js-card-product-wrapper'>
+        {%- assign video = product.media | where: 'media_type', 'video' -%}
+        {% if video != blank %}
+            <video-hover class='card-product__media-wrapper'>
+                <div class='video-product video-product__size--{{ img_size }}'>
+                    <div class='video-product__video video'>
+                        {% for media in product.media %}
+                            {% if media.media_type == 'video' %}
+                                <video
+                                    class='js-video video__media html5'
+                                    title='{{ title | escape }}'
+                                    playsinline
+                                    loop
+                                    muted
+                                    disablePictureInPicture
+                                    width='1440'
+                                    controlsList='noplaybackrate nodownload'
+                                >
+                                    <source src='{{  media.sources[1].url  }}' type='video/mp4'>
+                                </video>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <picture class='card-product__media media__size--{{ img_size }} media js-card-product-media'>
+                    {% if image_custom != blank %}
+                        {% render 'image', image_box: image_custom, image_box_class: 'card-product__image' %}
+                    {% else %}
+                        {% render 'image', image_box: image_box, image_box_class: 'card-product__image' %}
+                    {% endif %}
+                </picture>
+            </video-hover>
+        {% else %}
+            <div class='card-product__media-wrapper '>
+                <picture class='card-product__media media__size--{{ img_size }} media js-card-product-media'>
+                    {% if image_custom != blank %}
+                        {% render 'image', image_box: image_custom, image_box_class: 'card-product__image' %}
+                    {% else %}
+                        {% render 'image', image_box: image_box, image_box_class: 'card-product__image' %}
+                    {% endif %}
+                </picture>
+            </div>
+        {% endif %}
+        <div class='card-product__content card-product__content--{{ fill }}'>
+            {% if show_vendor %}
+                <span class='card-product__vendor'>{{ product.vendor }}</span>
             {% endif %}
-            <input
-                type='number'
-                id='Quantity'
-                name='quantity'
-                value='1'
-                min='1'
-                class='quantity-selector hidden'
-            >
+            <h4 class='card-product__title js-card-product-title'>
+                <a href='{{ product.url | within: collection }}'>
+                    {{ product.title | truncate: 30 | escape }}
+                </a>
+            </h4>
+            {% render 'price',
+                product: product,
+                price_class: 'card-product__price js-card-product-price',
+                use_variant: use_variant
+            %}
 
-            <button
-                type='submit'
-                name='add'
-                id='AddToCart-{{ section.id }}'
-                class='btn button--secondary'
-            >
-                <span id='AddToCartText'>{{ 'products.product.add_to_cart' | t }}</span>
-            </button>
-            <div data-ajax-cart-messages='form'></div>
-        {% endform %}
-    {% endif %}
+            {% if add_btn %}
+                {% if btn == 'quick' %}
+                    {% render 'form-collection',
+                        product: product,
+                        variant_type: variant_type,
+                        show_quantity: show_quantity
+                    %}
+                {% else %}
+                    <a class='button button--secondary' href='{{ product.url | within: collection }}'>
+                        {{- 'products.product.details' | t -}}
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
 {% endif %}

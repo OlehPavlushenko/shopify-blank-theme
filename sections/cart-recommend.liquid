@@ -8,7 +8,7 @@
                 {% if item != 'id' %}
                     {%- assign product = all_products[item] -%}
                     <li class='cart-recommend__item js-cart-recommend-item'>
-                        {% render 'card-product', card_product: product %}
+                        {% render 'card-product', product: product %}
                     </li>
                 {% endif %}
             {%- endfor -%}

@@ -1,6 +1,17 @@
+@media screen and (min-width: 1200px) {
+	body.js-ajax-cart-open {
+		transform: translate(-100px);
+	}
+  
+	body {
+		transition: all .3s;
+	}
+}
+
 body.js-ajax-cart-open {
 	overflow: hidden;
 }
+
 .cart-drawer {
 	display: flex;
 	flex-direction: column;
@@ -34,13 +45,13 @@ body.js-ajax-cart-open {
 }
 
 .js-ajax-cart-open .cart-drawer {
-	transform: translateX(0); 
+	transform: translateX(100px); 
 }
 
 .js-ajax-cart-open .cart-overlay {
-	z-index: 1;
+	z-index: 10;
 	opacity: 1;
-	transform: translateX(0);
+	transform: translateX(100px);
 	right: 50rem;
 }
 
@@ -342,17 +353,12 @@ input.cart-drawer__input--property {
 /* Line Item */
 .ajax-cart__line-item {
 	border-top: .1rem solid var(--cart-drawer-divider-color);
-	padding: 3rem 5rem 0 0;
-	margin-top: 3rem;
+	padding: 3rem 5rem 3rem 0;
+	//margin-top: 3rem;
 	position: relative;
 	display: flex;
 	flex-wrap: nowrap;
 	align-items: flex-start;
-}
-
-.ajax-cart__line-item:first-child {
-	border-top: none;
-	margin-top: 0;
 }
 
 .ajax-cart-item__media {
@@ -409,11 +415,11 @@ input.cart-drawer__input--property {
 	flex: 0 0 auto;
 }
 
-form[action="/cart/add"] button {
+form[action="/cart/add"].cart-drawer button {
 	position: relative;
 }
 
-form[action="/cart/add"] button:after {
+form[action="/cart/add"].cart-drawer button:after {
     content: '';
     position: absolute;
     border-radius: 100%;
@@ -427,11 +433,11 @@ form[action="/cart/add"] button:after {
     opacity: 0;
     transition: all .3s;
 }
-form[action="/cart/add"].js-ajax-cart-form-in-progress [type="submit"] {
+form[action="/cart/add"].cart-drawer.js-ajax-cart-form-in-progress [type="submit"] {
 	opacity: .7;
 	background-color: gray;
 }
-form[action="/cart/add"].js-ajax-cart-form-in-progress [type="submit"]:after {
+form[action="/cart/add"].cart-drawer.js-ajax-cart-form-in-progress [type="submit"]:after {
 	opacity: 1;
 }
 
@@ -515,7 +521,6 @@ form[action="/cart/add"].js-ajax-cart-form-in-progress [type="submit"]:after {
 	display: none;
 }
 #cart-recommend h3 {
-	margin-top: 3rem;
 	padding-top: 3rem;
 	border-top: .1rem solid var(--cart-drawer-divider-color);
 }

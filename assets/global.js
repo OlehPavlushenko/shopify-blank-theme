@@ -1,1 +1,702 @@
-void 0===window.Shopify&&(window.Shopify={}),Shopify.bind=function(e,t){return function(){return e.apply(t,arguments)}},Shopify.setSelectorByValue=function(e,t){for(var n=0,i=e.options.length;n<i;n++){var o=e.options[n];if(t==o.value||t==o.innerHTML)return e.selectedIndex=n,n}},Shopify.addListener=function(e,t,n){e.addEventListener?e.addEventListener(t,n,!1):e.attachEvent("on"+t,n)},Shopify.postLink=function(e,t){var n=(t=t||{}).method||"post",i=t.parameters||{},o=document.createElement("form");for(var r in o.setAttribute("method",n),o.setAttribute("action",e),i){var s=document.createElement("input");s.setAttribute("type","hidden"),s.setAttribute("name",r),s.setAttribute("value",i[r]),o.appendChild(s)}document.body.appendChild(o),o.submit(),document.body.removeChild(o)},Shopify.CountryProvinceSelector=function(e,t,n){this.countryEl=document.getElementById(e),this.provinceEl=document.getElementById(t),this.provinceContainer=document.getElementById(n.hideElement||t),Shopify.addListener(this.countryEl,"change",Shopify.bind(this.countryHandler,this)),this.initCountry(),this.initProvince()},Shopify.CountryProvinceSelector.prototype={initCountry:function(){var e=this.countryEl.getAttribute("data-default");Shopify.setSelectorByValue(this.countryEl,e),this.countryHandler()},initProvince:function(){var e=this.provinceEl.getAttribute("data-default");e&&this.provinceEl.options.length>0&&Shopify.setSelectorByValue(this.provinceEl,e)},countryHandler:function(e){var t=(o=this.countryEl.options[this.countryEl.selectedIndex]).getAttribute("data-provinces"),n=JSON.parse(t);if(this.clearOptions(this.provinceEl),n&&0==n.length)this.provinceContainer.style.display="none";else{for(var i=0;i<n.length;i++){var o;(o=document.createElement("option")).value=n[i][0],o.innerHTML=n[i][1],this.provinceEl.appendChild(o)}this.provinceContainer.style.display=""}},clearOptions:function(e){for(;e.firstChild;)e.removeChild(e.firstChild)},setOptions:function(e,t){var n=0;for(t.length;n<t.length;n++){var i=document.createElement("option");i.value=t[n],i.innerHTML=t[n],e.appendChild(i)}}},Shopify.formatMoney=function(e,t){"string"==typeof e&&(e=e.replace(".",""));var n="",i=/\{\{\s*(\w+)\s*\}\}/,o=t||this.money_format;function r(e,t){return void 0===e?t:e}function s(e,t,n,i){if(t=r(t,2),n=r(n,","),i=r(i,"."),isNaN(e)||null==e)return 0;var o=(e=(e/100).toFixed(t)).split(".");return o[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g,"$1"+n)+(o[1]?i+o[1]:"")}switch(o.match(i)[1]){case"amount":n=s(e,2);break;case"amount_no_decimals":n=s(e,0);break;case"amount_with_comma_separator":n=s(e,2,".",",");break;case"amount_no_decimals_with_comma_separator":n=s(e,0,".",",")}return o.replace(i,n)};class ProductRecommendations extends HTMLElement{constructor(){super()}connectedCallback(){new IntersectionObserver(((e,t)=>{e[0].isIntersecting&&(t.unobserve(this),fetch(this.dataset.url).then((e=>e.text())).then((e=>{const t=document.createElement("div");t.innerHTML=e;const n=t.querySelector("product-recommendations");n&&n.innerHTML.trim().length&&(this.innerHTML=n.innerHTML),!this.querySelector("slideshow-component")&&this.classList.contains("complementary-products")&&this.remove(),t.querySelector(".grid__item")&&this.classList.add("product-recommendations--loaded")})).catch((e=>{console.error(e)})))}).bind(this),{rootMargin:"0px 0px 400px 0px"}).observe(this)}}customElements.define("product-recommendations",ProductRecommendations);class DeferredMedia extends HTMLElement{constructor(){super(),this.querySelector('[id^="Deferred-Poster-"]')?.addEventListener("click",this.loadContent.bind(this))}loadContent(){if(!this.getAttribute("loaded")){const e=document.createElement("div");e.appendChild(this.querySelector("template").content.firstElementChild.cloneNode(!0)),this.setAttribute("loaded",!0),this.appendChild(e.querySelector("video, model-viewer, iframe")).focus(),setTimeout((()=>{const e=this.querySelector("template").nextElementSibling;e.muted="true"===e.dataset.muted,e.play()}))}}}customElements.define("deferred-media",DeferredMedia);
+/*
+ * Shopify Common JS
+ *
+ */
+if (typeof window.Shopify == 'undefined') {
+  window.Shopify = {}
+}
+
+Shopify.bind = function (fn, scope) {
+  return function () {
+    return fn.apply(scope, arguments)
+  }
+}
+
+Shopify.setSelectorByValue = function (selector, value) {
+  for (var i = 0, count = selector.options.length; i < count; i++) {
+    var option = selector.options[i]
+    if (value == option.value || value == option.innerHTML) {
+      selector.selectedIndex = i
+      return i
+    }
+  }
+}
+
+Shopify.addListener = function (target, eventName, callback) {
+  target.addEventListener
+    ? target.addEventListener(eventName, callback, false)
+    : target.attachEvent('on' + eventName, callback)
+}
+
+Shopify.postLink = function (path, options) {
+  options = options || {}
+  var method = options['method'] || 'post'
+  var params = options['parameters'] || {}
+
+  var form = document.createElement('form')
+  form.setAttribute('method', method)
+  form.setAttribute('action', path)
+
+  for (var key in params) {
+    var hiddenField = document.createElement('input')
+    hiddenField.setAttribute('type', 'hidden')
+    hiddenField.setAttribute('name', key)
+    hiddenField.setAttribute('value', params[key])
+    form.appendChild(hiddenField)
+  }
+  document.body.appendChild(form)
+  form.submit()
+  document.body.removeChild(form)
+}
+
+Shopify.CountryProvinceSelector = function (
+  country_domid,
+  province_domid,
+  options
+) {
+  this.countryEl = document.getElementById(country_domid)
+  this.provinceEl = document.getElementById(province_domid)
+  this.provinceContainer = document.getElementById(
+    options['hideElement'] || province_domid
+  )
+
+  Shopify.addListener(
+    this.countryEl,
+    'change',
+    Shopify.bind(this.countryHandler, this)
+  )
+
+  this.initCountry()
+  this.initProvince()
+}
+
+Shopify.CountryProvinceSelector.prototype = {
+  initCountry: function () {
+    var value = this.countryEl.getAttribute('data-default')
+    Shopify.setSelectorByValue(this.countryEl, value)
+    this.countryHandler()
+  },
+
+  initProvince: function () {
+    var value = this.provinceEl.getAttribute('data-default')
+    if (value && this.provinceEl.options.length > 0) {
+      Shopify.setSelectorByValue(this.provinceEl, value)
+    }
+  },
+
+  countryHandler: function (e) {
+    var opt = this.countryEl.options[this.countryEl.selectedIndex]
+    var raw = opt.getAttribute('data-provinces')
+    var provinces = JSON.parse(raw)
+
+    this.clearOptions(this.provinceEl)
+    if (provinces && provinces.length == 0) {
+      this.provinceContainer.style.display = 'none'
+    } else {
+      for (var i = 0; i < provinces.length; i++) {
+        var opt = document.createElement('option')
+        opt.value = provinces[i][0]
+        opt.innerHTML = provinces[i][1]
+        this.provinceEl.appendChild(opt)
+      }
+
+      this.provinceContainer.style.display = ''
+    }
+  },
+
+  clearOptions: function (selector) {
+    while (selector.firstChild) {
+      selector.removeChild(selector.firstChild)
+    }
+  },
+
+  setOptions: function (selector, values) {
+    for (var i = 0, count = values.length; i < values.length; i++) {
+      var opt = document.createElement('option')
+      opt.value = values[i]
+      opt.innerHTML = values[i]
+      selector.appendChild(opt)
+    }
+  },
+}
+
+Shopify.formatMoney = function(cents, format) {
+  if (typeof cents == 'string') { cents = cents.replace('.',''); }
+  var value = '';
+  var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+  var formatString = (format || this.money_format);
+
+  function defaultOption(opt, def) {
+     return (typeof opt == 'undefined' ? def : opt);
+  }
+
+  function formatWithDelimiters(number, precision, thousands, decimal) {
+    precision = defaultOption(precision, 2);
+    thousands = defaultOption(thousands, ',');
+    decimal   = defaultOption(decimal, '.');
+
+    if (isNaN(number) || number == null) { return 0; }
+
+    number = (number/100.0).toFixed(precision);
+
+    var parts   = number.split('.'),
+        dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+        cents   = parts[1] ? (decimal + parts[1]) : '';
+
+    return dollars + cents;
+  }
+
+  switch(formatString.match(placeholderRegex)[1]) {
+    case 'amount':
+      value = formatWithDelimiters(cents, 2);
+      break;
+    case 'amount_no_decimals':
+      value = formatWithDelimiters(cents, 0);
+      break;
+    case 'amount_with_comma_separator':
+      value = formatWithDelimiters(cents, 2, '.', ',');
+      break;
+    case 'amount_no_decimals_with_comma_separator':
+      value = formatWithDelimiters(cents, 0, '.', ',');
+      break;
+  }
+
+  return formatString.replace(placeholderRegex, value);
+};
+
+class ProductRecommendations extends HTMLElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    const handleIntersection = (entries, observer) => {
+      if (!entries[0].isIntersecting) return;
+      observer.unobserve(this);
+
+      fetch(this.dataset.url)
+        .then(response => response.text())
+        .then(text => {
+          const html = document.createElement('div');
+          html.innerHTML = text;
+          const recommendations = html.querySelector('product-recommendations');
+
+          if (recommendations && recommendations.innerHTML.trim().length) {
+            this.innerHTML = recommendations.innerHTML;
+          }
+
+          if (!this.querySelector('slideshow-component') && this.classList.contains('complementary-products')) {
+            this.remove();
+          }
+
+          if (html.querySelector('.grid__item')) {
+            this.classList.add('product-recommendations--loaded');
+          }
+        })
+        .catch(e => {
+          console.error(e);
+        });
+    }
+
+    new IntersectionObserver(handleIntersection.bind(this), {rootMargin: '0px 0px 400px 0px'}).observe(this);
+  }
+}
+
+customElements.define('product-recommendations', ProductRecommendations);
+
+class DeferredMedia extends HTMLElement {
+  constructor() {
+    super()
+    this.querySelector('[id^="Deferred-Poster-"]')?.addEventListener(
+      'click',
+      this.loadContent.bind(this)
+    )
+  }
+
+  loadContent() {
+    if (!this.getAttribute('loaded')) {
+      const content = document.createElement('div')
+      content.appendChild(
+        this.querySelector('template').content.firstElementChild.cloneNode(true)
+      )
+
+      this.setAttribute('loaded', true)
+      //window.pauseAllMedia()
+      this.appendChild(
+        content.querySelector('video, model-viewer, iframe')
+      ).focus()
+
+      setTimeout(() => {
+        const video = this.querySelector('template').nextElementSibling
+        video.muted = video.dataset.muted === 'true'
+        video.play()
+      })
+    }
+  }
+}
+
+customElements.define('deferred-media', DeferredMedia)
+
+class VideoHover extends HTMLElement {
+  constructor() {
+    super();
+    this.video = this.querySelector('.js-video')
+
+    this.resizeFunction()
+    window.addEventListener('resize', this.resizeFunction.bind(this))
+  }
+
+  onClick() {
+    this.classList.contains('open')
+      ? this.close()
+      : this.open()
+  }
+
+  close() {
+    this.classList.remove('open')
+    this.video.pause()
+  }
+
+  open() {
+    this.classList.add('open')
+    this.video.play()
+  }
+
+  resizeFunction() {
+    let mobile = window.matchMedia('(max-width: 990px)').matches
+    if (mobile) {
+      this.addEventListener(
+        'click',
+        this.onClick.bind(this)
+      )
+    } else {
+      this.addEventListener(
+        'mouseover',
+        this.open.bind(this)
+      )
+      this.addEventListener(
+        'mouseout',
+        this.close.bind(this)
+      )
+    }
+  }
+}
+
+customElements.define('video-hover', VideoHover)
+
+class QuantityInput extends HTMLElement {
+  constructor() {
+    super();
+    this.input = this.querySelector('input')
+    
+
+    this.changeEvent = new Event('change', { bubbles: true })
+
+    this.querySelectorAll('button').forEach(
+      (button) => button.addEventListener('click', this.onButtonClick.bind(this))
+    );
+  }
+
+  onButtonClick(event) {
+    event.preventDefault();
+    const previousValue = this.input.value;
+
+    event.target.name === 'plus' ? this.input.stepUp() : this.input.stepDown()
+    
+    if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent)
+    this.changeValue(this.input.value)
+  }
+
+  changeValue(newValue) {
+    this.input.value = newValue;
+    this.input.dispatchEvent(this.changeEvent);
+  }
+}
+
+customElements.define('quantity-input', QuantityInput);
+
+class VariantPills extends HTMLElement {
+  constructor() {
+    super();
+
+    this.swatchFirst = this.querySelector('.js-swatch-first')
+    this.swatchSecond = this.querySelector('.js-swatch-second')
+    this.swatchThird = this.querySelector('.js-swatch-third')
+    this.swatchElement = this.querySelectorAll('.js-swatch-element')
+    this.price = this.closest('.js-card-product-wrapper').querySelector('.js-card-product-price')
+    this.image = this.closest('.js-card-product-wrapper').querySelector('.js-card-product-media')
+    this.qty = this.closest('.js-card-product-wrapper').querySelector('.js-quantity')
+    this.btnCart = this.closest('.js-card-product-wrapper').querySelector('.js-btn-cart')
+    this.btnSoldOut = this.closest('.js-card-product-wrapper').querySelector('.js-btn-sold-out')
+    
+    this.swatchLvlFirst = false
+    this.swatchLvlSecond = false
+    this.swatchLvlThird = false
+
+    this.getVariantList = {}
+    
+    this.initSwatch()
+    
+  }
+
+
+  initSwatch() {
+    this.getVariantData()
+    this.createNewListVariant(this.variantData)
+
+    // Event handler for product option buttons
+    const handleClick = (event) => {
+      if (event.target.tagName === "INPUT") {
+        const firstElement = event.target.closest('.js-swatch-first')
+        const secondElement = event.target.closest('.js-swatch-second')
+        const thirdElement = event.target.closest('.js-swatch-third')
+
+        let firstValue, secondValue, thirdValue
+
+        if (firstElement) {
+          firstValue = event.target.value
+          secondValue = undefined
+          thirdValue = undefined
+        }
+
+        if (secondElement) {
+          firstValue = this.getActiveSwatchValue(this.swatchFirst)
+          secondValue = event.target.value
+          thirdValue = undefined
+        }
+
+        if (thirdElement) {
+          firstValue = this.getActiveSwatchValue(this.swatchFirst)
+          secondValue = this.getActiveSwatchValue(this.swatchSecond)
+          thirdValue = event.target.value
+        }
+
+        if (this.swatchLvlFirst && !this.swatchLvlSecond) {
+          this.updateSwatchLvlFirst(firstValue)
+          this.getAvailableVariant(event)
+        }
+
+        if (this.swatchLvlFirst && this.swatchLvlSecond && !this.swatchLvlThird) {
+          this.updateSwatchLvlSecond(firstValue, secondValue)
+          this.getAvailableVariant(event)
+        }
+
+        if (this.swatchLvlFirst && this.swatchLvlSecond && this.swatchLvlThird) {
+          this.updateSwatchLvlThird(firstValue, secondValue, thirdValue)
+          this.getAvailableVariant(event)
+        }
+      }
+    }
+
+    const delay = 300
+
+    // Installing event handlers on product option buttons
+    this.swatchElement.forEach((element) => {
+      element.addEventListener('click', debounce(handleClick, delay))
+    })
+
+    //Check the level First of available buttons
+    if (this.swatchLvlFirst && !this.swatchLvlSecond) {
+      this.updateSwatchLvlFirst()
+    }
+
+    //Check the level Second of available buttons
+    if (this.swatchLvlFirst && this.swatchLvlSecond && !this.swatchLvlThird) {
+      this.updateSwatchLvlSecond()
+    }
+
+    //Check the level Third of available buttons
+    if (this.swatchLvlFirst && this.swatchLvlSecond && this.swatchLvlThird) {
+      this.updateSwatchLvlThird()
+    }
+  }
+
+  getActiveSwatchValue(swatch) {
+    const activeElement = swatch.querySelector('.js-swatch-element.active')
+    return activeElement ? activeElement.firstElementChild.value : undefined
+  }
+
+  updateSwatchLvlFirst(firstValue) {
+    const availableFirst = Object.keys(this.getVariantList).filter(item => this.getVariantList[item].available)
+    const firstSelected = firstValue !== undefined ? firstValue : availableFirst[0]
+
+    this.availableSwatchFirst(availableFirst, firstSelected)
+  }
+
+  updateSwatchLvlSecond(firstValue,secondValue) {
+    const availableFirst = Object.keys(this.getVariantList).filter((first) => {
+      const second = this.getVariantList[first]
+      return Object.keys(second).some((item) => second[item].available)
+    })
+    const firstSelected = firstValue !== undefined ? firstValue : availableFirst[0]
+    
+    this.availableSwatchFirst(availableFirst, firstSelected)
+    this.hiddenButtonSwatchSecond(firstSelected)
+
+    const availableSecond = Object.keys(this.getVariantList[firstSelected]).filter((item) => {
+      return this.getVariantList[firstSelected][item].available
+    })
+    const secondSelected = secondValue !== undefined ? secondValue : availableSecond[0]
+
+    this.availableSwatchSecond(availableSecond, secondSelected)
+  }
+
+  updateSwatchLvlThird(firstValue,secondValue,thirdValue) {
+    const availableFirst = Object.keys(this.getVariantList).filter(first => {
+      return Object.values(this.getVariantList[first]).some(second => {
+        return Object.values(second).some(third => third.available)
+      })
+    })
+    const firstSelected = firstValue !== undefined ? firstValue : availableFirst[0]
+
+    this.availableSwatchFirst(availableFirst, firstSelected)
+    this.hiddenButtonSwatchSecond(firstSelected)
+
+    const availableSecond = Object.keys(this.getVariantList[firstSelected]).filter((item) => {
+      const third = this.getVariantList[firstSelected][item]
+      return Object.keys(third).some((item) => third[item].available)
+    })
+    const secondSelected = secondValue !== undefined ? secondValue : availableSecond[0]
+
+    this.availableSwatchSecond(availableSecond, secondSelected)
+    this.hiddenButtonSwatchThird(firstSelected,secondSelected)
+
+    const availableThird = Object.keys(this.getVariantList[firstSelected][secondSelected]).filter((item) => {
+      return this.getVariantList[firstSelected][secondSelected][item].available
+    })
+    const thirdSelected = thirdValue !== undefined ? thirdValue : availableThird[0]
+
+    this.availableSwatchThird(availableThird, thirdSelected)
+    
+  }
+
+  availableSwatchFirst(availableFirst, firstSelected) {
+    this.swatchFirst.querySelectorAll('[data-lvl-first]').forEach(element => {
+      const item = element.dataset.lvlFirst
+      element.classList.toggle('available', availableFirst.includes(item))
+      element.classList.toggle('unavailable', !availableFirst.includes(item))
+    })
+
+    availableFirst.forEach((item) => {
+      const button = this.swatchFirst.querySelector(`[data-lvl-first="${item}"]`)
+      const details = this.swatchFirst.querySelector('.js-swatch-header em')
+
+      button.classList.remove('active')
+
+      if (item === firstSelected) {
+        button.classList.add("active")
+        button.firstElementChild.checked = true
+        details.textContent = item
+      }
+    })
+  }
+
+  availableSwatchSecond(availableSecond, secondSelected) {
+    this.swatchSecond.querySelectorAll('[data-lvl-second]').forEach(element => {
+      const item = element.dataset.lvlSecond
+      element.classList.toggle('available', availableSecond.includes(item))
+      element.classList.toggle('unavailable', !availableSecond.includes(item))
+    })
+
+    availableSecond.forEach((item) => {
+      const button = this.swatchSecond.querySelector(`[data-lvl-second="${item}"]`)
+      const details = this.swatchSecond.querySelector('.js-swatch-header em')
+
+      if (item === secondSelected) {
+        button.classList.add('active')
+        button.firstElementChild.checked = true
+        details.textContent = item
+      } 
+    })
+  }
+
+  availableSwatchThird(availableThird, thirdSelected) {
+    this.swatchThird.querySelectorAll('[data-lvl-third]').forEach(element => {
+      const item = element.dataset.lvlThird
+      element.classList.toggle('available', availableThird.includes(item))
+      element.classList.toggle('unavailable', !availableThird.includes(item))
+    })
+
+    availableThird.forEach((item) => {
+      const button = this.swatchThird.querySelector(`[data-lvl-third="${item}"]`)
+      const details = this.swatchThird.querySelector('.js-swatch-header em')
+
+      button.classList.add('active')
+        if (item === thirdSelected) {
+          button.classList.add('active')
+          button.firstElementChild.checked = true
+          details.textContent = item
+        } 
+    })
+  }
+
+  hiddenButtonSwatchSecond(firstSelected) {
+    this.swatchSecond.querySelectorAll('.js-swatch-element').forEach(element => {
+      let value = element.getAttribute('data-value')
+      element.classList.remove('hidden')
+      element.classList.remove('active')
+      if(!this.getVariantList[firstSelected].hasOwnProperty(value)) {
+        element.classList.add('hidden')
+      }
+    })
+  }
+
+  hiddenButtonSwatchThird(firstSelected,secondSelected) {
+    this.swatchThird.querySelectorAll('.js-swatch-element').forEach(element => {
+      let value = element.getAttribute('data-value')
+      element.classList.remove('hidden')
+      element.classList.remove('active')
+
+      if(!this.getVariantList[firstSelected][secondSelected].hasOwnProperty(value)) {
+        element.classList.add('hidden')
+      }
+    })
+  }
+
+  createNewListVariant(variantData) {
+    for (let i = 0; i < variantData.length; i++) {
+      let option1 = variantData[i].option1;
+      let option2 = variantData[i].option2;
+      let option3 = variantData[i].option3;
+      let available = variantData[i].available;
+      
+      if (option1) {
+        this.swatchLvlFirst = true
+      }
+      if (option2) {
+        this.swatchLvlSecond = true
+      }
+      if (option3) {
+        this.swatchLvlThird = true
+      }
+    
+      const lvlFirst = this.getVariantList[option1] || {}
+      const lvlSecond = lvlFirst[option2] || {}
+      const lvlThird = lvlSecond[option3] || {}
+      
+      if (option3) {
+        //check availability level 3
+        lvlSecond[option3] = {
+          ...lvlThird,
+          available: available,
+        }
+        lvlFirst[option2] = lvlSecond;
+        this.getVariantList[option1] = lvlFirst;
+      } else if (option2) {
+        //check availability level 2
+        lvlFirst[option2] = {
+          ...lvlSecond,
+          available: available,
+        }
+        this.getVariantList[option1] = lvlFirst;
+      } else {
+        //check availability level 1
+        this.getVariantList[option1] = {
+          ...lvlFirst,
+          available: available,
+        }
+      }
+    }
+  }
+
+  getAvailableVariant(event) {
+    const selectedOptions = []
+    const products = this.variantData
+    this.swatchElement.forEach(element => {
+      let radio = element.firstElementChild
+      if (radio.checked) {
+        selectedOptions.push(radio.value)
+      }
+    })
+
+    // Filtering the data array by the selected options
+    this.availableVariant = products.filter(product => {
+      return selectedOptions.every((option, index) => {
+        return product.options[index] === option
+      })
+    })
+
+    console.log(this.availableVariant)
+    this.updateOptions(event)
+    this.updatePrice()
+    this.updateImage()
+    this.updateURL()
+  }
+
+  updateOptions(event) {
+    const availableVariant = this.availableVariant[0];
+    const availableVariantId = String(availableVariant.id);
+    const selectElement = this.querySelector('select');
+    const option = selectElement.querySelector(`option[value='${availableVariantId}']`);
+    const inventoryManagement = availableVariant.inventory_management;
+    const inventoryPolicy = option ? option.dataset.inventoryPolicy : null;
+    const inventoryQty = option ? option.dataset.qty : null;
+    const qtyParentElement = this.qty.parentElement;
+    
+    if (option) {
+      option.selected = true;
+    }
+  
+    if (inventoryManagement === 'shopify' && inventoryPolicy === 'deny') {
+      this.qty.setAttribute('max', inventoryQty);
+    } else {
+      this.qty.removeAttribute('max');
+    }
+  
+    const isAvailable = availableVariant.available;
+  
+    //qtyParentElement.classList.toggle('hidden', !isAvailable);
+    //this.btnCart.classList.toggle('hidden', !isAvailable);
+    //this.btnSoldOut.classList.toggle('hidden', isAvailable);
+  
+    if (!isAvailable) {
+      const headerSwatch = event.target.closest('.swatch--product').querySelector('.js-swatch-header em');
+      headerSwatch.textContent = event.target.value;
+    }
+  }
+
+  updatePrice() {
+    const { compare_at_price: comparePrice, price: salePrice } = this.availableVariant[0];
+    const elementSalePrice = this.price.querySelector('.price__item--sale');
+    const elementComparePrice = this.price.querySelector('.price__item--regular');
+    const hasComparePrice = comparePrice !== null;
+    
+    this.price.classList.toggle('price--on-sale', hasComparePrice);
+    elementSalePrice.textContent = Shopify.formatMoney(salePrice);
+    elementComparePrice.textContent = hasComparePrice ? Shopify.formatMoney(comparePrice) : '';
+  }
+  
+
+  updateImage() {
+    const image = this.availableVariant[0].featured_image
+    
+    if (image !== null) {
+      this.image.firstElementChild.srcset = image.src
+    }
+  }
+
+  updateURL() {
+    const cardProductWrapper = this.closest('.js-card-product-wrapper');
+    if (!this.availableVariant || !cardProductWrapper) return;
+    
+    const url = cardProductWrapper.querySelector('.js-card-product-title > a');
+    if (url) {
+      url.search = `?variant=${this.availableVariant[0].id}`;
+    }
+  }
+
+  getVariantData() {
+    this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent)
+    return this.variantData
+  }
+
+  debounce = (fn, wait) => {
+    let t
+    return (...args) => {
+      clearTimeout(t)
+      t = setTimeout(() => fn.apply(this, args), wait)
+    }
+  }
+}
+
+customElements.define('variant-pills', VariantPills)
